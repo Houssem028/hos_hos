@@ -77,4 +77,54 @@ onAuthStateChanged(auth,(user)=>{
   myUid = user.uid;
 });
 
-const input
+const input = document.getElementById("searchInput");
+const results = document.getElementById("results");
+
+input.addEventListener("input", async ()=>{
+
+  const text = input.value.trim();
+
+  if(text === ""){
+    results.innerHTML = "";
+    return;
+  }
+
+  const users = await searchUsers(text);
+
+  results.innerHTML = "";
+
+  users.forEach((u)=>{
+
+    // لا تظهر نفسك
+    if(u.uid === myUid) return;
+
+    const div = document.createElement("div");
+    div.className = "user";
+
+    div.innerHTML = `
+      <div class="user-info" onclick="openUser('${u.uid}')">
+        <img src="${u.image || 'https://i.imgur.com/1X4n1ZL.png'}">
+        <span>${u.username}</span>
+      </div>
+
+      <button>Follow</button>
+    `;
+
+    div.querySelector("button").onclick = async ()=>{
+      await followUser(myUid, u.uid);
+      alert("تمت المتابعة ✔");
+    };
+
+    results.appendChild(div);
+  });
+
+});
+
+// فتح صفحة المستخدم
+window.openUser = (uid)=>{
+  location.href = "user.html?uid=" + uid;
+};
+</script>
+
+</body>
+</html>
