@@ -32,7 +32,6 @@
       border:3px solid #ff2d55;
     }
 
-    /* زر القلم */
     .edit-icon{
       position:absolute;
       bottom:0;
@@ -72,7 +71,6 @@
       color:#aaa;
     }
 
-    /* شريط تحت */
     .bottom-bar{
       position:fixed;
       bottom:0;
@@ -97,6 +95,28 @@
       color:#ff2d55;
     }
 
+    #editBox{
+      display:none;
+      padding:20px;
+    }
+
+    input{
+      display:block;
+      margin:10px auto;
+      padding:10px;
+      width:80%;
+      border-radius:10px;
+      border:none;
+    }
+
+    button.save{
+      padding:10px 20px;
+      background:#ff2d55;
+      border:none;
+      color:white;
+      border-radius:10px;
+    }
+
   </style>
 </head>
 
@@ -104,13 +124,10 @@
 
   <div class="profile-page">
 
-    <!-- الصورة + القلم -->
+    <!-- الصورة -->
     <div class="img-box">
-
       <img id="profilePic" class="profile-pic" src="https://i.imgur.com/1X4n1ZL.png">
-
       <div class="edit-icon" onclick="openEdit()">✏️</div>
-
     </div>
 
     <h2 id="username">تحميل...</h2>
@@ -124,28 +141,26 @@
 
   </div>
 
-  <!-- تعديل -->
-  <div id="editBox" style="display:none; padding:20px;">
-    <input id="newName" placeholder="تغيير الاسم">
+  <!-- التعديل -->
+  <div id="editBox">
+    <input id="newName" type="text" placeholder="تغيير الاسم">
     <input id="newImage" type="file" accept="image/*">
-    <button onclick="saveProfile()">حفظ</button>
+    <button id="saveBtn" class="save">حفظ</button>
   </div>
 
-  <!-- شريط سفلي (تنقل حقيقي) -->
+  <!-- شريط سفلي -->
   <div class="bottom-bar">
-
     <button onclick="go('feed.html')">🏠 Home</button>
     <button onclick="go('search.html')">🔍 Search</button>
     <button onclick="go('upload.html')">➕ Upload</button>
     <button onclick="go('notify.html')">🔔 Alerts</button>
     <button class="active">👤 Profile</button>
-
   </div>
 
   <script type="module">
     import { auth, getUserData, updateUser, uploadProfileImage } from "./firebase.js";
 
-    let currentUser;
+    let currentUser = null;
 
     auth.onAuthStateChanged(async (user) => {
 
@@ -166,7 +181,7 @@
       document.getElementById("newName").value = data.username || "";
 
       if(data.image){
-        document.getElementById("profilePic").src = data.image;
+        document.getElementById("profilePic").src = data.image + "?t=" + Date.now();
       }
     });
 
@@ -175,8 +190,8 @@
       document.getElementById("editBox").style.display = "block";
     }
 
-    // حفظ التعديل
-    window.saveProfile = async function(){
+    // حفظ البروفايل (FIXED 100%)
+    document.getElementById("saveBtn").addEventListener("click", async () => {
 
       const newName = document.getElementById("newName").value;
       const file = document.getElementById("newImage").files[0];
@@ -199,9 +214,9 @@
 
       alert("تم التحديث ✔");
       location.reload();
-    }
+    });
 
-    // التنقل بين الصفحات
+    // تنقل
     window.go = function(page){
       window.location.href = page;
     }
