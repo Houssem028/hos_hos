@@ -8,41 +8,39 @@
 </head>
 <body>
 
-  <section id="login">
-    <div class="login-card">
-      <h2>تسجيل الدخول</h2>
+  <div class="login-card">
+    <h2>تسجيل الدخول</h2>
 
-      <input type="email" id="email" placeholder="البريد الإلكتروني">
-      <input type="password" id="password" placeholder="كلمة المرور">
+    <input id="email" type="email" placeholder="البريد الإلكتروني">
+    <input id="password" type="password" placeholder="كلمة المرور">
 
-      <button onclick="loginUser()">دخول</button>
+    <button onclick="loginUser()">دخول</button>
 
-      <p class="signup">
-        ليس لديك حساب؟
-        <span onclick="goSignup()">إنشاء حساب</span>
-      </p>
-    </div>
-  </section>
+    <p class="signup">
+      ليس لديك حساب؟
+      <span onclick="goSignup()">إنشاء حساب</span>
+    </p>
+  </div>
 
   <script type="module">
     import { login } from "./firebase.js";
 
-    window.loginUser = function () {
+    window.loginUser = function(){
 
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
 
       login(email, password)
-        .then(() => {
-          // نجاح تسجيل الدخول
-          window.location.href = "feed.html";
-        })
-        .catch((error) => {
-          alert("خطأ في الدخول: " + error.message);
-        });
+      .then(() => {
+        window.location.href = "feed.html";
+      })
+      .catch(err => {
+        alert(err.message);
+      });
+
     }
 
-    window.goSignup = function () {
+    window.goSignup = function(){
       window.location.href = "signup.html";
     }
   </script>
