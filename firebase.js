@@ -107,17 +107,37 @@ export function getUser(callback){
 }
 
 //
-// 🚀 رفع صورة بروفايل (100% صحيح)
+// 🚀 رفع صورة بروفايل (DEBUG FULL)
 //
 export async function uploadProfileImage(file, uid){
 
-  const imageRef = ref(storage, `profiles/${uid}_${Date.now()}.jpg`);
+  console.log("🚀 START UPLOAD");
 
-  const snapshot = await uploadBytes(imageRef, file);
+  if(!file){
+    console.log("❌ No file selected");
+    return null;
+  }
 
-  const url = await getDownloadURL(snapshot.ref);
+  try {
 
-  console.log("UPLOAD SUCCESS:", url);
+    const imageRef = ref(storage, `profiles/${uid}_${Date.now()}.jpg`);
 
-  return url;
+    console.log("📤 Uploading...");
+
+    const snapshot = await uploadBytes(imageRef, file);
+
+    console.log("✅ Upload done");
+
+    const url = await getDownloadURL(snapshot.ref);
+
+    console.log("🔗 IMAGE URL:", url);
+
+    return url;
+
+  } catch (error) {
+
+    console.log("❌ UPLOAD ERROR:", error);
+    return null;
+
+  }
 }
