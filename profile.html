@@ -17,7 +17,7 @@
     <div class="stats">
       <div><h3>0</h3><p>متابعين</p></div>
       <div><h3>0</h3><p>متابع</p></div>
-      <div><h3>1</h3><p>فيديو</p></div>
+      <div><h3>0</h3><p>فيديو</p></div>
     </div>
 
   </div>
@@ -26,13 +26,16 @@
     import { auth, getUserData } from "./firebase.js";
 
     auth.onAuthStateChanged(async (user) => {
-      if(user){
-        const data = await getUserData(user.uid);
-        document.getElementById("username").innerText =
-          data?.username || "بدون اسم";
-      } else {
+
+      if (!user) {
         window.location.href = "login.html";
+        return;
       }
+
+      const data = await getUserData(user.uid);
+
+      document.getElementById("username").innerText =
+        data?.username || "بدون اسم";
     });
   </script>
 
