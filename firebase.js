@@ -1,9 +1,9 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 // AUTH
-import { 
-  getAuth, 
-  createUserWithEmailAndPassword, 
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -37,7 +37,7 @@ export const auth = getAuth(app);
 export const db = getFirestore(app);
 
 //
-// 🚀 تسجيل حساب
+// تسجيل حساب
 //
 export async function register(email, password, username){
 
@@ -50,6 +50,7 @@ export async function register(email, password, username){
     image: "",
     followers: 0,
     following: 0,
+    followingList: [],
     videos: 0,
     createdAt: new Date().toISOString()
   });
@@ -58,19 +59,18 @@ export async function register(email, password, username){
 }
 
 //
-// 🚀 تسجيل دخول
+// تسجيل دخول
 //
 export function login(email, password){
   return signInWithEmailAndPassword(auth, email, password);
 }
 
 //
-// 🚀 جلب بيانات المستخدم
+// جلب بيانات المستخدم
 //
 export async function getUserData(uid){
 
-  const refDoc = doc(db, "users", uid);
-  const snap = await getDoc(refDoc);
+  const snap = await getDoc(doc(db, "users", uid));
 
   if(snap.exists()){
     return snap.data();
@@ -81,26 +81,27 @@ export async function getUserData(uid){
     image: "",
     followers: 0,
     following: 0,
+    followingList: [],
     videos: 0
   };
 }
 
 //
-// 🚀 تحديث بيانات المستخدم
+// تحديث بيانات المستخدم
 //
 export async function updateUser(uid, data){
   return updateDoc(doc(db, "users", uid), data);
 }
 
 //
-// 🚀 مراقبة تسجيل الدخول
+// مراقبة تسجيل الدخول
 //
 export function getUser(callback){
   onAuthStateChanged(auth, callback);
 }
 
 //
-// 🚀 رفع صورة (Cloudinary)
+// رفع صورة (Cloudinary)
 //
 export async function uploadProfileImage(file){
 
@@ -120,20 +121,19 @@ export async function uploadProfileImage(file){
 
   const data = await res.json();
 
-  console.log("UPLOAD RESULT:", data);
-
   return data.secure_url;
 }
 
 //
-// 🚀 البحث عن مستخدمين
+// البحث عن مستخدمين
 //
 export async function searchUsers(searchText){
 
   const snap = await getDocs(collection(db, "users"));
   const results = [];
 
-  snap.forEach(docSnap => {
+  snap.forEach((docSnap)=>{
+
     const data = docSnap.data();
 
     if(
@@ -151,38 +151,11 @@ export async function searchUsers(searchText){
 }
 
 //
-// 🚀 متابعة مستخدم
-//
-export async function followUser(myUid, targetUid){
-
-  try{
-    if(myUid === targetUid){
-      alert("لا يمكنك متابعة نفسك");
-      return;
-    }
-
-    await updateDoc(doc(db, "users", myUid), {
-      following: increment(1)
-    });
-
-    await updateDoc(doc(db, "users", targetUid), {
-      followers: increment(1)
-    });
-
-    console.log("FOLLOW SUCCESS");
-
-  }catch(err){
-    console.log("FOLLOW ERROR:", err);
-    alert("خطأ: " + err.message);
-  }
-}
-//
-// 🚀 هل أتابع هذا المستخدم؟
+// هل أتابعه؟
 //
 export async function isFollowing(myUid, targetUid){
 
-  const refDoc = doc(db, "users", myUid);
-  const snap = await getDoc(refDoc);
+  const snap = await getDoc(doc(db, "users", myUid));
 
   if(!snap.exists()) return false;
 
@@ -192,7 +165,7 @@ export async function isFollowing(myUid, targetUid){
 }
 
 //
-// 🚀 متابعة / إلغاء متابعة
+// متابعة / إلغاء متابعة
 //
 export async function toggleFollow(myUid, targetUid){
 
@@ -206,6 +179,7 @@ export async function toggleFollow(myUid, targetUid){
   if(!mySnap.exists()) return false;
 
   const myData = mySnap.data();
+
   let followingList = myData.followingList || [];
 
   const alreadyFollowing = followingList.includes(targetUid);
@@ -213,11 +187,13 @@ export async function toggleFollow(myUid, targetUid){
   if(alreadyFollowing){
 
     // Unfollow
-    followingList = followingList.filter(id => id !== targetUid);
+    followingList = followingList.filter(
+      id => id !== targetUid
+    );
 
     await updateDoc(myRef,{
       following: increment(-1),
-      followingList: followingList
+      followingList
     });
 
     await updateDoc(targetRef,{
@@ -233,7 +209,7 @@ export async function toggleFollow(myUid, targetUid){
 
     await updateDoc(myRef,{
       following: increment(1),
-      followingList: followingList
+      followingList
     });
 
     await updateDoc(targetRef,{
@@ -242,4 +218,11 @@ export async function toggleFollow(myUid, targetUid){
 
     return true;
   }
+}
+
+//
+// هذه حتى search.html يبقى يشتغل
+//
+export async function followUser(myUid, targetUid){
+  return await toggleFollow(myUid, targetUid);
 }
