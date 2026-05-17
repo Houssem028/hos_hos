@@ -1,3 +1,11 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>App</title>
+
+<style>
 *{
   margin:0;
   padding:0;
@@ -10,16 +18,30 @@ body{
   color:white;
 }
 
-/* شاشة البداية مع صورتك */
+/* fade in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(1.05);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* شاشة البداية */
 #splash{
   width:100%;
   height:100vh;
   background:
   linear-gradient(rgba(0,0,0,.35), rgba(0,0,0,.65)),
-  url("1779022897630.png");
+  url("Picsart_26-05-17_20-56-36-645.jpg");
   background-size:cover;
   background-position:center;
   background-repeat:no-repeat;
+
+  animation: fadeIn 1.5s ease-in-out forwards;
 }
 
 /* صفحة تسجيل الدخول */
@@ -30,8 +52,7 @@ body{
   justify-content:center;
   align-items:center;
   padding:20px;
-  background:
-  linear-gradient(135deg,#111,#000);
+  background:linear-gradient(135deg,#111,#000);
 }
 
 .login-card{
@@ -77,189 +98,33 @@ button{
   font-weight:bold;
 }
 
-.signup{
-  text-align:center;
-  margin-top:20px;
-  color:#ccc;
-}
-
-.signup span{
-  color:white;
-  font-weight:bold;
-}
-
 .hidden{
   display:none;
 }
-/* صفحة الفيديوهات */
-.feed{
-  position:relative;
-  width:100%;
-  height:100vh;
-  overflow:hidden;
-}
+</style>
+</head>
 
-.feed video{
-  width:100%;
-  height:100vh;
-  object-fit:cover;
-}
+<body>
 
-.video-info{
-  position:absolute;
-  bottom:100px;
-  left:20px;
-  color:white;
-  z-index:2;
-}
+<!-- Splash -->
+<div id="splash"></div>
 
-.video-info h3{
-  margin-bottom:8px;
-  font-size:22px;
-}
+<!-- Login -->
+<div id="login" class="hidden">
+  <div class="login-card">
+    <h2>تسجيل الدخول</h2>
+    <input type="text" placeholder="اسم المستخدم">
+    <input type="password" placeholder="كلمة المرور">
+    <button>دخول</button>
+  </div>
+</div>
 
-.video-actions{
-  position:absolute;
-  right:20px;
-  bottom:120px;
-  z-index:2;
-}
+<script>
+setTimeout(() => {
+  document.getElementById("splash").style.display = "none";
+  document.getElementById("login").classList.remove("hidden");
+}, 3000);
+</script>
 
-.video-actions button{
-  background:none;
-  border:none;
-  font-size:38px;
-  color:white;
-}
-/* صفحة الفيديوهات */
-.feed{
-  position:relative;
-  width:100%;
-  height:100vh;
-  overflow:hidden;
-}
-
-.feed video{
-  width:100%;
-  height:100vh;
-  object-fit:cover;
-}
-
-.video-info{
-  position:absolute;
-  bottom:100px;
-  left:20px;
-  color:white;
-  z-index:2;
-}
-
-.video-info h3{
-  margin-bottom:8px;
-  font-size:22px;
-}
-
-.video-actions{
-  position:absolute;
-  right:20px;
-  bottom:140px;
-  z-index:2;
-}
-
-.video-actions button{
-  background:none;
-  border:none;
-  font-size:38px;
-  color:white;
-}
-
-/* الشريط السفلي */
-.bottom-nav{
-  position:fixed;
-  bottom:0;
-  left:0;
-  width:100%;
-  height:70px;
-  background:rgba(0,0,0,0.85);
-  backdrop-filter:blur(10px);
-  display:flex;
-  justify-content:space-around;
-  align-items:center;
-  z-index:100;
-  border-top:1px solid rgba(255,255,255,0.1);
-}
-
-.bottom-nav button{
-  background:none;
-  border:none;
-  color:white;
-  font-size:26px;
-  cursor:pointer;
-}
-.page-box{
-  height:100vh;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  color:white;
-  background:black;
-  text-align:center;
-}
-
-.page-box h1{
-  margin-bottom:15px;
-  font-size:34px;
-}
-/* صفحة البروفايل */
-.profile-page{
-  min-height:100vh;
-  background:black;
-  color:white;
-  padding:20px;
-}
-
-.profile-header{
-  text-align:center;
-}
-
-.profile-pic{
-  width:100px;
-  height:100px;
-  border-radius:50%;
-  object-fit:cover;
-  border:2px solid white;
-}
-
-.stats{
-  display:flex;
-  justify-content:space-around;
-  margin-top:20px;
-}
-
-.stats h3{
-  margin:0;
-}
-
-.stats p{
-  margin:5px 0 0 0;
-  color:#aaa;
-}
-
-.edit-btn{
-  margin-top:20px;
-  padding:10px 20px;
-  border:none;
-  border-radius:10px;
-  background:white;
-  color:black;
-  font-weight:bold;
-}
-
-.profile-videos{
-  margin-top:30px;
-}
-
-.profile-videos video{
-  width:100%;
-  border-radius:12px;
-}
+</body>
+</html>
