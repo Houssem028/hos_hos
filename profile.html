@@ -155,9 +155,46 @@ button{
 </div>
 
 <div id="editPanel">
-  <input id="newName" placeholder="اسم المستخدم">
-  <input id="file" type="file">
-  <button id="save">حفظ</button>
+<div id="settingsPanel" style="
+display:none;
+position:fixed;
+bottom:0;
+left:0;
+right:0;
+background:#111;
+padding:20px;
+border-radius:20px 20px 0 0;
+">
+
+  <h3>الإعدادات</h3>
+
+  <select id="langSelect" style="
+    width:85%;
+    padding:12px;
+    border-radius:10px;
+    margin:10px 0;
+  ">
+    <option value="ar">العربية</option>
+    <option value="en">English</option>
+    <option value="fr">Français</option>
+  </select>
+
+  <button onclick="saveLanguage()">حفظ اللغة</button>
+
+  <button onclick="logout()" style="
+    background:red;
+    margin-top:10px;
+  ">
+    تسجيل خروج
+  </button>
+
+  <button onclick="closeSettings()" style="
+    background:#333;
+    margin-top:10px;
+  ">
+    إغلاق
+  </button>
+
 </div>
 
 <div class="bottom-bar">
