@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Hos Hos - تسجيل الدخول</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <section id="login">
+    <div class="login-card">
+      <h2>تسجيل الدخول</h2>
+
+      <input type="text" placeholder="اسم المستخدم أو البريد">
+      <input type="password" placeholder="كلمة المرور">
+
+      <button onclick="goToFeed()">دخول</button>
+
+      <p class="signup">
+        ليس لديك حساب؟ <span>إنشاء حساب</span>
+      </p>
+    </div>
+  </section>
+
+  <script>
+    function goToFeed() {
+      window.location.href = "feed.html";
+    }
+  </script>
+
+</body>
+</html>
