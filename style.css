@@ -91,3 +91,43 @@ button{
 .hidden{
   display:none;
 }
+/* صفحة الفيديوهات */
+.feed{
+  position:relative;
+  width:100%;
+  height:100vh;
+  overflow:hidden;
+}
+
+.feed video{
+  width:100%;
+  height:100vh;
+  object-fit:cover;
+}
+
+.video-info{
+  position:absolute;
+  bottom:100px;
+  left:20px;
+  color:white;
+  z-index:2;
+}
+
+.video-info h3{
+  margin-bottom:8px;
+  font-size:22px;
+}
+
+.video-actions{
+  position:absolute;
+  right:20px;
+  bottom:120px;
+  z-index:2;
+}
+
+.video-actions button{
+  background:none;
+  border:none;
+  font-size:38px;
+  color:white;
+}
