@@ -14,21 +14,13 @@
       text-align:center;
     }
 
-    .profile-page{
-      padding:30px 20px;
-    }
-
     .topbar{
       display:flex;
       justify-content:space-between;
-      align-items:center;
       padding:10px 15px;
     }
 
-    .icon{
-      font-size:22px;
-      cursor:pointer;
-    }
+    .icon{ font-size:22px; cursor:pointer; }
 
     .img-box{
       position:relative;
@@ -55,7 +47,6 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      font-size:14px;
       cursor:pointer;
     }
 
@@ -65,15 +56,7 @@
       margin-top:20px;
     }
 
-    .stats div{
-      text-align:center;
-    }
-
-    .stats h3{ margin:0; }
-    .stats p{ margin:5px 0 0; font-size:12px; color:#aaa; }
-
-    /* EDIT POPUP */
-    #editBox, #settingsBox{
+    #editBox,#settingsBox{
       display:none;
       position:fixed;
       bottom:0;
@@ -94,194 +77,61 @@
     }
 
     button{
-      padding:10px 20px;
+      padding:10px;
+      width:80%;
+      margin-top:10px;
       border:none;
       border-radius:10px;
-      margin-top:10px;
     }
 
-    .save{
-      background:#ff2d55;
-      color:white;
-      width:80%;
-    }
+    .save{ background:#ff2d55; color:white; }
+    .logout{ background:red; color:white; }
+    .close{ background:#333; color:white; }
 
-    .logout{
-      background:red;
-      color:white;
-      width:80%;
-    }
-
-    .close{
-      background:#333;
-      color:white;
-      width:80%;
-    }
-
-    .bottom-bar{
-      position:fixed;
-      bottom:0;
-      left:0;
-      right:0;
-      height:60px;
-      background:#111;
-      display:flex;
-      justify-content:space-around;
-      align-items:center;
-      border-top:1px solid #222;
-    }
-
-    .bottom-bar button{
-      background:none;
-      border:none;
-      color:white;
-      font-size:12px;
-    }
-
-    .active{ color:#ff2d55; }
   </style>
 </head>
 
 <body>
 
-  <!-- TOP BAR -->
-  <div class="topbar">
-    <div></div>
-    <div class="icon">Profile</div>
-    <div class="icon" onclick="openSettings()">⚙️</div>
-  </div>
+<!-- TOP -->
+<div class="topbar">
+  <div></div>
+  <div>Profile</div>
+  <div class="icon" onclick="openSettings()">⚙️</div>
+</div>
 
-  <div class="profile-page">
+<div class="img-box">
+  <img id="profilePic" class="profile-pic" src="https://i.imgur.com/1X4n1ZL.png">
+  <div class="edit-icon" onclick="openEdit()">✏️</div>
+</div>
 
-    <div class="img-box">
-      <img id="profilePic" class="profile-pic" src="https://i.imgur.com/1X4n1ZL.png">
-      <div class="edit-icon" onclick="openEdit()">✏️</div>
-    </div>
+<h2 id="username">تحميل...</h2>
 
-    <h2 id="username">تحميل...</h2>
+<div class="stats">
+  <div><h3 id="followers">0</h3><p>متابعين</p></div>
+  <div><h3 id="following">0</h3><p>متابع</p></div>
+  <div><h3 id="videos">0</h3><p>فيديوهات</p></div>
+</div>
 
-    <div class="stats">
-      <div><h3 id="followers">0</h3><p>متابعين</p></div>
-      <div><h3 id="following">0</h3><p>متابع</p></div>
-      <div><h3 id="videos">0</h3><p>فيديوهات</p></div>
-    </div>
+<!-- EDIT -->
+<div id="editBox">
+  <h3>تعديل</h3>
+  <input id="newName" placeholder="اسم المستخدم">
+  <input id="newImage" type="file">
+  <button id="saveBtn" class="save">حفظ</button>
+  <button class="close" onclick="closeEdit()">إغلاق</button>
+</div>
 
-  </div>
+<!-- SETTINGS -->
+<div id="settingsBox">
+  <h3>الإعدادات</h3>
+  <button class="logout" onclick="logout()">تسجيل خروج</button>
+  <button class="close" onclick="closeSettings()">إغلاق</button>
+</div>
 
-  <!-- EDIT BOX -->
-  <div id="editBox">
-    <h3>تعديل البروفايل</h3>
+<script type="module">
 
-    <input id="newName" type="text" placeholder="اسم المستخدم">
-    <input id="newImage" type="file" accept="image/*">
+import { auth, getUserData, updateUser, uploadProfileImage } from "./firebase.js";
+import { signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-    <button id="saveBtn" class="save">حفظ</button>
-    <button class="close" onclick="closeEdit()">إغلاق</button>
-  </div>
-
-  <!-- SETTINGS BOX -->
-  <div id="settingsBox">
-    <h3>الإعدادات</h3>
-
-    <button class="logout" onclick="logout()">تسجيل خروج</button>
-    <button class="close" onclick="closeSettings()">إغلاق</button>
-  </div>
-
-  <!-- NAV -->
-  <div class="bottom-bar">
-    <button onclick="go('feed.html')">🏠 Home</button>
-    <button onclick="go('search.html')">🔍 Search</button>
-    <button onclick="go('upload.html')">➕ Upload</button>
-    <button onclick="go('notify.html')">🔔 Alerts</button>
-    <button class="active">👤 Profile</button>
-  </div>
-
-  <script type="module">
-    import { auth, getUserData, updateUser, uploadProfileImage } from "./firebase.js";
-    import { signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-    let currentUser = null;
-
-    auth.onAuthStateChanged(async (user) => {
-
-      if(!user){
-        window.location.href = "login.html";
-        return;
-      }
-
-      currentUser = user;
-
-      const data = await getUserData(user.uid);
-
-      document.getElementById("username").innerText = data.username || "بدون اسم";
-      document.getElementById("followers").innerText = data.followers || 0;
-      document.getElementById("following").innerText = data.following || 0;
-      document.getElementById("videos").innerText = data.videos || 0;
-
-      document.getElementById("newName").value = data.username || "";
-
-      if(data.image){
-        document.getElementById("profilePic").src = data.image + "?t=" + Date.now();
-      }
-    });
-
-    // OPEN EDIT
-    window.openEdit = () => {
-      document.getElementById("editBox").style.display = "block";
-    }
-
-    window.closeEdit = () => {
-      document.getElementById("editBox").style.display = "none";
-    }
-
-    // SAVE
-    document.getElementById("saveBtn").addEventListener("click", async () => {
-
-      const newName = document.getElementById("newName").value;
-      const file = document.getElementById("newImage").files[0];
-
-      let imageUrl = null;
-
-      if(file){
-        imageUrl = await uploadProfileImage(file);
-      }
-
-      const updateData = {};
-
-      if(newName && newName.trim() !== ""){
-        updateData.username = newName;
-      }
-
-      if(imageUrl){
-        updateData.image = imageUrl;
-      }
-
-      await updateUser(currentUser.uid, updateData);
-
-      alert("تم التحديث ✔");
-      location.reload();
-    });
-
-    // SETTINGS
-    window.openSettings = () => {
-      document.getElementById("settingsBox").style.display = "block";
-    }
-
-    window.closeSettings = () => {
-      document.getElementById("settingsBox").style.display = "none";
-    }
-
-    // LOGOUT
-    window.logout = async () => {
-      await signOut(auth);
-      window.location.href = "login.html";
-    }
-
-    // NAV
-    window.go = (page) => {
-      window.location.href = page;
-    }
-  </script>
-
-</body>
-</html>
+let currentUser
