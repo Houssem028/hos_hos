@@ -210,3 +210,56 @@ button{
   margin-bottom:15px;
   font-size:34px;
 }
+/* صفحة البروفايل */
+.profile-page{
+  min-height:100vh;
+  background:black;
+  color:white;
+  padding:20px;
+}
+
+.profile-header{
+  text-align:center;
+}
+
+.profile-pic{
+  width:100px;
+  height:100px;
+  border-radius:50%;
+  object-fit:cover;
+  border:2px solid white;
+}
+
+.stats{
+  display:flex;
+  justify-content:space-around;
+  margin-top:20px;
+}
+
+.stats h3{
+  margin:0;
+}
+
+.stats p{
+  margin:5px 0 0 0;
+  color:#aaa;
+}
+
+.edit-btn{
+  margin-top:20px;
+  padding:10px 20px;
+  border:none;
+  border-radius:10px;
+  background:white;
+  color:black;
+  font-weight:bold;
+}
+
+.profile-videos{
+  margin-top:30px;
+}
+
+.profile-videos video{
+  width:100%;
+  border-radius:12px;
+}
