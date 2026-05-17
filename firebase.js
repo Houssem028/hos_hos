@@ -125,3 +125,47 @@ export async function uploadProfileImage(file){
 
   return data.secure_url;
 }
+// البحث عن مستخدمين
+import {
+  collection,
+  getDocs,
+  increment
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+export async function searchUsers(searchText){
+
+  const snap = await getDocs(collection(db, "users"));
+  const results = [];
+
+  snap.forEach(docSnap => {
+    const data = docSnap.data();
+
+    if(
+      data.username &&
+      data.username.toLowerCase().includes(searchText.toLowerCase())
+    ){
+      results.push({
+        uid: docSnap.id,
+        ...data
+      });
+    }
+  });
+
+  return results;
+}
+
+// متابعة مستخدم
+export async function followUser(myUid, targetUid){
+
+  if(myUid === targetUid) return;
+
+  // زيد following عندي
+  await updateDoc(doc(db,"users",myUid),{
+    following: increment(1)
+  });
+
+  // زيد followers عنده
+  await updateDoc(doc(db,"users",targetUid),{
+    followers: increment(1)
+  });
+}
