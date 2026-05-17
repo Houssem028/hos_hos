@@ -1,23 +1,47 @@
-import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Search</title>
+</head>
+<body style="background:#000;color:#fff;text-align:center">
 
-async function searchUsers(){
+  <h2>بحث المستخدمين</h2>
 
-  const q = document.getElementById("searchInput").value.toLowerCase();
+  <input id="searchInput" placeholder="ابحث عن مستخدم">
+  <button onclick="search()">بحث</button>
 
-  const snap = await getDocs(collection(db, "users"));
+  <div id="results"></div>
 
-  let results = [];
+  <script type="module">
+    import { searchUsers } from "./firebase.js";
 
-  snap.forEach(doc => {
-    const data = doc.data();
+    window.search = async function(){
 
-    if(data.username.toLowerCase().includes(q)){
-      results.push({
-        id: doc.id,
-        ...data
+      const q = document.getElementById("searchInput").value;
+
+      const users = await searchUsers(q);
+
+      const box = document.getElementById("results");
+      box.innerHTML = "";
+
+      users.forEach(u => {
+
+        box.innerHTML += `
+          <div style="padding:10px; border-bottom:1px solid #222">
+            <img src="${u.image || 'https://i.imgur.com/1X4n1ZL.png'}" width="50" style="border-radius:50%">
+            <p>${u.username}</p>
+            <button onclick="openProfile('${u.id}')">عرض</button>
+          </div>
+        `;
       });
-    }
-  });
 
-  console.log(results);
-}
+    }
+
+    window.openProfile = function(id){
+      window.location.href = "user.html?uid=" + id;
+    }
+
+  </script>
+
+</body>
+</html>
