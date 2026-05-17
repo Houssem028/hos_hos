@@ -32,13 +32,14 @@ input{
   align-items:center;
 }
 
-.user-left{
+.user-info{
   display:flex;
   align-items:center;
   gap:10px;
+  cursor:pointer;
 }
 
-.user-left img{
+.user-info img{
   width:45px;
   height:45px;
   border-radius:50%;
@@ -63,81 +64,17 @@ button{
 <div id="results"></div>
 
 <script type="module">
-import {
-  auth,
-  searchUsers,
-  toggleFollow,
-  isFollowing
-} from "./firebase.js";
-
-import {
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { auth, searchUsers, followUser } from "./firebase.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 let myUid = null;
 
 onAuthStateChanged(auth,(user)=>{
   if(!user){
-    location.href="login.html";
+    location.href = "login.html";
     return;
   }
-
   myUid = user.uid;
 });
 
-const input = document.getElementById("searchInput");
-const results = document.getElementById("results");
-
-input.addEventListener("input", async ()=>{
-
-  const text = input.value.trim();
-
-  if(text===""){
-    results.innerHTML="";
-    return;
-  }
-
-  const users = await searchUsers(text);
-
-  results.innerHTML="";
-
-  for(const u of users){
-
-    // لا تظهر نفسك
-    if(u.uid === myUid) continue;
-
-    const following = await isFollowing(myUid, u.uid);
-
-    const div = document.createElement("div");
-    div.className="user";
-
-    div.innerHTML = `
-      <div class="user-left">
-        <img src="${u.image || 'https://i.imgur.com/1X4n1ZL.png'}">
-        <span>${u.username}</span>
-      </div>
-
-      <button>
-        ${following ? "Unfollow" : "Follow"}
-      </button>
-    `;
-
-    const btn = div.querySelector("button");
-
-    btn.onclick = async ()=>{
-
-      const nowFollowing = await toggleFollow(myUid, u.uid);
-
-      btn.innerText = nowFollowing
-        ? "Unfollow"
-        : "Follow";
-    };
-
-    results.appendChild(div);
-  }
-
-});
-</script>
-
-</body>
-</html>
+const input
