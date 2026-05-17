@@ -3,29 +3,85 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Profile</title>
+<title>Hos Hos - Profile</title>
 
 <style>
 body{
   margin:0;
   font-family:Arial;
-  background:#0f0f0f;
+  background:#000;
   color:white;
   text-align:center;
 }
 
-img{
-  width:110px;
-  height:110px;
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  padding:15px;
+  font-size:22px;
+}
+
+.profile{
+  padding:20px;
+}
+
+.img-box{
+  position:relative;
+  width:120px;
+  margin:auto;
+}
+
+#img{
+  width:120px;
+  height:120px;
   border-radius:50%;
   object-fit:cover;
   border:3px solid #ff2d55;
-  margin-top:20px;
 }
 
-input,button{
-  width:80%;
-  padding:10px;
+.edit-btn{
+  position:absolute;
+  bottom:0;
+  right:0;
+  background:#ff2d55;
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+}
+
+#name{
+  margin-top:15px;
+  font-size:26px;
+}
+
+.stats{
+  display:flex;
+  justify-content:space-around;
+  margin-top:25px;
+}
+
+.stats h3{
+  margin:0;
+}
+
+.stats p{
+  margin:4px 0;
+  color:#aaa;
+  font-size:13px;
+}
+
+#editPanel{
+  display:none;
+  padding:20px;
+}
+
+input{
+  width:85%;
+  padding:12px;
   margin:10px auto;
   display:block;
   border:none;
@@ -33,35 +89,95 @@ input,button{
 }
 
 button{
+  width:85%;
+  padding:12px;
+  border:none;
+  border-radius:10px;
   background:#ff2d55;
   color:white;
+  font-size:16px;
+}
+
+.bottom-bar{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:#111;
+  height:60px;
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+  border-top:1px solid #222;
+}
+
+.bottom-bar button{
+  background:none;
+  color:white;
+  border:none;
+  font-size:14px;
+  width:auto;
 }
 </style>
 </head>
-
 <body>
 
-<h2 id="name">Loading...</h2>
+<div class="topbar">
+  <div></div>
+  <div>Profile</div>
+  <div onclick="toggleEdit()">⚙️</div>
+</div>
 
-<img id="img" src="https://i.imgur.com/1X4n1ZL.png">
+<div class="profile">
 
-<input id="newName" placeholder="اسم المستخدم">
-<input id="file" type="file">
+  <div class="img-box">
+    <img id="img" src="https://i.imgur.com/1X4n1ZL.png">
+    <div class="edit-btn" onclick="toggleEdit()">✏️</div>
+  </div>
 
-<button id="save">حفظ</button>
+  <h2 id="name">Loading...</h2>
+
+  <div class="stats">
+    <div>
+      <h3 id="followers">0</h3>
+      <p>متابعين</p>
+    </div>
+    <div>
+      <h3 id="following">0</h3>
+      <p>متابع</p>
+    </div>
+    <div>
+      <h3 id="videos">0</h3>
+      <p>فيديوهات</p>
+    </div>
+  </div>
+
+</div>
+
+<div id="editPanel">
+  <input id="newName" placeholder="اسم المستخدم">
+  <input id="file" type="file">
+  <button id="save">حفظ</button>
+</div>
+
+<div class="bottom-bar">
+  <button onclick="go('feed.html')">🏠</button>
+  <button onclick="go('search.html')">🔍</button>
+  <button onclick="go('upload.html')">➕</button>
+  <button onclick="go('notify.html')">🔔</button>
+  <button>👤</button>
+</div>
 
 <script type="module">
-
 import { auth, getUserData, updateUser, uploadProfileImage } from "./firebase.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 let userNow = null;
 
-// 🔥 تحميل المستخدم
-onAuthStateChanged(auth, async (user) => {
+onAuthStateChanged(auth, async (user)=>{
 
   if(!user){
-    location.href = "login.html";
+    location.href="login.html";
     return;
   }
 
@@ -70,37 +186,46 @@ onAuthStateChanged(auth, async (user) => {
   const data = await getUserData(user.uid);
 
   document.getElementById("name").innerText = data?.username || "بدون اسم";
+  document.getElementById("newName").value = data?.username || "";
+
+  document.getElementById("followers").innerText = data?.followers || 0;
+  document.getElementById("following").innerText = data?.following || 0;
+  document.getElementById("videos").innerText = data?.videos || 0;
 
   if(data?.image){
     document.getElementById("img").src = data.image;
   }
-
-  document.getElementById("newName").value = data?.username || "";
 });
 
-// 🔥 حفظ بسيط وآمن
-document.getElementById("save").onclick = async () => {
+window.toggleEdit = ()=>{
+  const panel = document.getElementById("editPanel");
+  panel.style.display =
+    panel.style.display==="block" ? "none" : "block";
+}
+
+document.getElementById("save").onclick = async ()=>{
 
   const name = document.getElementById("newName").value;
   const file = document.getElementById("file").files[0];
 
-  let imageUrl = null;
+  let img = null;
 
   if(file){
-    imageUrl = await uploadProfileImage(file);
+    img = await uploadProfileImage(file);
   }
 
   const data = {};
 
   if(name) data.username = name;
-  if(imageUrl) data.image = imageUrl;
+  if(img) data.image = img;
 
-  await updateUser(userNow.uid, data);
+  await updateUser(userNow.uid,data);
 
   alert("تم الحفظ ✔");
   location.reload();
 };
 
+window.go=(p)=> location.href=p;
 </script>
 
 </body>
