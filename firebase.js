@@ -54,6 +54,9 @@ export async function register(email, password, username){
     username: username,
     email: email,
     image: "",
+    followers: 0,
+    following: 0,
+    videos: 0,
     createdAt: new Date().toISOString()
   });
 
@@ -81,7 +84,10 @@ export async function getUserData(uid){
 
   return {
     username: "بدون اسم",
-    image: ""
+    image: "",
+    followers: 0,
+    following: 0,
+    videos: 0
   };
 }
 
@@ -101,11 +107,12 @@ export function getUser(callback){
 }
 
 //
-// 🚀 رفع صورة بروفايل
+// 🚀 رفع صورة بروفايل (FIXED 100%)
 //
 export async function uploadProfileImage(file, uid){
 
-  const imageRef = ref(storage, `profiles/${uid}.jpg`);
+  // اسم فريد لكل صورة لتفادي الكاش
+  const imageRef = ref(storage, `profiles/${uid}_${Date.now()}.jpg`);
 
   await uploadBytes(imageRef, file);
 
