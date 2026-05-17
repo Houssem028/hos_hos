@@ -43,7 +43,7 @@ export const db = getFirestore(app);
 export const storage = getStorage(app);
 
 //
-// 🚀 تسجيل حساب + حفظ بيانات المستخدم
+// 🚀 تسجيل حساب
 //
 export async function register(email, password, username){
 
@@ -107,7 +107,7 @@ export function getUser(callback){
 }
 
 //
-// 🚀 رفع صورة بروفايل (FIXED 100%)
+// 🚀 رفع صورة بروفايل (100% صحيح)
 //
 export async function uploadProfileImage(file, uid){
 
@@ -118,15 +118,6 @@ export async function uploadProfileImage(file, uid){
   const url = await getDownloadURL(snapshot.ref);
 
   console.log("UPLOAD SUCCESS:", url);
-
-  return url;
-}
-  // اسم فريد لكل صورة لتفادي الكاش
-  const imageRef = ref(storage, `profiles/${uid}_${Date.now()}.jpg`);
-
-  await uploadBytes(imageRef, file);
-
-  const url = await getDownloadURL(imageRef);
 
   return url;
 }
