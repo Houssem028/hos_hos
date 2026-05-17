@@ -1,11 +1,17 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
+import { 
+  getAuth, 
+  createUserWithEmailAndPassword, 
   signInWithEmailAndPassword,
-  onAuthStateChanged,
-  signOut
+  onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+  getFirestore,
+  setDoc,
+  doc,
+  getDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBfHLGUVuqrzxc42BkO4ZAzbIxJSt7jZFw",
@@ -17,11 +23,20 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
 
-// تسجيل حساب
-export function register(email, password){
-  return createUserWithEmailAndPassword(auth, email, password);
+export const auth = getAuth(app);
+export const db = getFirestore(app);
+
+// تسجيل حساب + حفظ الاسم
+export async function register(email, password, username){
+  const userCred = await createUserWithEmailAndPassword(auth, email, password);
+
+  await setDoc(doc(db, "users", userCred.user.uid), {
+    username: username,
+    email: email
+  });
+
+  return userCred;
 }
 
 // تسجيل دخول
@@ -29,12 +44,14 @@ export function login(email, password){
   return signInWithEmailAndPassword(auth, email, password);
 }
 
-// معرفة المستخدم
-export function getUser(callback){
-  onAuthStateChanged(auth, callback);
+// جلب بيانات المستخدم
+export async function getUserData(uid){
+  const ref = doc(db, "users", uid);
+  const snap = await getDoc(ref);
+  return snap.exists() ? snap.data() : null;
 }
 
-// تسجيل خروج (مهم لاحقًا)
-export function logout(){
-  return signOut(auth);
+// مراقبة المستخدم
+export function getUser(callback){
+  onAuthStateChanged(auth, callback);
 }
