@@ -1,47 +1,103 @@
 <!DOCTYPE html>
-<html>
+<html lang="ar">
 <head>
-  <title>Search</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Search</title>
+
+<style>
+body{
+  background:#000;
+  color:white;
+  font-family:Arial;
+  margin:0;
+  padding:20px;
+}
+
+input{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+}
+
+.user{
+  background:#111;
+  margin-top:15px;
+  padding:12px;
+  border-radius:12px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+button{
+  background:#ff2d55;
+  color:white;
+  border:none;
+  padding:8px 14px;
+  border-radius:8px;
+}
+</style>
 </head>
-<body style="background:#000;color:#fff;text-align:center">
+<body>
 
-  <h2>بحث المستخدمين</h2>
+<h2>البحث</h2>
 
-  <input id="searchInput" placeholder="ابحث عن مستخدم">
-  <button onclick="search()">بحث</button>
+<input id="searchInput" placeholder="ابحث عن مستخدم">
 
-  <div id="results"></div>
+<div id="results"></div>
 
-  <script type="module">
-    import { searchUsers } from "./firebase.js";
+<script type="module">
+import { auth, searchUsers, followUser } from "./firebase.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-    window.search = async function(){
+let myUid=null;
 
-      const q = document.getElementById("searchInput").value;
+onAuthStateChanged(auth,(user)=>{
+  if(!user){
+    location.href="login.html";
+    return;
+  }
+  myUid=user.uid;
+});
 
-      const users = await searchUsers(q);
+const input = document.getElementById("searchInput");
+const results = document.getElementById("results");
 
-      const box = document.getElementById("results");
-      box.innerHTML = "";
+input.addEventListener("input", async ()=>{
 
-      users.forEach(u => {
+  const text = input.value.trim();
 
-        box.innerHTML += `
-          <div style="padding:10px; border-bottom:1px solid #222">
-            <img src="${u.image || 'https://i.imgur.com/1X4n1ZL.png'}" width="50" style="border-radius:50%">
-            <p>${u.username}</p>
-            <button onclick="openProfile('${u.id}')">عرض</button>
-          </div>
-        `;
-      });
+  if(text===""){
+    results.innerHTML="";
+    return;
+  }
 
-    }
+  const users = await searchUsers(text);
 
-    window.openProfile = function(id){
-      window.location.href = "user.html?uid=" + id;
-    }
+  results.innerHTML="";
 
-  </script>
+  users.forEach(u=>{
+
+    const div = document.createElement("div");
+    div.className="user";
+
+    div.innerHTML = `
+      <span>${u.username}</span>
+      <button>Follow</button>
+    `;
+
+    div.querySelector("button").onclick = async ()=>{
+      await followUser(myUid,u.uid);
+      alert("تمت المتابعة ✔");
+    };
+
+    results.appendChild(div);
+  });
+
+});
+</script>
 
 </body>
 </html>
