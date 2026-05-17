@@ -3,30 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>Profile</title>
+  <title>Hos Hos - البروفايل</title>
 
   <style>
     body{
       margin:0;
-      font-family:Arial;
+      font-family: Arial;
       background:#0f0f0f;
       color:white;
       text-align:center;
     }
 
-    .top{
-      display:flex;
-      justify-content:space-between;
-      padding:10px;
+    .profile-page{
+      padding:30px 20px;
     }
 
-    .pic-box{
+    .img-box{
       position:relative;
       width:110px;
       margin:auto;
     }
 
-    .pic{
+    .profile-pic{
       width:110px;
       height:110px;
       border-radius:50%;
@@ -34,17 +32,18 @@
       border:3px solid #ff2d55;
     }
 
-    .edit{
+    .edit-icon{
       position:absolute;
       bottom:0;
       right:0;
+      background:#ff2d55;
       width:30px;
       height:30px;
-      background:#ff2d55;
       border-radius:50%;
       display:flex;
       align-items:center;
       justify-content:center;
+      font-size:14px;
       cursor:pointer;
     }
 
@@ -54,117 +53,157 @@
       margin-top:20px;
     }
 
-    #panel{
+    .stats div{
+      text-align:center;
+    }
+
+    .stats h3{ margin:0; }
+    .stats p{ margin:5px 0 0; font-size:12px; color:#aaa; }
+
+    #editBox{
       display:none;
-      position:fixed;
-      bottom:0;
-      left:0;
-      right:0;
-      background:#111;
       padding:20px;
-      border-radius:20px 20px 0 0;
     }
 
     input{
       display:block;
-      width:80%;
       margin:10px auto;
       padding:10px;
-      border:none;
-      border-radius:10px;
-    }
-
-    button{
       width:80%;
-      padding:10px;
-      margin-top:10px;
+      border-radius:10px;
       border:none;
+    }
+
+    button.save{
+      padding:10px 20px;
+      background:#ff2d55;
+      border:none;
+      color:white;
       border-radius:10px;
     }
 
-    .save{background:#ff2d55;color:white;}
-    .logout{background:red;color:white;}
-    .close{background:#333;color:white;}
+    .bottom-bar{
+      position:fixed;
+      bottom:0;
+      left:0;
+      right:0;
+      height:60px;
+      background:#111;
+      display:flex;
+      justify-content:space-around;
+      align-items:center;
+      border-top:1px solid #222;
+    }
+
+    .bottom-bar button{
+      background:none;
+      border:none;
+      color:white;
+      font-size:12px;
+    }
+
+    .active{ color:#ff2d55; }
   </style>
 </head>
 
 <body>
 
-<div class="top">
-  <div></div>
-  <div>Profile</div>
-  <div onclick="openPanel()">⚙️</div>
-</div>
+  <div class="profile-page">
 
-<div class="pic-box">
-  <img id="img" class="pic" src="https://i.imgur.com/1X4n1ZL.png">
-  <div class="edit" onclick="openEdit()">✏️</div>
-</div>
+    <div class="img-box">
+      <img id="profilePic" class="profile-pic" src="https://i.imgur.com/1X4n1ZL.png">
+      <div class="edit-icon" onclick="openEdit()">✏️</div>
+    </div>
 
-<h2 id="name">Loading...</h2>
+    <h2 id="username">تحميل...</h2>
 
-<div class="stats">
-  <div><p id="followers">0</p><span>Followers</span></div>
-  <div><p id="following">0</p><span>Following</span></div>
-  <div><p id="videos">0</p><span>Videos</span></div>
-</div>
+    <div class="stats">
+      <div><h3 id="followers">0</h3><p>متابعين</p></div>
+      <div><h3 id="following">0</h3><p>متابع</p></div>
+      <div><h3 id="videos">0</h3><p>فيديوهات</p></div>
+    </div>
 
-<!-- EDIT -->
-<div id="panel">
-  <h3>Edit Profile</h3>
+  </div>
 
-  <input id="newName" placeholder="Username">
-  <input id="file" type="file">
+  <!-- EDIT -->
+  <div id="editBox">
+    <input id="newName" type="text" placeholder="تغيير الاسم">
+    <input id="newImage" type="file" accept="image/*">
+    <button id="saveBtn" class="save">حفظ</button>
+  </div>
 
-  <button id="save" class="save">Save</button>
-  <button class="close" onclick="closePanel()">Close</button>
-</div>
+  <!-- NAV -->
+  <div class="bottom-bar">
+    <button onclick="go('feed.html')">🏠 Home</button>
+    <button onclick="go('search.html')">🔍 Search</button>
+    <button onclick="go('upload.html')">➕ Upload</button>
+    <button onclick="go('notify.html')">🔔 Alerts</button>
+    <button class="active">👤 Profile</button>
+  </div>
 
-<!-- SETTINGS -->
-<div id="settings" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#111;padding:20px;border-radius:20px 20px 0 0;">
-  <button class="logout" onclick="logout()">Logout</button>
-  <button class="close" onclick="closeSettings()">Close</button>
-</div>
+  <script type="module">
+    import { auth, getUserData, updateUser, uploadProfileImage } from "./firebase.js";
 
-<script type="module">
+    let currentUser = null;
 
-import { auth, getUserData, updateUser, uploadProfileImage } from "./firebase.js";
-import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    auth.onAuthStateChanged(async (user) => {
 
-let userNow = null;
+      if(!user){
+        window.location.href = "login.html";
+        return;
+      }
 
-onAuthStateChanged(auth, async (user) => {
+      currentUser = user;
 
-  if(!user){
-    window.location.href = "login.html";
-    return;
-  }
+      const data = await getUserData(user.uid);
 
-  userNow = user;
+      document.getElementById("username").innerText = data.username || "بدون اسم";
+      document.getElementById("followers").innerText = data.followers || 0;
+      document.getElementById("following").innerText = data.following || 0;
+      document.getElementById("videos").innerText = data.videos || 0;
 
-  const data = await getUserData(user.uid);
+      document.getElementById("newName").value = data.username || "";
 
-  document.getElementById("name").innerText = data.username || "No name";
-  document.getElementById("followers").innerText = (data.followers || []).length;
-  document.getElementById("following").innerText = (data.following || []).length;
-  document.getElementById("videos").innerText = data.videos || 0;
+      if(data.image){
+        document.getElementById("profilePic").src = data.image + "?t=" + Date.now();
+      }
+    });
 
-  document.getElementById("newName").value = data.username || "";
+    window.openEdit = function(){
+      document.getElementById("editBox").style.display = "block";
+    }
 
-  if(data.image){
-    document.getElementById("img").src = data.image + "?t=" + Date.now();
-  }
-});
+    // 🚀 FIXED SAVE
+    document.getElementById("saveBtn").addEventListener("click", async () => {
 
-// open
-window.openEdit = () => document.getElementById("panel").style.display = "block";
-window.closePanel = () => document.getElementById("panel").style.display = "none";
+      const newName = document.getElementById("newName").value;
+      const file = document.getElementById("newImage").files[0];
 
-window.openPanel = () => document.getElementById("settings").style.display = "block";
-window.closeSettings = () => document.getElementById("settings").style.display = "none";
+      let imageUrl = null;
 
-// save
-document.getElementById("save").onclick = async () => {
+      if(file){
+        imageUrl = await uploadProfileImage(file); // ❗ بدون uid
+      }
 
-  const name = document.getElementById("newName").value;
-  const file = document.getElementBy
+      const updateData = {
+        username: newName
+      };
+
+      if(imageUrl){
+        updateData.image = imageUrl;
+      }
+
+      await updateUser(currentUser.uid, updateData);
+
+      alert("تم التحديث ✔");
+      location.reload();
+    });
+
+    window.go = function(page){
+      window.location.href = page;
+    }
+
+  </script>
+
+</body>
+</html>
