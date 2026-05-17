@@ -1,65 +1,114 @@
 <!DOCTYPE html>
-<html>
+<html lang="ar">
 <head>
-  <title>User Profile</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>User Profile</title>
+
+<style>
+body{
+  background:#000;
+  color:white;
+  text-align:center;
+  font-family:Arial;
+  padding:20px;
+}
+
+#img{
+  width:120px;
+  height:120px;
+  border-radius:50%;
+  object-fit:cover;
+  border:3px solid #ff2d55;
+}
+
+.stats{
+  display:flex;
+  justify-content:space-around;
+  margin-top:20px;
+}
+
+button{
+  background:#ff2d55;
+  color:white;
+  border:none;
+  padding:12px 20px;
+  border-radius:10px;
+  margin-top:20px;
+}
+</style>
 </head>
+<body>
 
-<body style="background:#000;color:#fff;text-align:center">
+<img id="img" src="https://i.imgur.com/1X4n1ZL.png">
 
-  <img id="img" width="100" style="border-radius:50%">
-  <h2 id="name"></h2>
+<h2 id="name">Loading...</h2>
 
-  <p>Followers: <span id="followers"></span></p>
-  <p>Following: <span id="following"></span></p>
+<div class="stats">
+  <div>
+    <h3 id="followers">0</h3>
+    <p>متابعين</p>
+  </div>
 
-  <button id="followBtn">Follow</button>
+  <div>
+    <h3 id="following">0</h3>
+    <p>متابع</p>
+  </div>
+</div>
 
-  <script type="module">
-    import {
-      auth,
-      getUserData,
-      followUser,
-      unfollowUser
-    } from "./firebase.js";
+<button id="followBtn">Follow</button>
 
-    const url = new URLSearchParams(location.search);
-    const uid = url.get("uid");
+<script type="module">
+import {
+  auth,
+  getUserData,
+  followUser
+} from "./firebase.js";
 
-    let currentUser;
-    let isFollowing = false;
+import {
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-    auth.onAuthStateChanged(async (user) => {
+const params = new URLSearchParams(location.search);
+const targetUid = params.get("uid");
 
-      currentUser = user;
+let myUid = null;
 
-      const data = await getUserData(uid);
+onAuthStateChanged(auth, async(user)=>{
 
-      document.getElementById("name").innerText = data.username;
-      document.getElementById("img").src = data.image || "https://i.imgur.com/1X4n1ZL.png";
-      document.getElementById("followers").innerText = data.followers.length;
-      document.getElementById("following").innerText = data.following.length;
+  if(!user){
+    location.href = "login.html";
+    return;
+  }
 
-      // check follow
-      isFollowing = data.followers.includes(currentUser.uid);
+  myUid = user.uid;
 
-      document.getElementById("followBtn").innerText =
-        isFollowing ? "Unfollow" : "Follow";
-    });
+  const data = await getUserData(targetUid);
 
-    document.getElementById("followBtn").onclick = async () => {
+  document.getElementById("name").innerText =
+    data.username || "بدون اسم";
 
-      if(!isFollowing){
-        await followUser(currentUser.uid, uid);
-        isFollowing = true;
-        document.getElementById("followBtn").innerText = "Unfollow";
-      } else {
-        await unfollowUser(currentUser.uid, uid);
-        isFollowing = false;
-        document.getElementById("followBtn").innerText = "Follow";
-      }
+  document.getElementById("followers").innerText =
+    data.followers || 0;
 
-    }
-  </script>
+  document.getElementById("following").innerText =
+    data.following || 0;
+
+  if(data.image){
+    document.getElementById("img").src = data.image;
+  }
+});
+
+// زر المتابعة
+document.getElementById("followBtn").onclick = async ()=>{
+
+  await followUser(myUid, targetUid);
+
+  alert("تمت المتابعة ✔");
+
+  location.reload();
+};
+</script>
 
 </body>
 </html>
