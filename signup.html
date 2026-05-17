@@ -8,51 +8,41 @@
 </head>
 <body>
 
-  <section id="login">
-    <div class="login-card">
-      <h2>إنشاء حساب</h2>
+  <div class="login-card">
+    <h2>إنشاء حساب</h2>
 
-      <input type="text" id="username" placeholder="اسم المستخدم">
-      <input type="email" id="email" placeholder="البريد الإلكتروني">
-      <input type="password" id="password" placeholder="كلمة المرور">
-      <input type="password" id="confirm" placeholder="تأكيد كلمة المرور">
+    <input id="username" type="text" placeholder="اسم المستخدم">
+    <input id="email" type="email" placeholder="البريد الإلكتروني">
+    <input id="password" type="password" placeholder="كلمة المرور">
 
-      <button onclick="registerUser()">إنشاء الحساب</button>
+    <button onclick="registerUser()">إنشاء الحساب</button>
 
-      <p class="signup">
-        لديك حساب؟
-        <span onclick="goLogin()">تسجيل الدخول</span>
-      </p>
-    </div>
-  </section>
+    <p class="signup">
+      لديك حساب؟
+      <span onclick="goLogin()">تسجيل الدخول</span>
+    </p>
+  </div>
 
-  <!-- Firebase -->
   <script type="module">
     import { register } from "./firebase.js";
 
-    window.registerUser = function () {
+    window.registerUser = function(){
 
       const username = document.getElementById("username").value;
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
-      const confirm = document.getElementById("confirm").value;
 
-      if (password !== confirm) {
-        alert("كلمة المرور غير متطابقة");
-        return;
-      }
+      register(email, password, username)
+      .then(() => {
+        window.location.href = "feed.html";
+      })
+      .catch(err => {
+        alert(err.message);
+      });
 
-      register(email, password)
-        .then(() => {
-          alert("تم إنشاء الحساب بنجاح 👌");
-          window.location.href = "feed.html";
-        })
-        .catch((error) => {
-          alert("خطأ: " + error.message);
-        });
     }
 
-    window.goLogin = function () {
+    window.goLogin = function(){
       window.location.href = "login.html";
     }
   </script>
