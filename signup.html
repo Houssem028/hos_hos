@@ -12,26 +12,47 @@
     <div class="login-card">
       <h2>إنشاء حساب</h2>
 
-      <input type="text" placeholder="اسم المستخدم">
-      <input type="email" placeholder="البريد الإلكتروني">
-      <input type="password" placeholder="كلمة المرور">
-      <input type="password" placeholder="تأكيد كلمة المرور">
+      <input type="text" id="username" placeholder="اسم المستخدم">
+      <input type="email" id="email" placeholder="البريد الإلكتروني">
+      <input type="password" id="password" placeholder="كلمة المرور">
+      <input type="password" id="confirm" placeholder="تأكيد كلمة المرور">
 
-      <button onclick="createAccount()">إنشاء الحساب</button>
+      <button onclick="registerUser()">إنشاء الحساب</button>
 
       <p class="signup">
-        لديك حساب؟ <span onclick="goLogin()">تسجيل الدخول</span>
+        لديك حساب؟
+        <span onclick="goLogin()">تسجيل الدخول</span>
       </p>
     </div>
   </section>
 
-  <script>
-    function createAccount() {
-      alert("تم إنشاء الحساب بنجاح");
-      window.location.href = "feed.html";
+  <!-- Firebase -->
+  <script type="module">
+    import { register } from "./firebase.js";
+
+    window.registerUser = function () {
+
+      const username = document.getElementById("username").value;
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const confirm = document.getElementById("confirm").value;
+
+      if (password !== confirm) {
+        alert("كلمة المرور غير متطابقة");
+        return;
+      }
+
+      register(email, password)
+        .then(() => {
+          alert("تم إنشاء الحساب بنجاح 👌");
+          window.location.href = "feed.html";
+        })
+        .catch((error) => {
+          alert("خطأ: " + error.message);
+        });
     }
 
-    function goLogin() {
+    window.goLogin = function () {
       window.location.href = "login.html";
     }
   </script>
