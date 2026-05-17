@@ -74,12 +74,19 @@ body{
   font-size:13px;
 }
 
-#editPanel{
+#editPanel,
+#settingsPanel{
   display:none;
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:#111;
   padding:20px;
+  border-radius:20px 20px 0 0;
 }
 
-input{
+input, select{
   width:85%;
   padding:12px;
   margin:10px auto;
@@ -96,6 +103,7 @@ button{
   background:#ff2d55;
   color:white;
   font-size:16px;
+  margin-top:10px;
 }
 
 .bottom-bar{
@@ -125,7 +133,7 @@ button{
 <div class="topbar">
   <div></div>
   <div>Profile</div>
-  <div onclick="toggleEdit()">⚙️</div>
+  <div onclick="openSettings()">⚙️</div>
 </div>
 
 <div class="profile">
@@ -154,26 +162,18 @@ button{
 
 </div>
 
+<!-- تعديل البروفايل -->
 <div id="editPanel">
-<div id="settingsPanel" style="
-display:none;
-position:fixed;
-bottom:0;
-left:0;
-right:0;
-background:#111;
-padding:20px;
-border-radius:20px 20px 0 0;
-">
+  <input id="newName" placeholder="اسم المستخدم">
+  <input id="file" type="file">
+  <button id="save">حفظ</button>
+</div>
 
+<!-- الإعدادات -->
+<div id="settingsPanel">
   <h3>الإعدادات</h3>
 
-  <select id="langSelect" style="
-    width:85%;
-    padding:12px;
-    border-radius:10px;
-    margin:10px 0;
-  ">
+  <select id="langSelect">
     <option value="ar">العربية</option>
     <option value="en">English</option>
     <option value="fr">Français</option>
@@ -181,20 +181,13 @@ border-radius:20px 20px 0 0;
 
   <button onclick="saveLanguage()">حفظ اللغة</button>
 
-  <button onclick="logout()" style="
-    background:red;
-    margin-top:10px;
-  ">
+  <button onclick="logout()" style="background:red;">
     تسجيل خروج
   </button>
 
-  <button onclick="closeSettings()" style="
-    background:#333;
-    margin-top:10px;
-  ">
+  <button onclick="closeSettings()" style="background:#333;">
     إغلاق
   </button>
-
 </div>
 
 <div class="bottom-bar">
@@ -207,7 +200,7 @@ border-radius:20px 20px 0 0;
 
 <script type="module">
 import { auth, getUserData, updateUser, uploadProfileImage } from "./firebase.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 let userNow = null;
 
@@ -262,8 +255,5 @@ document.getElementById("save").onclick = async ()=>{
   location.reload();
 };
 
-window.go=(p)=> location.href=p;
-</script>
-
-</body>
-</html>
+window.openSettings = ()=>{
+  document.getElementById("settings
