@@ -195,3 +195,18 @@ button{
   font-size:26px;
   cursor:pointer;
 }
+.page-box{
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  color:white;
+  background:black;
+  text-align:center;
+}
+
+.page-box h1{
+  margin-bottom:15px;
+  font-size:34px;
+}
