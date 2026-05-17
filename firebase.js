@@ -176,3 +176,70 @@ export async function followUser(myUid, targetUid){
     alert("خطأ: " + err.message);
   }
 }
+//
+// 🚀 هل أتابع هذا المستخدم؟
+//
+export async function isFollowing(myUid, targetUid){
+
+  const refDoc = doc(db, "users", myUid);
+  const snap = await getDoc(refDoc);
+
+  if(!snap.exists()) return false;
+
+  const data = snap.data();
+
+  return data.followingList?.includes(targetUid) || false;
+}
+
+//
+// 🚀 متابعة / إلغاء متابعة
+//
+export async function toggleFollow(myUid, targetUid){
+
+  if(myUid === targetUid) return false;
+
+  const myRef = doc(db, "users", myUid);
+  const targetRef = doc(db, "users", targetUid);
+
+  const mySnap = await getDoc(myRef);
+
+  if(!mySnap.exists()) return false;
+
+  const myData = mySnap.data();
+  let followingList = myData.followingList || [];
+
+  const alreadyFollowing = followingList.includes(targetUid);
+
+  if(alreadyFollowing){
+
+    // Unfollow
+    followingList = followingList.filter(id => id !== targetUid);
+
+    await updateDoc(myRef,{
+      following: increment(-1),
+      followingList: followingList
+    });
+
+    await updateDoc(targetRef,{
+      followers: increment(-1)
+    });
+
+    return false;
+
+  }else{
+
+    // Follow
+    followingList.push(targetUid);
+
+    await updateDoc(myRef,{
+      following: increment(1),
+      followingList: followingList
+    });
+
+    await updateDoc(targetRef,{
+      followers: increment(1)
+    });
+
+    return true;
+  }
+}
