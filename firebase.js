@@ -1,4 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+// AUTH
 import { 
   getAuth, 
   createUserWithEmailAndPassword, 
@@ -6,13 +8,24 @@ import {
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
+// FIRESTORE
 import {
   getFirestore,
   setDoc,
   doc,
-  getDoc
+  getDoc,
+  updateDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+// STORAGE
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyBfHLGUVuqrzxc42BkO4ZAzbIxJSt7jZFw",
   authDomain: "hos-hos.firebaseapp.com",
@@ -22,10 +35,12 @@ const firebaseConfig = {
   appId: "1:817137342563:web:d714d48c46796cc4c34056"
 };
 
+// init
 const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+export const storage = getStorage(app);
 
 //
 // 🚀 تسجيل حساب + حفظ بيانات المستخدم
@@ -33,13 +48,12 @@ export const db = getFirestore(app);
 export async function register(email, password, username){
 
   const userCred = await createUserWithEmailAndPassword(auth, email, password);
-
   const user = userCred.user;
 
-  // نخزن بيانات المستخدم في Firestore
   await setDoc(doc(db, "users", user.uid), {
     username: username,
     email: email,
+    image: "",
     createdAt: new Date().toISOString()
   });
 
@@ -57,16 +71,26 @@ export function login(email, password){
 // 🚀 جلب بيانات المستخدم
 //
 export async function getUserData(uid){
-  const ref = doc(db, "users", uid);
-  const snap = await getDoc(ref);
 
-  if (snap.exists()) {
+  const refDoc = doc(db, "users", uid);
+  const snap = await getDoc(refDoc);
+
+  if(snap.exists()){
     return snap.data();
-  } else {
-    return {
-      username: "بدون اسم"
-    };
   }
+
+  return {
+    username: "بدون اسم",
+    image: ""
+  };
+}
+
+//
+// 🚀 تحديث بيانات المستخدم
+//
+export async function updateUser(uid, data){
+  const refDoc = doc(db, "users", uid);
+  return updateDoc(refDoc, data);
 }
 
 //
@@ -75,15 +99,10 @@ export async function getUserData(uid){
 export function getUser(callback){
   onAuthStateChanged(auth, callback);
 }
-import {
-  getStorage,
-  ref,
-  uploadBytes,
-  getDownloadURL
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
-export const storage = getStorage(app);
 
-// رفع صورة بروفايل
+//
+// 🚀 رفع صورة بروفايل
+//
 export async function uploadProfileImage(file, uid){
 
   const imageRef = ref(storage, `profiles/${uid}.jpg`);
