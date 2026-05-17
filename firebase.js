@@ -111,6 +111,16 @@ export function getUser(callback){
 //
 export async function uploadProfileImage(file, uid){
 
+  const imageRef = ref(storage, `profiles/${uid}_${Date.now()}.jpg`);
+
+  const snapshot = await uploadBytes(imageRef, file);
+
+  const url = await getDownloadURL(snapshot.ref);
+
+  console.log("UPLOAD SUCCESS:", url);
+
+  return url;
+}
   // اسم فريد لكل صورة لتفادي الكاش
   const imageRef = ref(storage, `profiles/${uid}_${Date.now()}.jpg`);
 
