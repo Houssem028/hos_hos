@@ -75,3 +75,22 @@ export async function getUserData(uid){
 export function getUser(callback){
   onAuthStateChanged(auth, callback);
 }
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+export const storage = getStorage(app);
+
+// رفع صورة بروفايل
+export async function uploadProfileImage(file, uid){
+
+  const imageRef = ref(storage, `profiles/${uid}.jpg`);
+
+  await uploadBytes(imageRef, file);
+
+  const url = await getDownloadURL(imageRef);
+
+  return url;
+}
