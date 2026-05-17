@@ -1,16 +1,18 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-// ⚠️ حط بيانات مشروعك من Firebase هنا
+// Firebase config (اللي أعطاك إياه)
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyBfHLGUVuqrzxc42BkO4ZAzbIxJSt7jZFw",
+  authDomain: "hos-hos.firebaseapp.com",
+  projectId: "hos-hos",
+  storageBucket: "hos-hos.firebasestorage.app",
+  messagingSenderId: "817137342563",
+  appId: "1:817137342563:web:d714d48c46796cc4c34056",
+  measurementId: "G-68ZHGH269G"
 };
 
+// تشغيل Firebase
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 
