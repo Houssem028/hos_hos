@@ -52,9 +52,11 @@ button{
   border:none;
   padding:8px 14px;
   border-radius:8px;
+  cursor:pointer;
 }
 </style>
 </head>
+
 <body>
 
 <h2>البحث</h2>
@@ -95,7 +97,6 @@ input.addEventListener("input", async ()=>{
 
   users.forEach((u)=>{
 
-    // لا تظهر نفسك
     if(u.uid === myUid) return;
 
     const div = document.createElement("div");
@@ -107,12 +108,30 @@ input.addEventListener("input", async ()=>{
         <span>${u.username}</span>
       </div>
 
-      <button>Follow</button>
+      <div style="display:flex; gap:8px;">
+        <button class="followBtn">Follow</button>
+        <button class="msgBtn" style="display:none;background:#333;">
+          💬 رسالة
+        </button>
+      </div>
     `;
 
-    div.querySelector("button").onclick = async ()=>{
+    const followBtn = div.querySelector(".followBtn");
+    const msgBtn = div.querySelector(".msgBtn");
+
+    followBtn.onclick = async ()=>{
+
       await followUser(myUid, u.uid);
-      alert("تمت المتابعة ✔");
+
+      followBtn.innerText = "✓ متابَع";
+      followBtn.disabled = true;
+      followBtn.style.background = "#444";
+
+      msgBtn.style.display = "block";
+    };
+
+    msgBtn.onclick = ()=>{
+      location.href = "chat.html?uid=" + u.uid;
     };
 
     results.appendChild(div);
@@ -124,6 +143,7 @@ input.addEventListener("input", async ()=>{
 window.openUser = (uid)=>{
   location.href = "user.html?uid=" + uid;
 };
+
 </script>
 
 </body>
