@@ -25,12 +25,12 @@ import {
   getDownloadURL
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-// Firebase config
+// Firebase config (FIX مهم 🔥)
 const firebaseConfig = {
   apiKey: "AIzaSyBfHLGUVuqrzxc42BkO4ZAzbIxJSt7jZFw",
   authDomain: "hos-hos.firebaseapp.com",
   projectId: "hos-hos",
-  storageBucket: "hos-hos.firebasestorage.app",
+  storageBucket: "hos-hos.appspot.com", // ✅ هذا هو الصحيح
   messagingSenderId: "817137342563",
   appId: "1:817137342563:web:d714d48c46796cc4c34056"
 };
@@ -107,26 +107,25 @@ export function getUser(callback){
 }
 
 //
-// 🚀 رفع صورة بروفايل (DEBUG FULL)
+// 🚀 رفع صورة بروفايل (FIXED 100%)
 //
 export async function uploadProfileImage(file, uid){
 
-  console.log("🚀 START UPLOAD");
-
-  if(!file){
-    console.log("❌ No file selected");
-    return null;
-  }
-
   try {
 
+    console.log("🚀 START UPLOAD");
+
+    if(!file){
+      console.log("❌ No file selected");
+      return null;
+    }
+
+    // اسم فريد لكل صورة
     const imageRef = ref(storage, `profiles/${uid}_${Date.now()}.jpg`);
 
     console.log("📤 Uploading...");
 
     const snapshot = await uploadBytes(imageRef, file);
-
-    console.log("✅ Upload done");
 
     const url = await getDownloadURL(snapshot.ref);
 
@@ -138,6 +137,5 @@ export async function uploadProfileImage(file, uid){
 
     console.log("❌ UPLOAD ERROR:", error);
     return null;
-
   }
 }
