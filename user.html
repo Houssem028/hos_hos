@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>User Profile</title>
+</head>
+
+<body style="background:#000;color:#fff;text-align:center">
+
+  <img id="img" width="100" style="border-radius:50%">
+  <h2 id="name"></h2>
+
+  <p>Followers: <span id="followers"></span></p>
+  <p>Following: <span id="following"></span></p>
+
+  <button id="followBtn">Follow</button>
+
+  <script type="module">
+    import {
+      auth,
+      getUserData,
+      followUser,
+      unfollowUser
+    } from "./firebase.js";
+
+    const url = new URLSearchParams(location.search);
+    const uid = url.get("uid");
+
+    let currentUser;
+    let isFollowing = false;
+
+    auth.onAuthStateChanged(async (user) => {
+
+      currentUser = user;
+
+      const data = await getUserData(uid);
+
+      document.getElementById("name").innerText = data.username;
+      document.getElementById("img").src = data.image || "https://i.imgur.com/1X4n1ZL.png";
+      document.getElementById("followers").innerText = data.followers.length;
+      document.getElementById("following").innerText = data.following.length;
+
+      // check follow
+      isFollowing = data.followers.includes(currentUser.uid);
+
+      document.getElementById("followBtn").innerText =
+        isFollowing ? "Unfollow" : "Follow";
+    });
+
+    document.getElementById("followBtn").onclick = async () => {
+
+      if(!isFollowing){
+        await followUser(currentUser.uid, uid);
+        isFollowing = true;
+        document.getElementById("followBtn").innerText = "Unfollow";
+      } else {
+        await unfollowUser(currentUser.uid, uid);
+        isFollowing = false;
+        document.getElementById("followBtn").innerText = "Follow";
+      }
+
+    }
+  </script>
+
+</body>
+</html>
