@@ -4,8 +4,86 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>Hos Hos - البروفايل</title>
-  <link rel="stylesheet" href="style.css">
+
+  <style>
+    body{
+      margin:0;
+      font-family: Arial;
+      background:#0f0f0f;
+      color:white;
+      text-align:center;
+    }
+
+    .profile-page{
+      padding:30px 20px;
+    }
+
+    .profile-pic{
+      width:110px;
+      height:110px;
+      border-radius:50%;
+      object-fit:cover;
+      border:3px solid #ff2d55;
+    }
+
+    h2{
+      margin:10px 0;
+    }
+
+    .stats{
+      display:flex;
+      justify-content:space-around;
+      margin-top:20px;
+    }
+
+    .stats div{
+      text-align:center;
+    }
+
+    .stats h3{
+      margin:0;
+      font-size:18px;
+    }
+
+    .stats p{
+      margin:5px 0 0;
+      font-size:12px;
+      color:#aaa;
+    }
+
+    .edit-btn{
+      margin-top:20px;
+      padding:10px 20px;
+      border:none;
+      border-radius:20px;
+      background:#ff2d55;
+      color:white;
+    }
+
+    /* زر تحت (مثل تيك توك) */
+    .bottom-bar{
+      position:fixed;
+      bottom:0;
+      left:0;
+      right:0;
+      height:60px;
+      background:#111;
+      display:flex;
+      justify-content:space-around;
+      align-items:center;
+      border-top:1px solid #222;
+    }
+
+    .bottom-bar button{
+      background:none;
+      border:none;
+      color:white;
+      font-size:12px;
+    }
+
+  </style>
 </head>
+
 <body>
 
   <div class="profile-page">
@@ -14,23 +92,46 @@
 
     <h2 id="username">تحميل...</h2>
 
-    <button onclick="openEdit()">تعديل الملف</button>
+    <!-- إحصائيات -->
+    <div class="stats">
+      <div>
+        <h3 id="followers">0</h3>
+        <p>متابعين</p>
+      </div>
+
+      <div>
+        <h3 id="following">0</h3>
+        <p>متابع</p>
+      </div>
+
+      <div>
+        <h3 id="videos">0</h3>
+        <p>فيديوهات</p>
+      </div>
+    </div>
+
+    <button class="edit-btn" onclick="openEdit()">تعديل الملف</button>
 
   </div>
 
-  <!-- نافذة التعديل -->
+  <!-- تعديل -->
   <div id="editBox" style="display:none; padding:20px;">
-    <h3>تعديل البروفايل</h3>
-
-    <input id="newName" type="text" placeholder="تغيير الاسم">
+    <input id="newName" placeholder="تغيير الاسم">
     <input id="newImage" type="file" accept="image/*">
-
     <button onclick="saveProfile()">حفظ</button>
   </div>
 
+  <!-- شريط سفلي -->
+  <div class="bottom-bar">
+    <button>🏠 Home</button>
+    <button>🔍 Search</button>
+    <button>➕ Upload</button>
+    <button>🔔 Notifications</button>
+    <button>👤 Profile</button>
+  </div>
+
   <script type="module">
-    import { auth, getUserData, db, uploadProfileImage } from "./firebase.js";
-    import { doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { auth, getUserData, updateUser, uploadProfileImage } from "./firebase.js";
 
     let currentUser;
 
@@ -45,8 +146,13 @@
 
       const data = await getUserData(user.uid);
 
-      document.getElementById("username").innerText = data.username;
-      document.getElementById("newName").value = data.username;
+      document.getElementById("username").innerText = data.username || "بدون اسم";
+
+      document.getElementById("followers").innerText = data.followers || 0;
+      document.getElementById("following").innerText = data.following || 0;
+      document.getElementById("videos").innerText = data.videos || 0;
+
+      document.getElementById("newName").value = data.username || "";
 
       if(data.image){
         document.getElementById("profilePic").src = data.image;
@@ -76,10 +182,9 @@
         updateData.image = imageUrl;
       }
 
-      await updateDoc(doc(db, "users", currentUser.uid), updateData);
+      await updateUser(currentUser.uid, updateData);
 
-      alert("تم تحديث البروفايل");
-
+      alert("تم التحديث ✔");
       location.reload();
     }
 
