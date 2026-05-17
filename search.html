@@ -19,6 +19,7 @@ input{
   padding:12px;
   border:none;
   border-radius:10px;
+  box-sizing:border-box;
 }
 
 .user{
@@ -29,6 +30,19 @@ input{
   display:flex;
   justify-content:space-between;
   align-items:center;
+}
+
+.user-left{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.user-left img{
+  width:45px;
+  height:45px;
+  border-radius:50%;
+  object-fit:cover;
 }
 
 button{
@@ -49,17 +63,26 @@ button{
 <div id="results"></div>
 
 <script type="module">
-import { auth, searchUsers, followUser } from "./firebase.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  auth,
+  searchUsers,
+  toggleFollow,
+  isFollowing
+} from "./firebase.js";
 
-let myUid=null;
+import {
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+let myUid = null;
 
 onAuthStateChanged(auth,(user)=>{
   if(!user){
     location.href="login.html";
     return;
   }
-  myUid=user.uid;
+
+  myUid = user.uid;
 });
 
 const input = document.getElementById("searchInput");
@@ -78,23 +101,40 @@ input.addEventListener("input", async ()=>{
 
   results.innerHTML="";
 
-  users.forEach(u=>{
+  for(const u of users){
+
+    // لا تظهر نفسك
+    if(u.uid === myUid) continue;
+
+    const following = await isFollowing(myUid, u.uid);
 
     const div = document.createElement("div");
     div.className="user";
 
     div.innerHTML = `
-      <span>${u.username}</span>
-      <button>Follow</button>
+      <div class="user-left">
+        <img src="${u.image || 'https://i.imgur.com/1X4n1ZL.png'}">
+        <span>${u.username}</span>
+      </div>
+
+      <button>
+        ${following ? "Unfollow" : "Follow"}
+      </button>
     `;
 
-    div.querySelector("button").onclick = async ()=>{
-      await followUser(myUid,u.uid);
-      alert("تمت المتابعة ✔");
+    const btn = div.querySelector("button");
+
+    btn.onclick = async ()=>{
+
+      const nowFollowing = await toggleFollow(myUid, u.uid);
+
+      btn.innerText = nowFollowing
+        ? "Unfollow"
+        : "Follow";
     };
 
     results.appendChild(div);
-  });
+  }
 
 });
 </script>
