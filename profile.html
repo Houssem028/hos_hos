@@ -3,32 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>Hos Hos - البروفايل</title>
+  <title>Profile</title>
 
   <style>
     body{
       margin:0;
-      font-family: Arial;
+      font-family:Arial;
       background:#0f0f0f;
       color:white;
       text-align:center;
     }
 
-    .topbar{
+    .top{
       display:flex;
       justify-content:space-between;
-      padding:10px 15px;
+      padding:10px;
     }
 
-    .icon{ font-size:22px; cursor:pointer; }
-
-    .img-box{
+    .pic-box{
       position:relative;
       width:110px;
       margin:auto;
     }
 
-    .profile-pic{
+    .pic{
       width:110px;
       height:110px;
       border-radius:50%;
@@ -36,13 +34,13 @@
       border:3px solid #ff2d55;
     }
 
-    .edit-icon{
+    .edit{
       position:absolute;
       bottom:0;
       right:0;
-      background:#ff2d55;
       width:30px;
       height:30px;
+      background:#ff2d55;
       border-radius:50%;
       display:flex;
       align-items:center;
@@ -56,7 +54,7 @@
       margin-top:20px;
     }
 
-    #editBox,#settingsBox{
+    #panel{
       display:none;
       position:fixed;
       bottom:0;
@@ -69,69 +67,104 @@
 
     input{
       display:block;
+      width:80%;
       margin:10px auto;
       padding:10px;
-      width:80%;
-      border-radius:10px;
       border:none;
+      border-radius:10px;
     }
 
     button{
-      padding:10px;
       width:80%;
+      padding:10px;
       margin-top:10px;
       border:none;
       border-radius:10px;
     }
 
-    .save{ background:#ff2d55; color:white; }
-    .logout{ background:red; color:white; }
-    .close{ background:#333; color:white; }
-
+    .save{background:#ff2d55;color:white;}
+    .logout{background:red;color:white;}
+    .close{background:#333;color:white;}
   </style>
 </head>
 
 <body>
 
-<!-- TOP -->
-<div class="topbar">
+<div class="top">
   <div></div>
   <div>Profile</div>
-  <div class="icon" onclick="openSettings()">⚙️</div>
+  <div onclick="openPanel()">⚙️</div>
 </div>
 
-<div class="img-box">
-  <img id="profilePic" class="profile-pic" src="https://i.imgur.com/1X4n1ZL.png">
-  <div class="edit-icon" onclick="openEdit()">✏️</div>
+<div class="pic-box">
+  <img id="img" class="pic" src="https://i.imgur.com/1X4n1ZL.png">
+  <div class="edit" onclick="openEdit()">✏️</div>
 </div>
 
-<h2 id="username">تحميل...</h2>
+<h2 id="name">Loading...</h2>
 
 <div class="stats">
-  <div><h3 id="followers">0</h3><p>متابعين</p></div>
-  <div><h3 id="following">0</h3><p>متابع</p></div>
-  <div><h3 id="videos">0</h3><p>فيديوهات</p></div>
+  <div><p id="followers">0</p><span>Followers</span></div>
+  <div><p id="following">0</p><span>Following</span></div>
+  <div><p id="videos">0</p><span>Videos</span></div>
 </div>
 
 <!-- EDIT -->
-<div id="editBox">
-  <h3>تعديل</h3>
-  <input id="newName" placeholder="اسم المستخدم">
-  <input id="newImage" type="file">
-  <button id="saveBtn" class="save">حفظ</button>
-  <button class="close" onclick="closeEdit()">إغلاق</button>
+<div id="panel">
+  <h3>Edit Profile</h3>
+
+  <input id="newName" placeholder="Username">
+  <input id="file" type="file">
+
+  <button id="save" class="save">Save</button>
+  <button class="close" onclick="closePanel()">Close</button>
 </div>
 
 <!-- SETTINGS -->
-<div id="settingsBox">
-  <h3>الإعدادات</h3>
-  <button class="logout" onclick="logout()">تسجيل خروج</button>
-  <button class="close" onclick="closeSettings()">إغلاق</button>
+<div id="settings" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#111;padding:20px;border-radius:20px 20px 0 0;">
+  <button class="logout" onclick="logout()">Logout</button>
+  <button class="close" onclick="closeSettings()">Close</button>
 </div>
 
 <script type="module">
 
 import { auth, getUserData, updateUser, uploadProfileImage } from "./firebase.js";
-import { signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-let currentUser
+let userNow = null;
+
+onAuthStateChanged(auth, async (user) => {
+
+  if(!user){
+    window.location.href = "login.html";
+    return;
+  }
+
+  userNow = user;
+
+  const data = await getUserData(user.uid);
+
+  document.getElementById("name").innerText = data.username || "No name";
+  document.getElementById("followers").innerText = (data.followers || []).length;
+  document.getElementById("following").innerText = (data.following || []).length;
+  document.getElementById("videos").innerText = data.videos || 0;
+
+  document.getElementById("newName").value = data.username || "";
+
+  if(data.image){
+    document.getElementById("img").src = data.image + "?t=" + Date.now();
+  }
+});
+
+// open
+window.openEdit = () => document.getElementById("panel").style.display = "block";
+window.closePanel = () => document.getElementById("panel").style.display = "none";
+
+window.openPanel = () => document.getElementById("settings").style.display = "block";
+window.closeSettings = () => document.getElementById("settings").style.display = "none";
+
+// save
+document.getElementById("save").onclick = async () => {
+
+  const name = document.getElementById("newName").value;
+  const file = document.getElementBy
