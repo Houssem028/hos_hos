@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Hos Hos - إنشاء حساب</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <section id="login">
+    <div class="login-card">
+      <h2>إنشاء حساب</h2>
+
+      <input type="text" placeholder="اسم المستخدم">
+      <input type="email" placeholder="البريد الإلكتروني">
+      <input type="password" placeholder="كلمة المرور">
+      <input type="password" placeholder="تأكيد كلمة المرور">
+
+      <button onclick="createAccount()">إنشاء الحساب</button>
+
+      <p class="signup">
+        لديك حساب؟ <span onclick="goLogin()">تسجيل الدخول</span>
+      </p>
+    </div>
+  </section>
+
+  <script>
+    function createAccount() {
+      alert("تم إنشاء الحساب بنجاح");
+      window.location.href = "feed.html";
+    }
+
+    function goLogin() {
+      window.location.href = "login.html";
+    }
+  </script>
+
+</body>
+</html>
