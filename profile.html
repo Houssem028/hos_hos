@@ -18,12 +18,34 @@
       padding:30px 20px;
     }
 
+    .img-box{
+      position:relative;
+      width:110px;
+      margin:auto;
+    }
+
     .profile-pic{
       width:110px;
       height:110px;
       border-radius:50%;
       object-fit:cover;
       border:3px solid #ff2d55;
+    }
+
+    /* زر القلم */
+    .edit-icon{
+      position:absolute;
+      bottom:0;
+      right:0;
+      background:#ff2d55;
+      width:30px;
+      height:30px;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:14px;
+      cursor:pointer;
     }
 
     h2{
@@ -42,7 +64,6 @@
 
     .stats h3{
       margin:0;
-      font-size:18px;
     }
 
     .stats p{
@@ -51,16 +72,7 @@
       color:#aaa;
     }
 
-    .edit-btn{
-      margin-top:20px;
-      padding:10px 20px;
-      border:none;
-      border-radius:20px;
-      background:#ff2d55;
-      color:white;
-    }
-
-    /* زر تحت (مثل تيك توك) */
+    /* شريط تحت */
     .bottom-bar{
       position:fixed;
       bottom:0;
@@ -81,6 +93,10 @@
       font-size:12px;
     }
 
+    .active{
+      color:#ff2d55;
+    }
+
   </style>
 </head>
 
@@ -88,29 +104,23 @@
 
   <div class="profile-page">
 
-    <img id="profilePic" class="profile-pic" src="https://i.imgur.com/1X4n1ZL.png">
+    <!-- الصورة + القلم -->
+    <div class="img-box">
+
+      <img id="profilePic" class="profile-pic" src="https://i.imgur.com/1X4n1ZL.png">
+
+      <div class="edit-icon" onclick="openEdit()">✏️</div>
+
+    </div>
 
     <h2 id="username">تحميل...</h2>
 
     <!-- إحصائيات -->
     <div class="stats">
-      <div>
-        <h3 id="followers">0</h3>
-        <p>متابعين</p>
-      </div>
-
-      <div>
-        <h3 id="following">0</h3>
-        <p>متابع</p>
-      </div>
-
-      <div>
-        <h3 id="videos">0</h3>
-        <p>فيديوهات</p>
-      </div>
+      <div><h3 id="followers">0</h3><p>متابعين</p></div>
+      <div><h3 id="following">0</h3><p>متابع</p></div>
+      <div><h3 id="videos">0</h3><p>فيديوهات</p></div>
     </div>
-
-    <button class="edit-btn" onclick="openEdit()">تعديل الملف</button>
 
   </div>
 
@@ -121,13 +131,15 @@
     <button onclick="saveProfile()">حفظ</button>
   </div>
 
-  <!-- شريط سفلي -->
+  <!-- شريط سفلي (تنقل حقيقي) -->
   <div class="bottom-bar">
-    <button>🏠 Home</button>
-    <button>🔍 Search</button>
-    <button>➕ Upload</button>
-    <button>🔔 Notifications</button>
-    <button>👤 Profile</button>
+
+    <button onclick="go('feed.html')">🏠 Home</button>
+    <button onclick="go('search.html')">🔍 Search</button>
+    <button onclick="go('upload.html')">➕ Upload</button>
+    <button onclick="go('notify.html')">🔔 Alerts</button>
+    <button class="active">👤 Profile</button>
+
   </div>
 
   <script type="module">
@@ -147,7 +159,6 @@
       const data = await getUserData(user.uid);
 
       document.getElementById("username").innerText = data.username || "بدون اسم";
-
       document.getElementById("followers").innerText = data.followers || 0;
       document.getElementById("following").innerText = data.following || 0;
       document.getElementById("videos").innerText = data.videos || 0;
@@ -159,10 +170,12 @@
       }
     });
 
+    // فتح التعديل
     window.openEdit = function(){
       document.getElementById("editBox").style.display = "block";
     }
 
+    // حفظ التعديل
     window.saveProfile = async function(){
 
       const newName = document.getElementById("newName").value;
@@ -186,6 +199,11 @@
 
       alert("تم التحديث ✔");
       location.reload();
+    }
+
+    // التنقل بين الصفحات
+    window.go = function(page){
+      window.location.href = page;
     }
 
   </script>
