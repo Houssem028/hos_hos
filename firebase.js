@@ -14,7 +14,10 @@ import {
   setDoc,
   doc,
   getDoc,
-  updateDoc
+  updateDoc,
+  collection,
+  getDocs,
+  increment
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // Firebase config
@@ -86,8 +89,7 @@ export async function getUserData(uid){
 // 🚀 تحديث بيانات المستخدم
 //
 export async function updateUser(uid, data){
-  const refDoc = doc(db, "users", uid);
-  return updateDoc(refDoc, data);
+  return updateDoc(doc(db, "users", uid), data);
 }
 
 //
@@ -98,16 +100,13 @@ export function getUser(callback){
 }
 
 //
-// 🚀 رفع صورة (CLOUDINARY - FIXED)
+// 🚀 رفع صورة (Cloudinary)
 //
 export async function uploadProfileImage(file){
 
-  if(!file){
-    return null;
-  }
+  if(!file) return null;
 
   const formData = new FormData();
-
   formData.append("file", file);
   formData.append("upload_preset", "hoshos_upload");
 
@@ -125,13 +124,10 @@ export async function uploadProfileImage(file){
 
   return data.secure_url;
 }
-// البحث عن مستخدمين
-import {
-  collection,
-  getDocs,
-  increment
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+//
+// 🚀 البحث عن مستخدمين
+//
 export async function searchUsers(searchText){
 
   const snap = await getDocs(collection(db, "users"));
@@ -154,18 +150,29 @@ export async function searchUsers(searchText){
   return results;
 }
 
-// متابعة مستخدم
+//
+// 🚀 متابعة مستخدم
+//
 export async function followUser(myUid, targetUid){
 
-  if(myUid === targetUid) return;
+  try{
+    if(myUid === targetUid){
+      alert("لا يمكنك متابعة نفسك");
+      return;
+    }
 
-  // زيد following عندي
-  await updateDoc(doc(db,"users",myUid),{
-    following: increment(1)
-  });
+    await updateDoc(doc(db, "users", myUid), {
+      following: increment(1)
+    });
 
-  // زيد followers عنده
-  await updateDoc(doc(db,"users",targetUid),{
-    followers: increment(1)
-  });
+    await updateDoc(doc(db, "users", targetUid), {
+      followers: increment(1)
+    });
+
+    console.log("FOLLOW SUCCESS");
+
+  }catch(err){
+    console.log("FOLLOW ERROR:", err);
+    alert("خطأ: " + err.message);
+  }
 }
