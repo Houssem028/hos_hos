@@ -10,33 +10,79 @@
 
   <div class="profile-page">
 
-    <img class="profile-pic" src="https://i.imgur.com/1X4n1ZL.png">
+    <img id="profilePic" class="profile-pic" src="https://i.imgur.com/1X4n1ZL.png">
 
     <h2 id="username">تحميل...</h2>
 
-    <div class="stats">
-      <div><h3>0</h3><p>متابعين</p></div>
-      <div><h3>0</h3><p>متابع</p></div>
-      <div><h3>0</h3><p>فيديو</p></div>
-    </div>
+    <button onclick="openEdit()">تعديل الملف</button>
 
   </div>
 
+  <!-- نافذة التعديل -->
+  <div id="editBox" style="display:none; padding:20px;">
+    <h3>تعديل البروفايل</h3>
+
+    <input id="newName" type="text" placeholder="تغيير الاسم">
+    <input id="newImage" type="file" accept="image/*">
+
+    <button onclick="saveProfile()">حفظ</button>
+  </div>
+
   <script type="module">
-    import { auth, getUserData } from "./firebase.js";
+    import { auth, getUserData, db, uploadProfileImage } from "./firebase.js";
+    import { doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    let currentUser;
 
     auth.onAuthStateChanged(async (user) => {
 
-      if (!user) {
+      if(!user){
         window.location.href = "login.html";
         return;
       }
 
+      currentUser = user;
+
       const data = await getUserData(user.uid);
 
-      document.getElementById("username").innerText =
-        data?.username || "بدون اسم";
+      document.getElementById("username").innerText = data.username;
+      document.getElementById("newName").value = data.username;
+
+      if(data.image){
+        document.getElementById("profilePic").src = data.image;
+      }
     });
+
+    window.openEdit = function(){
+      document.getElementById("editBox").style.display = "block";
+    }
+
+    window.saveProfile = async function(){
+
+      const newName = document.getElementById("newName").value;
+      const file = document.getElementById("newImage").files[0];
+
+      let imageUrl = null;
+
+      if(file){
+        imageUrl = await uploadProfileImage(file, currentUser.uid);
+      }
+
+      const updateData = {
+        username: newName
+      };
+
+      if(imageUrl){
+        updateData.image = imageUrl;
+      }
+
+      await updateDoc(doc(db, "users", currentUser.uid), updateData);
+
+      alert("تم تحديث البروفايل");
+
+      location.reload();
+    }
+
   </script>
 
 </body>
