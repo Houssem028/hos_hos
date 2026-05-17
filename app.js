@@ -1,8 +1,4 @@
+// بعد 3 ثواني ينتقل من شاشة البداية إلى صفحة تسجيل الدخول
 setTimeout(() => {
-  document.getElementById("splash").style.display = "none";
-  document.getElementById("login").classList.remove("hidden");
+  window.location.href = "login.html";
 }, 3000);
-
-function login(){
-  alert("تم تسجيل الدخول إلى Hos Hos");
-}
