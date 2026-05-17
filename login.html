@@ -12,10 +12,10 @@
     <div class="login-card">
       <h2>تسجيل الدخول</h2>
 
-      <input type="text" placeholder="اسم المستخدم أو البريد الإلكتروني">
-      <input type="password" placeholder="كلمة المرور">
+      <input type="email" id="email" placeholder="البريد الإلكتروني">
+      <input type="password" id="password" placeholder="كلمة المرور">
 
-      <button onclick="goToFeed()">دخول</button>
+      <button onclick="loginUser()">دخول</button>
 
       <p class="signup">
         ليس لديك حساب؟
@@ -24,12 +24,25 @@
     </div>
   </section>
 
-  <script>
-    function goToFeed() {
-      window.location.href = "feed.html";
+  <!-- Firebase + تسجيل الدخول -->
+  <script type="module">
+    import { login } from "./firebase.js";
+
+    window.loginUser = function () {
+
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      login(email, password)
+        .then(() => {
+          window.location.href = "feed.html";
+        })
+        .catch((error) => {
+          alert("خطأ: " + error.message);
+        });
     }
 
-    function goToSignup() {
+    window.goToSignup = function () {
       window.location.href = "signup.html";
     }
   </script>
