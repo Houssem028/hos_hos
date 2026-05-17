@@ -1,91 +1,93 @@
-body{
+*{
   margin:0;
-  font-family:Arial, sans-serif;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial,sans-serif;
+}
+
+body{
   background:black;
   color:white;
 }
 
-/* شاشة البداية */
+/* شاشة البداية مع صورتك */
 #splash{
+  width:100%;
   height:100vh;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  background:linear-gradient(135deg,#000,#1a1a1a);
-  animation: fadeOut 1s ease forwards;
-  animation-delay: 2.5s;
+  background:
+  linear-gradient(rgba(0,0,0,.35), rgba(0,0,0,.65)),
+  url("1779022897630.png");
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
 }
 
-.logo{
-  font-size:55px;
-  color:#ff2d55;
-  text-shadow:0 0 20px #ff2d55;
-  animation: zoomIn 1.2s ease;
-}
-
-.subtitle{
-  color:#ccc;
-  margin-top:10px;
-}
-
-/* تسجيل الدخول */
+/* صفحة تسجيل الدخول */
 #login{
+  width:100%;
   height:100vh;
   display:flex;
   justify-content:center;
   align-items:center;
+  padding:20px;
+  background:
+  linear-gradient(135deg,#111,#000);
 }
 
-.login-box{
-  width:80%;
-  max-width:320px;
+.login-card{
+  width:100%;
+  max-width:420px;
+  background:rgba(255,255,255,.08);
+  backdrop-filter:blur(20px);
+  border-radius:25px;
+  padding:35px;
+  box-shadow:0 0 30px rgba(0,0,0,.5);
+}
+
+.login-card h2{
   text-align:center;
-}
-
-.login-box h2{
-  margin-bottom:20px;
+  margin-bottom:30px;
+  font-size:30px;
 }
 
 input{
   width:100%;
-  padding:14px;
-  margin:8px 0;
+  padding:18px;
+  margin-bottom:18px;
   border:none;
-  border-radius:10px;
-  font-size:16px;
+  border-radius:14px;
+  font-size:17px;
+  background:rgba(255,255,255,.12);
+  color:white;
+}
+
+input::placeholder{
+  color:#ccc;
 }
 
 button{
   width:100%;
-  padding:14px;
-  margin-top:15px;
+  padding:18px;
   border:none;
-  border-radius:10px;
-  background:#ff2d55;
+  border-radius:14px;
+  font-size:20px;
+  cursor:pointer;
+  background:white;
+  color:black;
+  font-weight:bold;
+}
+
+.signup{
+  text-align:center;
+  margin-top:20px;
+  color:#ccc;
+}
+
+.signup span{
   color:white;
-  font-size:18px;
+  font-weight:bold;
 }
 
 .hidden{
   display:none;
-}
-
-/* تأثيرات */
-@keyframes zoomIn{
-  from{
-    transform:scale(0.5);
-    opacity:0;
-  }
-  to{
-    transform:scale(1);
-    opacity:1;
-  }
-}
-
-@keyframes fadeOut{
-  to{
-    opacity:0;
-    visibility:hidden;
-  }
 }
