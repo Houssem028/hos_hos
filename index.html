@@ -2,28 +2,31 @@
 <html lang="ar">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>Hos Hos</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
   <!-- شاشة البداية -->
-  <div id="splash">
-    <h1 class="logo">HOS HOS</h1>
-    <p class="subtitle">Welcome</p>
-  </div>
+  <section id="splash">
+  </section>
 
   <!-- صفحة تسجيل الدخول -->
-  <div id="login" class="hidden">
-    <div class="login-box">
+  <section id="login" class="hidden">
+    <div class="login-card">
       <h2>تسجيل الدخول</h2>
 
-      <input type="text" placeholder="اسم المستخدم">
-      <input type="password" placeholder="كلمة السر">
+      <input type="text" placeholder="اسم المستخدم أو البريد">
+      <input type="password" placeholder="كلمة المرور">
 
       <button onclick="login()">دخول</button>
+
+      <p class="signup">
+        ليس لديك حساب؟ <span>إنشاء حساب</span>
+      </p>
     </div>
-  </div>
+  </section>
 
   <script src="app.js"></script>
 </body>
