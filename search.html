@@ -1,0 +1,23 @@
+import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+async function searchUsers(){
+
+  const q = document.getElementById("searchInput").value.toLowerCase();
+
+  const snap = await getDocs(collection(db, "users"));
+
+  let results = [];
+
+  snap.forEach(doc => {
+    const data = doc.data();
+
+    if(data.username.toLowerCase().includes(q)){
+      results.push({
+        id: doc.id,
+        ...data
+      });
+    }
+  });
+
+  console.log(results);
+}
