@@ -1,20 +1,22 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-// AUTH
-import { 
-  getAuth, 
-  createUserWithEmailAndPassword, 
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-// FIRESTORE
 import {
   getFirestore,
   setDoc,
   doc,
   getDoc,
-  updateDoc
+  updateDoc,
+  arrayUnion,
+  arrayRemove,
+  collection,
+  getDocs
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // Firebase config
@@ -27,14 +29,13 @@ const firebaseConfig = {
   appId: "1:817137342563:web:d714d48c46796cc4c34056"
 };
 
-// init
 const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 
 //
-// 🚀 تسجيل حساب
+// 🚀 إنشاء حساب
 //
 export async function register(email, password, username){
 
@@ -45,8 +46,8 @@ export async function register(email, password, username){
     username,
     email,
     image: "",
-    followers: 0,
-    following: 0,
+    followers: [],
+    following: [],
     videos: 0,
     createdAt: new Date().toISOString()
   });
@@ -62,66 +63,81 @@ export function login(email, password){
 }
 
 //
-// 🚀 جلب بيانات المستخدم
+// 🚀 جلب بيانات مستخدم
 //
 export async function getUserData(uid){
-
-  const refDoc = doc(db, "users", uid);
-  const snap = await getDoc(refDoc);
+  const snap = await getDoc(doc(db, "users", uid));
 
   if(snap.exists()){
     return snap.data();
   }
 
-  return {
-    username: "بدون اسم",
-    image: "",
-    followers: 0,
-    following: 0,
-    videos: 0
-  };
+  return null;
 }
 
 //
-// 🚀 تحديث بيانات المستخدم
+// 🚀 تحديث بيانات
 //
 export async function updateUser(uid, data){
-  const refDoc = doc(db, "users", uid);
-  return updateDoc(refDoc, data);
+  return updateDoc(doc(db, "users", uid), data);
 }
 
 //
-// 🚀 مراقبة تسجيل الدخول
+// 🚀 متابعة
+//
+export async function followUser(myUid, targetUid){
+
+  await updateDoc(doc(db, "users", myUid), {
+    following: arrayUnion(targetUid)
+  });
+
+  await updateDoc(doc(db, "users", targetUid), {
+    followers: arrayUnion(myUid)
+  });
+}
+
+//
+// 🚀 إلغاء متابعة
+//
+export async function unfollowUser(myUid, targetUid){
+
+  await updateDoc(doc(db, "users", myUid), {
+    following: arrayRemove(targetUid)
+  });
+
+  await updateDoc(doc(db, "users", targetUid), {
+    followers: arrayRemove(myUid)
+  });
+}
+
+//
+// 🚀 البحث عن المستخدمين
+//
+export async function searchUsers(query){
+
+  const snap = await getDocs(collection(db, "users"));
+
+  let results = [];
+
+  snap.forEach(docSnap => {
+
+    const data = docSnap.data();
+
+    if(data.username.toLowerCase().includes(query.toLowerCase())){
+      results.push({
+        id: docSnap.id,
+        ...data
+      });
+    }
+
+  });
+
+  return results;
+}
+
+//
+// 🚀 مراقبة المستخدم
 //
 export function getUser(callback){
   onAuthStateChanged(auth, callback);
-}
-
-//
-// 🚀 رفع صورة (CLOUDINARY - FIXED)
-//
-export async function uploadProfileImage(file){
-
-  if(!file){
-    return null;
-  }
-
-  const formData = new FormData();
-
-  formData.append("file", file);
-  formData.append("upload_preset", "hoshos_upload");
-
-  const res = await fetch(
-    "https://api.cloudinary.com/v1_1/dgtazde5z/image/upload",
-    {
-      method: "POST",
-      body: formData
-    }
-  );
-
-  const data = await res.json();
-
-  console.log("UPLOAD RESULT:", data);
-
-  return data.secure_url;
 }
