@@ -17,20 +17,12 @@ import {
   updateDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// STORAGE
-import {
-  getStorage,
-  ref,
-  uploadBytes,
-  getDownloadURL
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
-
-// Firebase config (FIX مهم 🔥)
+// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyBfHLGUVuqrzxc42BkO4ZAzbIxJSt7jZFw",
   authDomain: "hos-hos.firebaseapp.com",
   projectId: "hos-hos",
-  storageBucket: "hos-hos.appspot.com", // ✅ هذا هو الصحيح
+  storageBucket: "hos-hos.appspot.com",
   messagingSenderId: "817137342563",
   appId: "1:817137342563:web:d714d48c46796cc4c34056"
 };
@@ -40,7 +32,6 @@ const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
 export const db = getFirestore(app);
-export const storage = getStorage(app);
 
 //
 // 🚀 تسجيل حساب
@@ -51,8 +42,8 @@ export async function register(email, password, username){
   const user = userCred.user;
 
   await setDoc(doc(db, "users", user.uid), {
-    username: username,
-    email: email,
+    username,
+    email,
     image: "",
     followers: 0,
     following: 0,
@@ -107,35 +98,30 @@ export function getUser(callback){
 }
 
 //
-// 🚀 رفع صورة بروفايل (FIXED 100%)
+// 🚀 رفع صورة (CLOUDINARY - FIXED)
 //
-export async function uploadProfileImage(file, uid){
+export async function uploadProfileImage(file){
 
-  try {
-
-    console.log("🚀 START UPLOAD");
-
-    if(!file){
-      console.log("❌ No file selected");
-      return null;
-    }
-
-    // اسم فريد لكل صورة
-    const imageRef = ref(storage, `profiles/${uid}_${Date.now()}.jpg`);
-
-    console.log("📤 Uploading...");
-
-    const snapshot = await uploadBytes(imageRef, file);
-
-    const url = await getDownloadURL(snapshot.ref);
-
-    console.log("🔗 IMAGE URL:", url);
-
-    return url;
-
-  } catch (error) {
-
-    console.log("❌ UPLOAD ERROR:", error);
+  if(!file){
     return null;
   }
+
+  const formData = new FormData();
+
+  formData.append("file", file);
+  formData.append("upload_preset", "hoshos_upload");
+
+  const res = await fetch(
+    "https://api.cloudinary.com/v1_1/dgtazde5z/image/upload",
+    {
+      method: "POST",
+      body: formData
+    }
+  );
+
+  const data = await res.json();
+
+  console.log("UPLOAD RESULT:", data);
+
+  return data.secure_url;
 }
