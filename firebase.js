@@ -27,31 +27,51 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 
-// تسجيل حساب + حفظ الاسم
+//
+// 🚀 تسجيل حساب + حفظ بيانات المستخدم
+//
 export async function register(email, password, username){
+
   const userCred = await createUserWithEmailAndPassword(auth, email, password);
 
-  await setDoc(doc(db, "users", userCred.user.uid), {
+  const user = userCred.user;
+
+  // نخزن بيانات المستخدم في Firestore
+  await setDoc(doc(db, "users", user.uid), {
     username: username,
-    email: email
+    email: email,
+    createdAt: new Date().toISOString()
   });
 
-  return userCred;
+  return user;
 }
 
-// تسجيل دخول
+//
+// 🚀 تسجيل دخول
+//
 export function login(email, password){
   return signInWithEmailAndPassword(auth, email, password);
 }
 
-// جلب بيانات المستخدم
+//
+// 🚀 جلب بيانات المستخدم
+//
 export async function getUserData(uid){
   const ref = doc(db, "users", uid);
   const snap = await getDoc(ref);
-  return snap.exists() ? snap.data() : null;
+
+  if (snap.exists()) {
+    return snap.data();
+  } else {
+    return {
+      username: "بدون اسم"
+    };
+  }
 }
 
-// مراقبة المستخدم
+//
+// 🚀 مراقبة تسجيل الدخول
+//
 export function getUser(callback){
   onAuthStateChanged(auth, callback);
 }
