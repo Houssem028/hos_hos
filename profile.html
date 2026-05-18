@@ -64,6 +64,10 @@ body{
   margin-top:25px;
 }
 
+.stats div{
+  cursor:pointer;
+}
+
 .stats h3{
   margin:0;
 }
@@ -146,14 +150,16 @@ button{
   <h2 id="name">Loading...</h2>
 
   <div class="stats">
-    <div>
+    <div onclick="go('followers.html')">
       <h3 id="followers">0</h3>
       <p>متابعين</p>
     </div>
-    <div>
+
+    <div onclick="go('following.html')">
       <h3 id="following">0</h3>
-      <p>متابع</p>
+      <p>متابَعين</p>
     </div>
+
     <div>
       <h3 id="videos">0</h3>
       <p>فيديوهات</p>
@@ -190,8 +196,17 @@ button{
 </div>
 
 <script type="module">
-import { auth, getUserData, updateUser, uploadProfileImage } from "./firebase.js";
-import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  auth,
+  getUserData,
+  updateUser,
+  uploadProfileImage
+} from "./firebase.js";
+
+import {
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 let userNow = null;
 
@@ -206,38 +221,56 @@ onAuthStateChanged(auth, async (user)=>{
 
   const data = await getUserData(user.uid);
 
-  document.getElementById("name").innerText = data?.username || "بدون اسم";
-  document.getElementById("newName").value = data?.username || "";
+  document.getElementById("name").innerText =
+    data?.username || "بدون اسم";
 
-  document.getElementById("followers").innerText = data?.followers || 0;
-  document.getElementById("following").innerText = data?.following || 0;
-  document.getElementById("videos").innerText = data?.videos || 0;
+  document.getElementById("newName").value =
+    data?.username || "";
+
+  document.getElementById("followers").innerText =
+    data?.followers || 0;
+
+  document.getElementById("following").innerText =
+    data?.following || 0;
+
+  document.getElementById("videos").innerText =
+    data?.videos || 0;
 
   if(data?.image){
-    document.getElementById("img").src = data.image;
+    document.getElementById("img").src =
+      data.image + "?t=" + Date.now();
   }
 });
 
 window.toggleEdit = ()=>{
   const panel = document.getElementById("editPanel");
+
   panel.style.display =
-    panel.style.display==="block" ? "none" : "block";
+    panel.style.display==="block"
+    ? "none"
+    : "block";
 
   document.getElementById("settingsPanel").style.display="none";
-}
+};
 
 window.toggleSettings = ()=>{
   const panel = document.getElementById("settingsPanel");
+
   panel.style.display =
-    panel.style.display==="block" ? "none" : "block";
+    panel.style.display==="block"
+    ? "none"
+    : "block";
 
   document.getElementById("editPanel").style.display="none";
-}
+};
 
 document.getElementById("save").onclick = async ()=>{
 
-  const name = document.getElementById("newName").value;
-  const file = document.getElementById("file").files[0];
+  const name =
+    document.getElementById("newName").value;
+
+  const file =
+    document.getElementById("file").files[0];
 
   let img = null;
 
@@ -257,17 +290,22 @@ document.getElementById("save").onclick = async ()=>{
 };
 
 window.saveLanguage = ()=>{
-  const lang = document.getElementById("langSelect").value;
+  const lang =
+    document.getElementById("langSelect").value;
+
   localStorage.setItem("appLang", lang);
+
   alert("تم حفظ اللغة ✔");
-}
+};
 
 window.logout = async ()=>{
   await signOut(auth);
   location.href="login.html";
-}
+};
 
-window.go=(p)=> location.href=p;
+window.go = (p)=>{
+  location.href = p;
+};
 </script>
 
 </body>
