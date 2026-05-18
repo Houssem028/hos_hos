@@ -1,66 +1,398 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>Hos Hos</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width,initial-scale=1.0">
+
+<title>Hos Hos</title>
+
+<style>
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial,sans-serif;
+}
+
+body{
+  background:black;
+  overflow:hidden;
+}
+
+/* الفيديو */
+
+.feed{
+  width:100%;
+  height:100vh;
+  position:relative;
+  overflow:hidden;
+}
+
+.feed video{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+/* طبقة سوداء خفيفة */
+
+.overlay{
+  position:absolute;
+  inset:0;
+  background:
+  linear-gradient(
+    to top,
+    rgba(0,0,0,.75),
+    rgba(0,0,0,.1),
+    rgba(0,0,0,.35)
+  );
+}
+
+/* معلومات الفيديو */
+
+.video-info{
+  position:absolute;
+  bottom:90px;
+  left:15px;
+  color:white;
+  z-index:2;
+  max-width:70%;
+}
+
+.video-info h3{
+  font-size:22px;
+  margin-bottom:10px;
+}
+
+.video-info p{
+  font-size:15px;
+  line-height:1.5;
+  color:#eee;
+}
+
+/* أزرار الفيديو */
+
+.video-actions{
+  position:absolute;
+  right:12px;
+  bottom:100px;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+  z-index:2;
+}
+
+.action{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  color:white;
+  font-size:14px;
+}
+
+.action button{
+  width:58px;
+  height:58px;
+  border-radius:50%;
+  border:none;
+  background:rgba(255,255,255,.12);
+  backdrop-filter:blur(10px);
+  color:white;
+  font-size:26px;
+  margin-bottom:5px;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.action button:active{
+  transform:scale(.9);
+}
+
+/* صورة الحساب */
+
+.profile-pic{
+  width:58px;
+  height:58px;
+  border-radius:50%;
+  border:3px solid white;
+  object-fit:cover;
+}
+
+/* الشريط العلوي */
+
+.top-bar{
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  height:60px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  color:white;
+  z-index:5;
+  font-size:20px;
+  font-weight:bold;
+  background:linear-gradient(
+    to bottom,
+    rgba(0,0,0,.45),
+    transparent
+  );
+}
+
+/* الشريط السفلي */
+
+.bottom-nav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  height:65px;
+  background:rgba(0,0,0,.92);
+  border-top:1px solid rgba(255,255,255,.1);
+
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+
+  z-index:999;
+}
+
+/* الأيقونات */
+
+.bottom-nav button{
+  background:none;
+  border:none;
+  color:white;
+  font-size:26px;
+  cursor:pointer;
+  transition:.2s;
+}
+
+/* زر الإضافة */
+
+.add-btn{
+  background:white !important;
+  color:black !important;
+  width:48px;
+  height:38px;
+  border-radius:12px;
+  font-size:28px !important;
+  font-weight:bold;
+}
+
+.bottom-nav button:active{
+  transform:scale(.85);
+}
+
+/* لايك */
+
+.liked{
+  color:#ff2d55 !important;
+}
+
+</style>
 </head>
+
 <body>
 
-  <section class="feed">
+<!-- الفيديو -->
 
-    <video autoplay loop muted playsinline>
-      <source src="lv_7516256709107551541_20260517102535.mp4" type="video/mp4">
-    </video>
+<section class="feed">
 
-    <div class="video-info">
-      <h3>@hos_hos</h3>
-      <p>أول فيديو في Hos Hos 🎉</p>
-    </div>
+  <video
+  autoplay
+  loop
+  muted
+  playsinline>
 
-    <div class="video-actions">
-      <button onclick="likeVideo()">❤️</button>
-    </div>
+    <source
+    src="lv_7516256709107551541_20260517102535.mp4"
+    type="video/mp4">
 
-  </section>
+  </video>
 
-  <!-- الشريط السفلي -->
-  <div class="bottom-nav">
-    <button onclick="goHome()">🏠</button>
-    <button onclick="goMessages()">💬</button>
-    <button onclick="uploadVideo()">➕</button>
-    <button onclick="goNotifications()">🔔</button>
-    <button onclick="goProfile()">👤</button>
+  <div class="overlay"></div>
+
+  <!-- فوق -->
+
+  <div class="top-bar">
+    Hos Hos
   </div>
 
-  <script>
-    function likeVideo(){
-      alert("❤️ أعجبك الفيديو");
-    }
+  <!-- معلومات -->
 
-    function goHome(){
-      window.location.href = "feed.html";
-    }
+  <div class="video-info">
 
-    // هنا عدلناها إلى inbox.html
-    function goMessages(){
-      window.location.href = "inbox.html";
-    }
+    <h3>@hos_hos</h3>
 
-    function uploadVideo(){
-      window.location.href = "upload.html";
-    }
+    <p>
+      أول فيديو في Hos Hos 🎉🔥
+      مرحباً بالجميع
+    </p>
 
-    // إذا ملفك اسمه notify.html خله كذا
-    function goNotifications(){
-      window.location.href = "notify.html";
-    }
+  </div>
 
-    function goProfile(){
-      window.location.href = "profile.html";
-    }
-  </script>
+  <!-- الأزرار -->
+
+  <div class="video-actions">
+
+    <!-- صورة -->
+
+    <div class="action">
+
+      <img
+      class="profile-pic"
+      src="https://i.imgur.com/1X4n1ZL.png">
+
+    </div>
+
+    <!-- لايك -->
+
+    <div class="action">
+
+      <button
+      id="likeBtn"
+      onclick="likeVideo()">
+        ❤️
+      </button>
+
+      <span id="likes">
+        1.2K
+      </span>
+
+    </div>
+
+    <!-- تعليق -->
+
+    <div class="action">
+
+      <button onclick="openComments()">
+        💬
+      </button>
+
+      <span>
+        245
+      </span>
+
+    </div>
+
+    <!-- مشاركة -->
+
+    <div class="action">
+
+      <button onclick="shareVideo()">
+        ↗️
+      </button>
+
+      <span>
+        Share
+      </span>
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- الشريط السفلي -->
+
+<div class="bottom-nav">
+
+  <button onclick="goHome()">
+    🏠
+  </button>
+
+  <button onclick="goMessages()">
+    💬
+  </button>
+
+  <button
+  class="add-btn"
+  onclick="uploadVideo()">
+    +
+  </button>
+
+  <button onclick="goNotifications()">
+    🔔
+  </button>
+
+  <button onclick="goProfile()">
+    👤
+  </button>
+
+</div>
+
+<script>
+
+let liked = false;
+
+function likeVideo(){
+
+  liked = !liked;
+
+  const btn =
+    document.getElementById(
+      "likeBtn"
+    );
+
+  if(liked){
+
+    btn.classList.add(
+      "liked"
+    );
+
+  }else{
+
+    btn.classList.remove(
+      "liked"
+    );
+  }
+}
+
+function openComments(){
+
+  alert("قسم التعليقات 💬");
+}
+
+function shareVideo(){
+
+  alert("تمت المشاركة 🔥");
+}
+
+function goHome(){
+
+  window.location.href =
+    "feed.html";
+}
+
+function goMessages(){
+
+  window.location.href =
+    "inbox.html";
+}
+
+function uploadVideo(){
+
+  window.location.href =
+    "upload.html";
+}
+
+function goNotifications(){
+
+  window.location.href =
+    "notify.html";
+}
+
+function goProfile(){
+
+  window.location.href =
+    "profile.html";
+}
+
+</script>
 
 </body>
 </html>
