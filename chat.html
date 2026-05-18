@@ -424,112 +424,134 @@ async(e)=>{
 // تسجيل فويس
 let mediaRecorder;
 let audioChunks = [];
+let isRecording = false;
 
-document
-.getElementById(
-  "voiceBtn"
-)
-.onclick =
+const voiceBtn =
+  document.getElementById(
+    "voiceBtn"
+  );
+
+voiceBtn.onclick =
 async()=>{
 
-  const stream =
-    await navigator
-    .mediaDevices
-    .getUserMedia({
-      audio:true
-    });
-
-  mediaRecorder =
-    new MediaRecorder(
-      stream
-    );
-
-  audioChunks = [];
-
-  mediaRecorder.ondataavailable =
-    e=>{
-
-      audioChunks.push(
-        e.data
-      );
-    };
-
-  mediaRecorder.onstop =
-  async()=>{
-
-    const audioBlob =
-      new Blob(
-        audioChunks,
-        {
-          type:"audio/webm"
-        }
-      );
-
-    const formData =
-      new FormData();
-
-    formData.append(
-      "file",
-      audioBlob
-    );
-
-    formData.append(
-      "upload_preset",
-      "hoshos_upload"
-    );
-
-    formData.append(
-      "resource_type",
-      "video"
-    );
-
-    const res =
-      await fetch(
-        "https://api.cloudinary.com/v1_1/dgtazde5z/video/upload",
-        {
-          method:"POST",
-          body:formData
-        }
-      );
-
-    const data =
-      await res.json();
-
-    await sendMessage(
-      myUid,
-      otherUid,
-      {
-        type:"voice",
-        audio:data.secure_url
-      }
-    );
-
-  };
-
-  mediaRecorder.start();
-
-  document
-  .getElementById(
-    "voiceBtn"
-  )
-  .innerText = "⏹️";
-
-  document
-  .getElementById(
-    "voiceBtn"
-  )
-  .onclick = ()=>{
+  // إذا يسجل → وقف
+  if(isRecording){
 
     mediaRecorder.stop();
 
-    document
-    .getElementById(
-      "voiceBtn"
-    )
-    .innerText = "🎤";
+    isRecording = false;
 
-    location.reload();
-  };
+    voiceBtn.innerText = "🎤";
+
+    return;
+  }
+
+  try{
+
+    // طلب المايك
+    const stream =
+      await navigator
+      .mediaDevices
+      .getUserMedia({
+        audio:true
+      });
+
+    mediaRecorder =
+      new MediaRecorder(
+        stream
+      );
+
+    audioChunks = [];
+
+    mediaRecorder.ondataavailable =
+      e=>{
+
+        audioChunks.push(
+          e.data
+        );
+      };
+
+    mediaRecorder.onstop =
+    async()=>{
+
+      try{
+
+        // إنشاء ملف الصوت
+        const audioBlob =
+          new Blob(
+            audioChunks,
+            {
+              type:"audio/webm"
+            }
+          );
+
+        // تجهيز الرفع
+        const formData =
+          new FormData();
+
+        formData.append(
+          "file",
+          audioBlob,
+          "voice.webm"
+        );
+
+        formData.append(
+          "upload_preset",
+          "hoshos_upload"
+        );
+
+        // رفع الصوت
+        const res =
+          await fetch(
+            "https://api.cloudinary.com/v1_1/dgtazde5z/video/upload",
+            {
+              method:"POST",
+              body:formData
+            }
+          );
+
+        const data =
+          await res.json();
+
+        console.log(data);
+
+        // إرسال الرسالة
+        await sendMessage(
+          myUid,
+          otherUid,
+          {
+            type:"voice",
+            audio:data.secure_url
+          }
+        );
+
+      }catch(err){
+
+        console.error(err);
+
+        alert(
+          "فشل رفع الفويس"
+        );
+      }
+
+    };
+
+    // بدء التسجيل
+    mediaRecorder.start();
+
+    isRecording = true;
+
+    voiceBtn.innerText = "⏹️";
+
+  }catch(err){
+
+    console.error(err);
+
+    alert(
+      "يجب السماح للمايك"
+    );
+  }
+
 };
 
 </script>
