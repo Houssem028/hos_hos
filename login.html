@@ -2,12 +2,22 @@
 <html lang="ar" dir="rtl">
 
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport"
-  content="width=device-width,initial-scale=1.0">
+
+  <meta
+  name="viewport"
+  content="
+  width=device-width,
+  initial-scale=1.0,
+  maximum-scale=1.0,
+  user-scalable=no,
+  viewport-fit=cover
+  ">
 
   <title>Hos Hos - تسجيل الدخول</title>
 
+  <!-- PWA -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#000000">
 
@@ -17,17 +27,35 @@
       margin:0;
       padding:0;
       box-sizing:border-box;
+
       font-family:Arial,sans-serif;
+
+      -webkit-tap-highlight-color:
+      transparent;
+
+      user-select:none;
+    }
+
+    html,
+    body{
+      width:100%;
+      height:100%;
+      overflow:hidden;
     }
 
     body{
-      height:100vh;
+
+      position:fixed;
+      inset:0;
 
       display:flex;
       justify-content:center;
       align-items:center;
 
       overflow:hidden;
+
+      touch-action:none;
+      overscroll-behavior:none;
 
       background:
       linear-gradient(
@@ -41,9 +69,11 @@
     /* خلفية متحركة */
 
     body::before{
+
       content:"";
 
       position:absolute;
+
       width:500px;
       height:500px;
 
@@ -57,13 +87,16 @@
       top:-120px;
       right:-120px;
 
-      animation:move1 8s infinite alternate;
+      animation:
+      move1 8s infinite alternate;
     }
 
     body::after{
+
       content:"";
 
       position:absolute;
+
       width:450px;
       height:450px;
 
@@ -77,26 +110,39 @@
       bottom:-120px;
       left:-120px;
 
-      animation:move2 8s infinite alternate;
+      animation:
+      move2 8s infinite alternate;
     }
 
     @keyframes move1{
+
       from{
-        transform:translateY(0);
+        transform:
+        translateY(0);
       }
+
       to{
-        transform:translateY(40px);
+        transform:
+        translateY(40px);
       }
+
     }
 
     @keyframes move2{
+
       from{
-        transform:translateY(0);
+        transform:
+        translateY(0);
       }
+
       to{
-        transform:translateY(-40px);
+        transform:
+        translateY(-40px);
       }
+
     }
+
+    /* الكارد */
 
     .login-card{
 
@@ -122,24 +168,64 @@
       0 10px 40px rgba(0,0,0,.45);
 
       text-align:center;
+
+      animation:
+      fadeIn .8s ease;
     }
 
-    .logo{
-      font-size:38px;
-      font-weight:bold;
-      color:white;
+    @keyframes fadeIn{
 
-      margin-bottom:10px;
+      from{
+        opacity:0;
+        transform:
+        translateY(30px);
+      }
+
+      to{
+        opacity:1;
+        transform:
+        translateY(0);
+      }
+
+    }
+
+    /* اللوجو */
+
+    .logo-box{
+
+      display:flex;
+      align-items:center;
+      justify-content:center;
+
+      gap:12px;
+
+      margin-bottom:35px;
+    }
+
+    .logo-img{
+
+      width:58px;
+      height:58px;
+
+      border-radius:18px;
+
+      object-fit:cover;
+
+      box-shadow:
+      0 5px 20px rgba(0,0,0,.45);
+    }
+
+    .logo-text{
+
+      font-size:34px;
+      font-weight:bold;
+
+      color:white;
 
       letter-spacing:2px;
     }
 
-    .subtitle{
-      color:#ccc;
-      font-size:14px;
-
-      margin-bottom:35px;
-    }
+    /* الإدخالات */
 
     .input-box{
       margin-bottom:18px;
@@ -148,7 +234,7 @@
     .input-box input{
 
       width:100%;
-      height:55px;
+      height:56px;
 
       border:none;
       outline:none;
@@ -169,21 +255,25 @@
       transition:.25s;
     }
 
-    .input-box input:focus{
-      border:
-      1px solid #ff2d55;
-
-      transform:scale(1.02);
-    }
-
     .input-box input::placeholder{
       color:#bbb;
     }
 
+    .input-box input:focus{
+
+      border:
+      1px solid #ff2d55;
+
+      transform:
+      scale(1.02);
+    }
+
+    /* زر الدخول */
+
     .login-btn{
 
       width:100%;
-      height:55px;
+      height:56px;
 
       border:none;
       border-radius:18px;
@@ -207,19 +297,27 @@
       transition:.25s;
     }
 
-    .login-btn:hover{
-      transform:scale(1.03);
+    .login-btn:active{
+      transform:scale(.97);
     }
 
+    /* إنشاء حساب */
+
     .signup{
+
       margin-top:22px;
+
       color:#ccc;
+
       font-size:14px;
     }
 
     .signup span{
+
       color:#ff2d55;
+
       font-weight:bold;
+
       cursor:pointer;
     }
 
@@ -231,39 +329,60 @@
 
   <div class="login-card">
 
-    <div class="logo">
-      HOS HOS
+    <!-- اللوجو -->
+
+    <div class="logo-box">
+
+      <img
+      src="icon-192.png"
+      class="logo-img">
+
+      <div class="logo-text">
+        HOS HOS
+      </div>
+
     </div>
 
-    <div class="subtitle">
-      مرحباً بك مجدداً 👋
-    </div>
+    <!-- الإدخالات -->
 
     <div class="input-box">
+
       <input
       id="email"
       type="email"
       placeholder="البريد الإلكتروني">
+
     </div>
 
     <div class="input-box">
+
       <input
       id="password"
       type="password"
       placeholder="كلمة المرور">
+
     </div>
+
+    <!-- زر الدخول -->
 
     <button
     class="login-btn"
     onclick="loginUser()">
+
       دخول
+
     </button>
 
+    <!-- إنشاء حساب -->
+
     <p class="signup">
+
       ليس لديك حساب؟
+
       <span onclick="goSignup()">
         إنشاء حساب
       </span>
+
     </p>
 
   </div>
@@ -274,7 +393,8 @@
       login
     } from "./firebase.js";
 
-    window.loginUser = function(){
+    window.loginUser =
+    function(){
 
       const email =
       document.getElementById(
@@ -303,21 +423,35 @@
 
     }
 
-    window.goSignup = function(){
+    window.goSignup =
+    function(){
 
       window.location.href =
       "signup.html";
 
     }
 
+    /* منع الزوم */
+
+    document.addEventListener(
+    "gesturestart",
+    function(e){
+      e.preventDefault();
+    });
+
     /* Service Worker */
 
-    if ("serviceWorker" in navigator) {
+    if(
+      "serviceWorker"
+      in navigator
+    ){
 
       window.addEventListener(
-      "load",()=>{
+      "load",
+      ()=>{
 
-        navigator.serviceWorker
+        navigator
+        .serviceWorker
         .register("/sw.js");
 
       });
