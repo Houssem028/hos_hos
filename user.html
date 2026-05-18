@@ -7,106 +7,209 @@
 
 <style>
 body{
+  margin:0;
   background:#000;
   color:white;
-  text-align:center;
   font-family:Arial;
-  padding:20px;
+  text-align:center;
+}
+
+.profile{
+  padding:30px 20px;
 }
 
 #img{
-  width:120px;
-  height:120px;
+  width:110px;
+  height:110px;
   border-radius:50%;
   object-fit:cover;
   border:3px solid #ff2d55;
 }
 
+#name{
+  margin-top:15px;
+  font-size:24px;
+}
+
 .stats{
   display:flex;
   justify-content:space-around;
-  margin-top:20px;
+  margin-top:25px;
+}
+
+.stats h3{
+  margin:0;
+}
+
+.stats p{
+  margin:5px 0;
+  color:#aaa;
+}
+
+.actions{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  margin-top:25px;
 }
 
 button{
+  border:none;
+  border-radius:14px;
+  padding:14px 20px;
+  font-size:16px;
+  cursor:pointer;
+}
+
+#followBtn{
   background:#ff2d55;
   color:white;
-  border:none;
-  padding:12px 20px;
-  border-radius:10px;
-  margin-top:20px;
+  min-width:140px;
+}
+
+#messageBtn{
+  background:#222;
+  color:white;
+  min-width:140px;
 }
 </style>
 </head>
 <body>
 
-<img id="img" src="https://i.imgur.com/1X4n1ZL.png">
+<div class="profile">
 
-<h2 id="name">Loading...</h2>
+  <img id="img"
+  src="https://i.imgur.com/1X4n1ZL.png">
 
-<div class="stats">
-  <div>
-    <h3 id="followers">0</h3>
-    <p>متابعين</p>
+  <h2 id="name">Loading...</h2>
+
+  <div class="stats">
+    <div>
+      <h3 id="following">0</h3>
+      <p>يتابع</p>
+    </div>
+
+    <div>
+      <h3 id="followers">0</h3>
+      <p>متابعين</p>
+    </div>
   </div>
 
-  <div>
-    <h3 id="following">0</h3>
-    <p>متابع</p>
+  <div class="actions">
+    <button id="followBtn">
+      متابعة
+    </button>
+
+    <button id="messageBtn">
+      رسالة
+    </button>
   </div>
+
 </div>
-
-<button id="followBtn">Follow</button>
 
 <script type="module">
 import {
   auth,
   getUserData,
-  followUser
+  toggleFollow,
+  isFollowing
 } from "./firebase.js";
 
 import {
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-const params = new URLSearchParams(location.search);
-const targetUid = params.get("uid");
+const params =
+  new URLSearchParams(location.search);
 
-let myUid = null;
+const uid =
+  params.get("uid");
+
+let myUid=null;
+let following=false;
 
 onAuthStateChanged(auth, async(user)=>{
 
   if(!user){
-    location.href = "login.html";
+    location.href="login.html";
     return;
   }
 
-  myUid = user.uid;
+  myUid=user.uid;
 
-  const data = await getUserData(targetUid);
+  const data =
+    await getUserData(uid);
 
-  document.getElementById("name").innerText =
-    data.username || "بدون اسم";
+  document.getElementById("name")
+    .innerText =
+    data.username;
 
-  document.getElementById("followers").innerText =
+  document.getElementById("img")
+    .src =
+    data.image ||
+    "https://i.imgur.com/1X4n1ZL.png";
+
+  document.getElementById("followers")
+    .innerText =
     data.followers || 0;
 
-  document.getElementById("following").innerText =
+  document.getElementById("following")
+    .innerText =
     data.following || 0;
 
-  if(data.image){
-    document.getElementById("img").src = data.image;
-  }
+  following =
+    await isFollowing(
+      myUid,
+      uid
+    );
+
+  updateFollowButton();
 });
 
-// زر المتابعة
-document.getElementById("followBtn").onclick = async ()=>{
+function updateFollowButton(){
 
-  await followUser(myUid, targetUid);
+  const btn =
+    document.getElementById("followBtn");
 
-  alert("تمت المتابعة ✔");
+  if(following){
 
-  location.reload();
+    btn.innerText="✓ متابَع";
+    btn.style.background="#222";
+
+  }else{
+
+    btn.innerText="متابعة";
+    btn.style.background="#ff2d55";
+  }
+}
+
+document
+.getElementById("followBtn")
+.onclick = async ()=>{
+
+  following =
+    await toggleFollow(
+      myUid,
+      uid
+    );
+
+  updateFollowButton();
+
+  const data =
+    await getUserData(uid);
+
+  document.getElementById(
+    "followers"
+  ).innerText =
+    data.followers;
+};
+
+document
+.getElementById("messageBtn")
+.onclick = ()=>{
+
+  location.href=
+    "chat.html?uid="+uid;
 };
 </script>
 
