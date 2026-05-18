@@ -28,6 +28,7 @@ body{
   height:100vh;
   position:relative;
   overflow:hidden;
+  scroll-snap-align:start;
 }
 
 .feed video{
@@ -36,7 +37,7 @@ body{
   object-fit:cover;
 }
 
-/* طبقة سوداء خفيفة */
+/* طبقة احترافية */
 
 .overlay{
   position:absolute;
@@ -44,21 +45,51 @@ body{
   background:
   linear-gradient(
     to top,
-    rgba(0,0,0,.75),
-    rgba(0,0,0,.1),
-    rgba(0,0,0,.35)
+    rgba(0,0,0,.9),
+    rgba(0,0,0,.15),
+    rgba(0,0,0,.55)
   );
+}
+
+/* الأعلى */
+
+.top-bar{
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  height:70px;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  color:white;
+  z-index:10;
+
+  font-size:24px;
+  font-weight:bold;
+  letter-spacing:1px;
+
+  background:
+  linear-gradient(
+    to bottom,
+    rgba(0,0,0,.55),
+    transparent
+  );
+
+  backdrop-filter:blur(8px);
 }
 
 /* معلومات الفيديو */
 
 .video-info{
   position:absolute;
-  bottom:90px;
+  bottom:100px;
   left:15px;
+  z-index:5;
   color:white;
-  z-index:2;
-  max-width:70%;
+  width:70%;
 }
 
 .video-info h3{
@@ -68,120 +99,141 @@ body{
 
 .video-info p{
   font-size:15px;
+  color:#f1f1f1;
   line-height:1.5;
-  color:#eee;
 }
 
-/* أزرار الفيديو */
+/* الأزرار */
 
 .video-actions{
   position:absolute;
   right:12px;
-  bottom:100px;
+  bottom:110px;
+
   display:flex;
   flex-direction:column;
+  align-items:center;
   gap:18px;
-  z-index:2;
+
+  z-index:5;
 }
+
+/* كل زر */
 
 .action{
   display:flex;
   flex-direction:column;
   align-items:center;
   color:white;
-  font-size:14px;
+  font-size:13px;
 }
 
+/* الأزرار */
+
 .action button{
-  width:58px;
-  height:58px;
-  border-radius:50%;
+  width:60px;
+  height:60px;
+
   border:none;
-  background:rgba(255,255,255,.12);
+  border-radius:50%;
+
+  background:
+  rgba(255,255,255,.12);
+
   backdrop-filter:blur(10px);
+
   color:white;
-  font-size:26px;
-  margin-bottom:5px;
+  font-size:28px;
+
+  margin-bottom:6px;
+
   cursor:pointer;
+
   transition:.2s;
 }
 
 .action button:active{
-  transform:scale(.9);
+  transform:scale(.88);
 }
 
 /* صورة الحساب */
 
 .profile-pic{
-  width:58px;
-  height:58px;
+  width:62px;
+  height:62px;
   border-radius:50%;
-  border:3px solid white;
   object-fit:cover;
+
+  border:3px solid white;
+
+  box-shadow:
+  0 0 18px
+  rgba(255,255,255,.7);
 }
 
-/* الشريط العلوي */
-
-.top-bar{
-  position:absolute;
-  top:0;
-  left:0;
-  right:0;
-  height:60px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  color:white;
-  z-index:5;
-  font-size:20px;
-  font-weight:bold;
-  background:linear-gradient(
-    to bottom,
-    rgba(0,0,0,.45),
-    transparent
-  );
-}
-
-/* الشريط السفلي */
+/* شريط الأسفل */
 
 .bottom-nav{
   position:fixed;
   bottom:0;
   left:0;
   right:0;
-  height:65px;
-  background:rgba(0,0,0,.92);
-  border-top:1px solid rgba(255,255,255,.1);
+
+  height:68px;
+
+  background:
+  rgba(0,0,0,.92);
+
+  border-top:
+  1px solid
+  rgba(255,255,255,.1);
 
   display:flex;
   justify-content:space-around;
   align-items:center;
 
   z-index:999;
+
+  backdrop-filter:blur(12px);
 }
 
-/* الأيقونات */
+/* أيقونات */
 
 .bottom-nav button{
+
   background:none;
   border:none;
+
   color:white;
-  font-size:26px;
+
+  font-size:27px;
+
   cursor:pointer;
+
   transition:.2s;
 }
 
 /* زر الإضافة */
 
 .add-btn{
+
   background:white !important;
   color:black !important;
-  width:48px;
-  height:38px;
-  border-radius:12px;
-  font-size:28px !important;
+
+  width:50px;
+  height:40px;
+
+  border-radius:14px;
+
+  font-size:30px !important;
   font-weight:bold;
+
+  box-shadow:
+  0 0 15px
+  rgba(255,255,255,.6);
 }
+
+/* ضغط */
 
 .bottom-nav button:active{
   transform:scale(.85);
@@ -191,6 +243,19 @@ body{
 
 .liked{
   color:#ff2d55 !important;
+
+  animation:pop .25s;
+}
+
+@keyframes pop{
+
+  0%{
+    transform:scale(.7);
+  }
+
+  100%{
+    transform:scale(1);
+  }
 }
 
 </style>
@@ -198,9 +263,9 @@ body{
 
 <body>
 
-<!-- الفيديو -->
-
 <section class="feed">
+
+  <!-- الفيديو -->
 
   <video
   autoplay
@@ -214,12 +279,14 @@ body{
 
   </video>
 
+  <!-- طبقة -->
+
   <div class="overlay"></div>
 
-  <!-- فوق -->
+  <!-- الأعلى -->
 
   <div class="top-bar">
-    Hos Hos
+    HOS HOS
   </div>
 
   <!-- معلومات -->
@@ -229,8 +296,8 @@ body{
     <h3>@hos_hos</h3>
 
     <p>
-      أول فيديو في Hos Hos 🎉🔥
-      مرحباً بالجميع
+      أول فيديو في تطبيق Hos Hos 🔥
+      أهلاً بالجميع 🎉
     </p>
 
   </div>
@@ -256,7 +323,9 @@ body{
       <button
       id="likeBtn"
       onclick="likeVideo()">
+
         ❤️
+
       </button>
 
       <span id="likes">
@@ -297,7 +366,7 @@ body{
 
 </section>
 
-<!-- الشريط السفلي -->
+<!-- الأسفل -->
 
 <div class="bottom-nav">
 
@@ -359,7 +428,7 @@ function openComments(){
 
 function shareVideo(){
 
-  alert("تمت المشاركة 🔥");
+  alert("تمت مشاركة الفيديو 🔥");
 }
 
 function goHome(){
