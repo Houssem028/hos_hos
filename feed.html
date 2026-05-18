@@ -21,6 +21,18 @@ body{
   overflow:hidden;
 }
 
+/* الكونتينر */
+
+#feedContainer{
+  height:100vh;
+  overflow-y:scroll;
+  scroll-snap-type:y mandatory;
+}
+
+#feedContainer::-webkit-scrollbar{
+  display:none;
+}
+
 /* الفيديو */
 
 .feed{
@@ -35,41 +47,44 @@ body{
   width:100%;
   height:100%;
   object-fit:cover;
+  background:black;
 }
 
-/* طبقة احترافية */
+/* طبقة */
 
 .overlay{
   position:absolute;
   inset:0;
+
   background:
   linear-gradient(
     to top,
-    rgba(0,0,0,.9),
+    rgba(0,0,0,.95),
     rgba(0,0,0,.15),
-    rgba(0,0,0,.55)
+    rgba(0,0,0,.45)
   );
 }
 
 /* الأعلى */
 
 .top-bar{
-  position:absolute;
+  position:fixed;
   top:0;
   left:0;
   right:0;
+
   height:70px;
 
   display:flex;
   justify-content:center;
   align-items:center;
 
+  z-index:999;
+
   color:white;
-  z-index:10;
 
   font-size:24px;
   font-weight:bold;
-  letter-spacing:1px;
 
   background:
   linear-gradient(
@@ -78,17 +93,19 @@ body{
     transparent
   );
 
-  backdrop-filter:blur(8px);
+  backdrop-filter:blur(10px);
 }
 
 /* معلومات الفيديو */
 
 .video-info{
   position:absolute;
-  bottom:100px;
   left:15px;
+  bottom:100px;
+
   z-index:5;
   color:white;
+
   width:70%;
 }
 
@@ -99,11 +116,11 @@ body{
 
 .video-info p{
   font-size:15px;
-  color:#f1f1f1;
   line-height:1.5;
+  color:#eee;
 }
 
-/* الأزرار */
+/* أزرار */
 
 .video-actions{
   position:absolute;
@@ -118,8 +135,6 @@ body{
   z-index:5;
 }
 
-/* كل زر */
-
 .action{
   display:flex;
   flex-direction:column;
@@ -127,8 +142,6 @@ body{
   color:white;
   font-size:13px;
 }
-
-/* الأزرار */
 
 .action button{
   width:60px;
@@ -140,38 +153,26 @@ body{
   background:
   rgba(255,255,255,.12);
 
-  backdrop-filter:blur(10px);
-
   color:white;
-  font-size:28px;
 
-  margin-bottom:6px;
+  font-size:28px;
 
   cursor:pointer;
 
-  transition:.2s;
+  backdrop-filter:blur(10px);
 }
-
-.action button:active{
-  transform:scale(.88);
-}
-
-/* صورة الحساب */
 
 .profile-pic{
   width:62px;
   height:62px;
+
   border-radius:50%;
   object-fit:cover;
 
   border:3px solid white;
-
-  box-shadow:
-  0 0 18px
-  rgba(255,255,255,.7);
 }
 
-/* شريط الأسفل */
+/* الأسفل */
 
 .bottom-nav{
   position:fixed;
@@ -184,39 +185,21 @@ body{
   background:
   rgba(0,0,0,.92);
 
-  border-top:
-  1px solid
-  rgba(255,255,255,.1);
-
   display:flex;
   justify-content:space-around;
   align-items:center;
 
   z-index:999;
-
-  backdrop-filter:blur(12px);
 }
-
-/* أيقونات */
 
 .bottom-nav button{
-
   background:none;
   border:none;
-
   color:white;
-
   font-size:27px;
-
-  cursor:pointer;
-
-  transition:.2s;
 }
 
-/* زر الإضافة */
-
 .add-btn{
-
   background:white !important;
   color:black !important;
 
@@ -227,35 +210,13 @@ body{
 
   font-size:30px !important;
   font-weight:bold;
-
-  box-shadow:
-  0 0 15px
-  rgba(255,255,255,.6);
 }
 
-/* ضغط */
-
-.bottom-nav button:active{
-  transform:scale(.85);
-}
-
-/* لايك */
-
-.liked{
-  color:#ff2d55 !important;
-
-  animation:pop .25s;
-}
-
-@keyframes pop{
-
-  0%{
-    transform:scale(.7);
-  }
-
-  100%{
-    transform:scale(1);
-  }
+.loading{
+  color:white;
+  text-align:center;
+  margin-top:40vh;
+  font-size:22px;
 }
 
 </style>
@@ -263,108 +224,21 @@ body{
 
 <body>
 
-<section class="feed">
+<!-- الأعلى -->
 
-  <!-- الفيديو -->
+<div class="top-bar">
+  HOS HOS
+</div>
 
-  <video
-  autoplay
-  loop
-  muted
-  playsinline>
+<!-- الفيديوهات -->
 
-    <source
-    src="lv_7516256709107551541_20260517102535.mp4"
-    type="video/mp4">
+<div id="feedContainer">
 
-  </video>
-
-  <!-- طبقة -->
-
-  <div class="overlay"></div>
-
-  <!-- الأعلى -->
-
-  <div class="top-bar">
-    HOS HOS
+  <div class="loading">
+    جاري تحميل الفيديوهات...
   </div>
 
-  <!-- معلومات -->
-
-  <div class="video-info">
-
-    <h3>@hos_hos</h3>
-
-    <p>
-      أول فيديو في تطبيق Hos Hos 🔥
-      أهلاً بالجميع 🎉
-    </p>
-
-  </div>
-
-  <!-- الأزرار -->
-
-  <div class="video-actions">
-
-    <!-- صورة -->
-
-    <div class="action">
-
-      <img
-      class="profile-pic"
-      src="https://i.imgur.com/1X4n1ZL.png">
-
-    </div>
-
-    <!-- لايك -->
-
-    <div class="action">
-
-      <button
-      id="likeBtn"
-      onclick="likeVideo()">
-
-        ❤️
-
-      </button>
-
-      <span id="likes">
-        1.2K
-      </span>
-
-    </div>
-
-    <!-- تعليق -->
-
-    <div class="action">
-
-      <button onclick="openComments()">
-        💬
-      </button>
-
-      <span>
-        245
-      </span>
-
-    </div>
-
-    <!-- مشاركة -->
-
-    <div class="action">
-
-      <button onclick="shareVideo()">
-        ↗️
-      </button>
-
-      <span>
-        Share
-      </span>
-
-    </div>
-
-  </div>
-
-</section>
+</div>
 
 <!-- الأسفل -->
 
@@ -394,72 +268,194 @@ body{
 
 </div>
 
-<script>
+<script type="module">
 
-let liked = false;
+import {
+  db
+} from "./firebase.js";
 
-function likeVideo(){
+import {
+  collection,
+  getDocs,
+  query,
+  orderBy
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  liked = !liked;
+const container =
+  document.getElementById(
+    "feedContainer"
+  );
 
-  const btn =
-    document.getElementById(
-      "likeBtn"
+// جلب الفيديوهات
+
+async function loadVideos(){
+
+  container.innerHTML = "";
+
+  const q =
+    query(
+      collection(
+        db,
+        "videos"
+      ),
+      orderBy(
+        "createdAt",
+        "desc"
+      )
     );
 
-  if(liked){
+  const snap =
+    await getDocs(q);
 
-    btn.classList.add(
-      "liked"
-    );
+  if(snap.empty){
 
-  }else{
+    container.innerHTML = `
+      <div class="loading">
+        لا توجد فيديوهات
+      </div>
+    `;
 
-    btn.classList.remove(
-      "liked"
-    );
+    return;
   }
+
+  snap.forEach(doc=>{
+
+    const video =
+      doc.data();
+
+    container.innerHTML += `
+
+    <section class="feed">
+
+      <video
+      src="${video.videoUrl}"
+      autoplay
+      loop
+      muted
+      playsinline>
+      </video>
+
+      <div class="overlay"></div>
+
+      <!-- معلومات -->
+
+      <div class="video-info">
+
+        <h3>
+          @${video.username}
+        </h3>
+
+        <p>
+          ${video.caption || ""}
+        </p>
+
+      </div>
+
+      <!-- أزرار -->
+
+      <div class="video-actions">
+
+        <!-- صورة -->
+
+        <div class="action">
+
+          <img
+          class="profile-pic"
+          src="${
+            video.userImage ||
+            'https://i.imgur.com/1X4n1ZL.png'
+          }">
+
+        </div>
+
+        <!-- لايك -->
+
+        <div class="action">
+
+          <button>
+            ❤️
+          </button>
+
+          <span>
+            ${video.likes || 0}
+          </span>
+
+        </div>
+
+        <!-- تعليق -->
+
+        <div class="action">
+
+          <button>
+            💬
+          </button>
+
+          <span>
+            0
+          </span>
+
+        </div>
+
+        <!-- مشاركة -->
+
+        <div class="action">
+
+          <button onclick="
+            navigator.share({
+              url:'${video.videoUrl}'
+            })
+          ">
+            ↗️
+          </button>
+
+          <span>
+            Share
+          </span>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    `;
+  });
+
 }
 
-function openComments(){
+loadVideos();
 
-  alert("قسم التعليقات 💬");
-}
+/* تنقل */
 
-function shareVideo(){
+window.goHome = ()=>{
 
-  alert("تمت مشاركة الفيديو 🔥");
-}
-
-function goHome(){
-
-  window.location.href =
+  location.href =
     "feed.html";
-}
+};
 
-function goMessages(){
+window.goMessages = ()=>{
 
-  window.location.href =
+  location.href =
     "inbox.html";
-}
+};
 
-function uploadVideo(){
+window.uploadVideo = ()=>{
 
-  window.location.href =
+  location.href =
     "upload.html";
-}
+};
 
-function goNotifications(){
+window.goNotifications = ()=>{
 
-  window.location.href =
+  location.href =
     "notify.html";
-}
+};
 
-function goProfile(){
+window.goProfile = ()=>{
 
-  window.location.href =
+  location.href =
     "profile.html";
-}
+};
 
 </script>
 
