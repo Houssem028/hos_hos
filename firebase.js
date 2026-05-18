@@ -498,13 +498,28 @@ export async function getFollowingList(uid){
 export async function sendMessage(
   fromUid,
   toUid,
-  text
+  data
 ){
 
   const roomId =
     [fromUid,toUid]
     .sort()
     .join("_");
+
+  // نص آخر رسالة
+  let lastMsg = "📩 رسالة";
+
+  if(data.type === "text"){
+    lastMsg = data.text;
+  }
+
+  if(data.type === "image"){
+    lastMsg = "🖼️ صورة";
+  }
+
+  if(data.type === "voice"){
+    lastMsg = "🎤 رسالة صوتية";
+  }
 
   // إنشاء الغرفة
   await setDoc(
@@ -519,7 +534,7 @@ export async function sendMessage(
         toUid
       ],
 
-      lastMessage:text,
+      lastMessage:lastMsg,
 
       updatedAt:
         Date.now()
@@ -538,9 +553,10 @@ export async function sendMessage(
       "messages"
     ),
     {
+      ...data,
+
       from:fromUid,
       to:toUid,
-      text:text,
 
       createdAt:
         Date.now()
