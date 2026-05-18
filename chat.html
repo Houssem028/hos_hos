@@ -434,7 +434,7 @@ const voiceBtn =
 voiceBtn.onclick =
 async()=>{
 
-  // إذا يسجل → وقف
+  // إيقاف التسجيل
   if(isRecording){
 
     mediaRecorder.stop();
@@ -476,7 +476,6 @@ async()=>{
 
       try{
 
-        // إنشاء ملف الصوت
         const audioBlob =
           new Blob(
             audioChunks,
@@ -485,7 +484,6 @@ async()=>{
             }
           );
 
-        // تجهيز الرفع
         const formData =
           new FormData();
 
@@ -500,7 +498,6 @@ async()=>{
           "hoshos_upload"
         );
 
-        // رفع الصوت
         const res =
           await fetch(
             "https://api.cloudinary.com/v1_1/dgtazde5z/video/upload",
@@ -513,9 +510,6 @@ async()=>{
         const data =
           await res.json();
 
-        console.log(data);
-
-        // إرسال الرسالة
         await sendMessage(
           myUid,
           otherUid,
