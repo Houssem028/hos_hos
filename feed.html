@@ -21,8 +21,6 @@ body{
   overflow:hidden;
 }
 
-/* الكونتينر */
-
 #feedContainer{
   height:100vh;
   overflow-y:scroll;
@@ -33,13 +31,10 @@ body{
   display:none;
 }
 
-/* الفيديو */
-
 .feed{
   width:100%;
   height:100vh;
   position:relative;
-  overflow:hidden;
   scroll-snap-align:start;
 }
 
@@ -47,10 +42,7 @@ body{
   width:100%;
   height:100%;
   object-fit:cover;
-  background:black;
 }
-
-/* طبقة */
 
 .overlay{
   position:absolute;
@@ -65,26 +57,22 @@ body{
   );
 }
 
-/* الأعلى */
-
 .top-bar{
   position:fixed;
   top:0;
   left:0;
   right:0;
-
   height:70px;
 
   display:flex;
   justify-content:center;
   align-items:center;
 
-  z-index:999;
-
   color:white;
-
   font-size:24px;
   font-weight:bold;
+
+  z-index:999;
 
   background:
   linear-gradient(
@@ -96,31 +84,26 @@ body{
   backdrop-filter:blur(10px);
 }
 
-/* معلومات الفيديو */
-
 .video-info{
   position:absolute;
   left:15px;
   bottom:100px;
-
   z-index:5;
   color:white;
-
   width:70%;
 }
 
 .video-info h3{
   font-size:22px;
   margin-bottom:10px;
+  cursor:pointer;
 }
 
 .video-info p{
   font-size:15px;
-  line-height:1.5;
   color:#eee;
+  line-height:1.5;
 }
-
-/* أزرار */
 
 .video-actions{
   position:absolute;
@@ -154,7 +137,6 @@ body{
   rgba(255,255,255,.12);
 
   color:white;
-
   font-size:28px;
 
   cursor:pointer;
@@ -170,9 +152,9 @@ body{
   object-fit:cover;
 
   border:3px solid white;
-}
 
-/* الأسفل */
+  cursor:pointer;
+}
 
 .bottom-nav{
   position:fixed;
@@ -219,18 +201,18 @@ body{
   font-size:22px;
 }
 
+.liked{
+  color:#ff2d55 !important;
+}
+
 </style>
 </head>
 
 <body>
 
-<!-- الأعلى -->
-
 <div class="top-bar">
   HOS HOS
 </div>
-
-<!-- الفيديوهات -->
 
 <div id="feedContainer">
 
@@ -239,8 +221,6 @@ body{
   </div>
 
 </div>
-
-<!-- الأسفل -->
 
 <div class="bottom-nav">
 
@@ -278,7 +258,10 @@ import {
   collection,
   getDocs,
   query,
-  orderBy
+  orderBy,
+  doc,
+  updateDoc,
+  increment
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const container =
@@ -286,22 +269,14 @@ const container =
     "feedContainer"
   );
 
-// جلب الفيديوهات
-
 async function loadVideos(){
 
   container.innerHTML = "";
 
   const q =
     query(
-      collection(
-        db,
-        "videos"
-      ),
-      orderBy(
-        "createdAt",
-        "desc"
-      )
+      collection(db,"videos"),
+      orderBy("createdAt","desc")
     );
 
   const snap =
@@ -318,10 +293,13 @@ async function loadVideos(){
     return;
   }
 
-  snap.forEach(doc=>{
+  snap.forEach(videoDoc=>{
 
     const video =
-      doc.data();
+      videoDoc.data();
+
+    const videoId =
+      videoDoc.id;
 
     container.innerHTML += `
 
@@ -337,11 +315,12 @@ async function loadVideos(){
 
       <div class="overlay"></div>
 
-      <!-- معلومات -->
-
       <div class="video-info">
 
-        <h3>
+        <h3 onclick="
+          location.href=
+          'user.html?uid=${video.uid}'
+        ">
           @${video.username}
         </h3>
 
@@ -351,16 +330,18 @@ async function loadVideos(){
 
       </div>
 
-      <!-- أزرار -->
-
       <div class="video-actions">
-
-        <!-- صورة -->
 
         <div class="action">
 
           <img
           class="profile-pic"
+
+          onclick="
+            location.href=
+            'user.html?uid=${video.uid}'
+          "
+
           src="${
             video.userImage ||
             'https://i.imgur.com/1X4n1ZL.png'
@@ -368,42 +349,38 @@ async function loadVideos(){
 
         </div>
 
-        <!-- لايك -->
-
         <div class="action">
 
-          <button>
+          <button
+          class="likeBtn"
+          data-id="${videoId}">
             ❤️
           </button>
 
-          <span>
+          <span id="likes-${videoId}">
             ${video.likes || 0}
           </span>
 
         </div>
 
-        <!-- تعليق -->
-
         <div class="action">
 
-          <button>
+          <button onclick="
+            openComments('${videoId}')
+          ">
             💬
           </button>
 
           <span>
-            0
+            تعليق
           </span>
 
         </div>
 
-        <!-- مشاركة -->
-
         <div class="action">
 
           <button onclick="
-            navigator.share({
-              url:'${video.videoUrl}'
-            })
+            shareVideo('${video.videoUrl}')
           ">
             ↗️
           </button>
@@ -421,7 +398,69 @@ async function loadVideos(){
     `;
   });
 
+  setupLikes();
 }
+
+function setupLikes(){
+
+  const buttons =
+    document.querySelectorAll(
+      ".likeBtn"
+    );
+
+  buttons.forEach(btn=>{
+
+    btn.onclick =
+    async()=>{
+
+      const id =
+        btn.dataset.id;
+
+      const likesText =
+        document.getElementById(
+          "likes-"+id
+        );
+
+      let current =
+        parseInt(
+          likesText.innerText
+        );
+
+      await updateDoc(
+        doc(db,"videos",id),
+        {
+          likes:
+            increment(1)
+        }
+      );
+
+      likesText.innerText =
+        current + 1;
+
+      btn.classList.add(
+        "liked"
+      );
+    };
+
+  });
+
+}
+
+window.openComments =
+(id)=>{
+
+  alert(
+    "التعليقات قريباً 💬"
+  );
+};
+
+window.shareVideo =
+(url)=>{
+
+  navigator.share({
+    url:url
+  });
+};
 
 loadVideos();
 
