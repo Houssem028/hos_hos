@@ -465,69 +465,6 @@ export async function getFollowingList(uid){
   return result;
 }
 //
-// إرسال رسالة
-//
-import {
-  addDoc,
-  query,
-  orderBy,
-  onSnapshot
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-export async function sendMessage(
-  fromUid,
-  toUid,
-  text
-){
-
-  const roomId =
-    [fromUid,toUid]
-    .sort()
-    .join("_");
-
-  await addDoc(
-    collection(db,"chats",roomId,"messages"),
-    {
-      from: fromUid,
-      to: toUid,
-      text: text,
-      createdAt: Date.now()
-    }
-  );
-}
-
-//
-// مراقبة الرسائل
-//
-export function listenMessages(
-  myUid,
-  otherUid,
-  callback
-){
-
-  const roomId =
-    [myUid,otherUid]
-    .sort()
-    .join("_");
-
-  const q = query(
-    collection(
-      db,
-      "chats",
-      roomId,
-      "messages"
-    ),
-    orderBy(
-      "createdAt",
-      "asc"
-    )
-  );
-
-  return onSnapshot(q,(snap)=>{
-
-    const msgs=[];
-
-    snap.forEach(doc=>{
 
       msgs.push(
         doc.data()
@@ -566,6 +503,166 @@ export async function getChatsList(myUid){
 
     const userData =
       await getUserData(otherUid);
+
+    result.push({
+      uid: otherUid,
+      ...userData
+    });
+  }
+
+  return result;
+}
+//
+// إرسال رسالة
+//
+import {
+  addDoc,
+  query,
+  orderBy,
+  onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+export async function sendMessage(
+  fromUid,
+  toUid,
+  text
+){
+
+  const roomId =
+    [fromUid,toUid]
+    .sort()
+    .join("_");
+
+  // إنشاء الغرفة
+  await setDoc(
+    doc(db,"chats",roomId),
+    {
+      users:[
+        fromUid,
+        toUid
+      ],
+
+      lastMessage:text,
+
+      updatedAt:
+        Date.now()
+    },
+    {
+      merge:true
+    }
+  );
+
+  // إضافة الرسالة
+  await addDoc(
+    collection(
+      db,
+      "chats",
+      roomId,
+      "messages"
+    ),
+    {
+      from: fromUid,
+      to: toUid,
+      text: text,
+
+      createdAt:
+        Date.now()
+    }
+  );
+}
+// مراقبة الرسائل
+//
+export function listenMessages(
+  myUid,
+  otherUid,
+  callback
+){
+
+  const roomId =
+    [myUid,otherUid]
+    .sort()
+    .join("_");
+
+  const q = query(
+    collection(
+      db,
+      "chats",
+      roomId,
+      "messages"
+    ),
+
+    orderBy(
+      "createdAt",
+      "asc"
+    )
+  );
+
+  return onSnapshot(
+    q,
+    (snap)=>{
+
+      const msgs=[];
+
+      snap.forEach(doc=>{
+
+        msgs.push(
+          doc.data()
+        );
+
+      });
+
+      callback(msgs);
+
+    }
+  );
+}
+
+//
+// جلب قائمة المحادثات
+//
+export async function getChatsList(
+  myUid
+){
+
+  const chatsSnap =
+    await getDocs(
+      collection(
+        db,
+        "chats"
+      )
+    );
+
+  const result=[];
+
+  for(
+    const chatDoc of chatsSnap.docs
+  ){
+
+    const data =
+      chatDoc.data();
+
+    const users =
+      data.users || [];
+
+    // نتأكد أنه داخل المحادثة
+    if(
+      !users.includes(myUid)
+    ) continue;
+
+    // نجيب الطرف الثاني
+    const otherUid =
+      users.find(
+        uid =>
+          uid !== myUid
+      );
+
+    if(!otherUid)
+      continue;
+
+    const userData =
+      await getUserData(
+        otherUid
+      );
 
     result.push({
       uid: otherUid,
