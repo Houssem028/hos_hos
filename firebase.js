@@ -41,19 +41,30 @@ export const db = getFirestore(app);
 //
 export async function register(email, password, username){
 
-  const userCred = await createUserWithEmailAndPassword(auth, email, password);
+  const userCred =
+    await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+
   const user = userCred.user;
 
-  await setDoc(doc(db, "users", user.uid), {
-    username,
-    email,
-    image: "",
-    followers: 0,
-    following: 0,
-    followingList: [],
-    videos: 0,
-    createdAt: new Date().toISOString()
-  });
+  await setDoc(
+    doc(db, "users", user.uid),
+    {
+      username,
+      email,
+      image: "",
+      followers: 0,
+      following: 0,
+      followingList: [],
+      followersList: [],
+      videos: 0,
+      createdAt:
+        new Date().toISOString()
+    }
+  );
 
   return user;
 }
@@ -61,8 +72,15 @@ export async function register(email, password, username){
 //
 // تسجيل دخول
 //
-export function login(email, password){
-  return signInWithEmailAndPassword(auth, email, password);
+export function login(
+  email,
+  password
+){
+  return signInWithEmailAndPassword(
+    auth,
+    email,
+    password
+  );
 }
 
 //
@@ -70,7 +88,10 @@ export function login(email, password){
 //
 export async function getUserData(uid){
 
-  const snap = await getDoc(doc(db, "users", uid));
+  const snap =
+    await getDoc(
+      doc(db, "users", uid)
+    );
 
   if(snap.exists()){
     return snap.data();
@@ -82,6 +103,7 @@ export async function getUserData(uid){
     followers: 0,
     following: 0,
     followingList: [],
+    followersList: [],
     videos: 0
   };
 }
@@ -89,15 +111,26 @@ export async function getUserData(uid){
 //
 // تحديث بيانات المستخدم
 //
-export async function updateUser(uid, data){
-  return updateDoc(doc(db, "users", uid), data);
+export async function updateUser(
+  uid,
+  data
+){
+  return updateDoc(
+    doc(db, "users", uid),
+    data
+  );
 }
 
 //
 // مراقبة تسجيل الدخول
 //
-export function getUser(callback){
-  onAuthStateChanged(auth, callback);
+export function getUser(
+  callback
+){
+  onAuthStateChanged(
+    auth,
+    callback
+  );
 }
 
 //
@@ -107,19 +140,30 @@ export async function uploadProfileImage(file){
 
   if(!file) return null;
 
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("upload_preset", "hoshos_upload");
+  const formData =
+    new FormData();
 
-  const res = await fetch(
-    "https://api.cloudinary.com/v1_1/dgtazde5z/image/upload",
-    {
-      method: "POST",
-      body: formData
-    }
+  formData.append(
+    "file",
+    file
   );
 
-  const data = await res.json();
+  formData.append(
+    "upload_preset",
+    "hoshos_upload"
+  );
+
+  const res =
+    await fetch(
+      "https://api.cloudinary.com/v1_1/dgtazde5z/image/upload",
+      {
+        method:"POST",
+        body:formData
+      }
+    );
+
+  const data =
+    await res.json();
 
   return data.secure_url;
 }
@@ -129,19 +173,33 @@ export async function uploadProfileImage(file){
 //
 export async function searchUsers(searchText){
 
-  const snap = await getDocs(collection(db, "users"));
+  const snap =
+    await getDocs(
+      collection(
+        db,
+        "users"
+      )
+    );
+
   const results = [];
 
   snap.forEach((docSnap)=>{
 
-    const data = docSnap.data();
+    const data =
+      docSnap.data();
 
     if(
       data.username &&
-      data.username.toLowerCase().includes(searchText.toLowerCase())
+      data.username
+      .toLowerCase()
+      .includes(
+        searchText
+        .toLowerCase()
+      )
     ){
       results.push({
-        uid: docSnap.id,
+        uid:
+          docSnap.id,
         ...data
       });
     }
@@ -153,76 +211,208 @@ export async function searchUsers(searchText){
 //
 // هل أتابعه؟
 //
-export async function isFollowing(myUid, targetUid){
+export async function isFollowing(
+  myUid,
+  targetUid
+){
 
-  const snap = await getDoc(doc(db, "users", myUid));
+  const snap =
+    await getDoc(
+      doc(
+        db,
+        "users",
+        myUid
+      )
+    );
 
-  if(!snap.exists()) return false;
+  if(!snap.exists())
+    return false;
 
-  const data = snap.data();
+  const data =
+    snap.data();
 
-  return data.followingList?.includes(targetUid) || false;
+  return (
+    data.followingList
+    ?.includes(
+      targetUid
+    ) || false
+  );
 }
 
 //
 // متابعة / إلغاء متابعة
 //
-export async function toggleFollow(myUid, targetUid){
+export async function toggleFollow(
+  myUid,
+  targetUid
+){
 
-  if(myUid === targetUid) return false;
+  if(
+    myUid === targetUid
+  ) return false;
 
-  const myRef = doc(db, "users", myUid);
-  const targetRef = doc(db, "users", targetUid);
+  const myRef =
+    doc(
+      db,
+      "users",
+      myUid
+    );
 
-  const mySnap = await getDoc(myRef);
+  const targetRef =
+    doc(
+      db,
+      "users",
+      targetUid
+    );
 
-  if(!mySnap.exists()) return false;
+  const mySnap =
+    await getDoc(
+      myRef
+    );
 
-  const myData = mySnap.data();
+  const targetSnap =
+    await getDoc(
+      targetRef
+    );
 
-  let followingList = myData.followingList || [];
+  if(
+    !mySnap.exists() ||
+    !targetSnap.exists()
+  ){
+    return false;
+  }
 
-  const alreadyFollowing = followingList.includes(targetUid);
+  const myData =
+    mySnap.data();
+
+  const targetData =
+    targetSnap.data();
+
+  let followingList =
+    myData
+    .followingList || [];
+
+  let followersList =
+    targetData
+    .followersList || [];
+
+  const alreadyFollowing =
+    followingList.includes(
+      targetUid
+    );
 
   if(alreadyFollowing){
 
     // Unfollow
-    followingList = followingList.filter(
-      id => id !== targetUid
+    followingList =
+      followingList.filter(
+        id =>
+          id !==
+          targetUid
+      );
+
+    followersList =
+      followersList.filter(
+        id =>
+          id !==
+          myUid
+      );
+
+    await updateDoc(
+      myRef,
+      {
+        following:
+          increment(-1),
+        followingList
+      }
     );
 
-    await updateDoc(myRef,{
-      following: increment(-1),
-      followingList
-    });
-
-    await updateDoc(targetRef,{
-      followers: increment(-1)
-    });
+    await updateDoc(
+      targetRef,
+      {
+        followers:
+          increment(-1),
+        followersList
+      }
+    );
 
     return false;
 
   }else{
 
     // Follow
-    followingList.push(targetUid);
+    followingList.push(
+      targetUid
+    );
 
-    await updateDoc(myRef,{
-      following: increment(1),
-      followingList
-    });
+    followersList.push(
+      myUid
+    );
 
-    await updateDoc(targetRef,{
-      followers: increment(1)
-    });
+    await updateDoc(
+      myRef,
+      {
+        following:
+          increment(1),
+        followingList
+      }
+    );
+
+    await updateDoc(
+      targetRef,
+      {
+        followers:
+          increment(1),
+        followersList
+      }
+    );
 
     return true;
   }
 }
 
 //
-// هذه حتى search.html يبقى يشتغل
+// حتى search يشتغل
 //
-export async function followUser(myUid, targetUid){
-  return await toggleFollow(myUid, targetUid);
+export async function followUser(
+  myUid,
+  targetUid
+){
+  return await toggleFollow(
+    myUid,
+    targetUid
+  );
+}
+
+//
+// جلب مستخدمين من ids
+//
+export async function getUsersByIds(ids){
+
+  const arr = [];
+
+  for(
+    const uid of ids
+  ){
+
+    const snap =
+      await getDoc(
+        doc(
+          db,
+          "users",
+          uid
+        )
+      );
+
+    if(
+      snap.exists()
+    ){
+      arr.push({
+        uid,
+        ...snap.data()
+      });
+    }
+  }
+
+  return arr;
 }
