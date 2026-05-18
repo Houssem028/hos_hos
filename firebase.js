@@ -465,54 +465,6 @@ export async function getFollowingList(uid){
   return result;
 }
 //
-
-      msgs.push(
-        doc.data()
-      );
-
-    });
-
-    callback(msgs);
-
-  });
-}
-//
-// جلب قائمة المحادثات
-//
-export async function getChatsList(myUid){
-
-  const chatsSnap = await getDocs(
-    collection(db,"chats")
-  );
-
-  const result = [];
-
-  for(const chatDoc of chatsSnap.docs){
-
-    const roomId = chatDoc.id;
-
-    // نتأكد أن المستخدم داخل هذي الغرفة
-    if(!roomId.includes(myUid)) continue;
-
-    const ids = roomId.split("_");
-
-    const otherUid =
-      ids[0]===myUid
-      ? ids[1]
-      : ids[0];
-
-    const userData =
-      await getUserData(otherUid);
-
-    result.push({
-      uid: otherUid,
-      ...userData
-    });
-  }
-
-  return result;
-}
-//
 // إرسال رسالة
 //
 import {
@@ -570,6 +522,8 @@ export async function sendMessage(
     }
   );
 }
+
+//
 // مراقبة الرسائل
 //
 export function listenMessages(
@@ -605,9 +559,10 @@ export function listenMessages(
 
       snap.forEach(doc=>{
 
-        msgs.push(
-          doc.data()
-        );
+        msgs.push({
+          id:doc.id,
+          ...doc.data()
+        });
 
       });
 
@@ -620,9 +575,7 @@ export function listenMessages(
 //
 // جلب قائمة المحادثات
 //
-export async function getChatsList(
-  myUid
-){
+export async function getChatsList(myUid){
 
   const chatsSnap =
     await getDocs(
@@ -666,9 +619,23 @@ export async function getChatsList(
 
     result.push({
       uid: otherUid,
-      ...userData
+      ...userData,
+
+      lastMessage:
+        data.lastMessage || "",
+
+      updatedAt:
+        data.updatedAt || 0
     });
+
   }
+
+  // ترتيب حسب آخر رسالة
+  result.sort(
+    (a,b)=>
+      b.updatedAt -
+      a.updatedAt
+  );
 
   return result;
 }
