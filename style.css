@@ -3,9 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
 <title>App</title>
 
 <style>
+
 *{
   margin:0;
   padding:0;
@@ -16,13 +18,14 @@
 body{
   background:black;
   color:white;
+  overflow:hidden;
 }
 
-/* fade in */
+/* دخول ناعم */
 @keyframes fadeIn{
   from{
     opacity:0;
-    transform:scale(1.05);
+    transform:scale(1.08);
   }
   to{
     opacity:1;
@@ -34,96 +37,250 @@ body{
 #splash{
   width:100%;
   height:100vh;
+
   background:
-  linear-gradient(rgba(0,0,0,.35), rgba(0,0,0,.65)),
+  linear-gradient(
+    rgba(0,0,0,.25),
+    rgba(0,0,0,.75)
+  ),
   url("Picsart_26-05-17_20-56-36-645.jpg");
+
   background-size:cover;
   background-position:center;
   background-repeat:no-repeat;
-  animation:fadeIn 1.5s ease-in-out forwards;
+
+  animation:
+  fadeIn 1.5s ease forwards;
+
+  position:fixed;
+  inset:0;
+  z-index:9999;
 }
 
-/* صفحة تسجيل الدخول */
+/* صفحة الدخول */
 #login{
   width:100%;
   height:100vh;
+
   display:flex;
   justify-content:center;
   align-items:center;
+
   padding:20px;
-  background:linear-gradient(135deg,#111,#000);
+
+  background:
+  linear-gradient(
+    180deg,
+    #0d0d0d,
+    #000
+  );
+
+  position:relative;
 }
 
+/* كرت الدخول */
 .login-card{
+
   width:100%;
   max-width:420px;
-  background:rgba(255,255,255,.08);
-  backdrop-filter:blur(20px);
-  border-radius:25px;
+
+  background:
+  rgba(255,255,255,.07);
+
+  backdrop-filter:
+  blur(25px);
+
+  border:
+  1px solid
+  rgba(255,255,255,.08);
+
+  border-radius:28px;
+
   padding:35px;
-  box-shadow:0 0 30px rgba(0,0,0,.5);
+
+  box-shadow:
+  0 0 40px
+  rgba(0,0,0,.45);
+
 }
 
 .login-card h2{
+
   text-align:center;
+
   margin-bottom:30px;
-  font-size:30px;
+
+  font-size:32px;
+
+  font-weight:bold;
 }
 
+/* الحقول */
 input{
+
   width:100%;
+
   padding:18px;
+
   margin-bottom:18px;
+
   border:none;
-  border-radius:14px;
+
+  border-radius:16px;
+
   font-size:17px;
-  background:rgba(255,255,255,.12);
+
+  background:
+  rgba(255,255,255,.09);
+
   color:white;
+
+  outline:none;
+
+  transition:.2s;
+}
+
+input:focus{
+
+  background:
+  rgba(255,255,255,.14);
+
+  transform:scale(1.01);
 }
 
 input::placeholder{
-  color:#ccc;
+  color:#bbb;
 }
 
-button{
+/* زر الدخول */
+.login-btn{
+
   width:100%;
-  padding:18px;
+
+  padding:17px;
+
   border:none;
-  border-radius:14px;
+
+  border-radius:18px;
+
   font-size:20px;
+
   cursor:pointer;
-  background:white;
-  color:black;
+
+  background:
+  linear-gradient(
+    135deg,
+    #ff0050,
+    #ff2d55
+  );
+
+  color:white;
+
   font-weight:bold;
+
+  transition:.2s;
+}
+
+.login-btn:active{
+  transform:scale(.97);
 }
 
 .hidden{
   display:none;
 }
 
-/* الشريط السفلي - نفس كل الصفحات */
+/* شريط تيكتوك السفلي */
 .bottom-nav{
+
   position:fixed;
+
   bottom:0;
   left:0;
   right:0;
-  height:60px;
-  background:#111;
+
+  height:68px;
+
+  background:
+  rgba(10,10,10,.96);
+
+  backdrop-filter:
+  blur(20px);
+
+  border-top:
+  1px solid
+  rgba(255,255,255,.08);
+
   display:flex;
+
   justify-content:space-around;
+
   align-items:center;
-  border-top:1px solid #222;
+
+  z-index:999;
 }
 
+/* أزرار */
 .bottom-nav button{
+
   background:none;
+
   border:none;
+
   color:white;
-  font-size:20px;
-  width:auto;
-  padding:0;
+
+  font-size:26px;
+
+  width:52px;
+  height:52px;
+
+  border-radius:16px;
+
+  display:flex;
+
+  justify-content:center;
+  align-items:center;
+
+  transition:.2s;
+
   cursor:pointer;
 }
+
+/* تأثير */
+.bottom-nav button:hover{
+
+  background:
+  rgba(255,255,255,.08);
+}
+
+.bottom-nav button:active{
+
+  transform:scale(.88);
+}
+
+/* زر الإضافة */
+.add-btn{
+
+  background:
+  linear-gradient(
+    135deg,
+    #00f2ff,
+    #ff0050
+  ) !important;
+
+  color:white !important;
+
+  width:56px !important;
+  height:56px !important;
+
+  border-radius:18px !important;
+
+  font-size:28px !important;
+
+  box-shadow:
+  0 0 18px
+  rgba(255,0,80,.45);
+}
+
 </style>
 </head>
 
@@ -134,48 +291,106 @@ button{
 
 <!-- Login -->
 <div id="login" class="hidden">
+
   <div class="login-card">
-    <h2>تسجيل الدخول</h2>
-    <input type="text" placeholder="اسم المستخدم">
-    <input type="password" placeholder="كلمة المرور">
-    <button>دخول</button>
+
+    <h2>مرحباً 👋</h2>
+
+    <input
+    type="text"
+    placeholder="اسم المستخدم">
+
+    <input
+    type="password"
+    placeholder="كلمة المرور">
+
+    <button class="login-btn">
+      دخول
+    </button>
+
   </div>
 
   <!-- الشريط السفلي -->
   <div class="bottom-nav">
-    <button onclick="goHome()">🏠</button>
-    <button onclick="goMessages()">💬</button>
-    <button onclick="uploadVideo()">➕</button>
-    <button onclick="goNotifications()">🔔</button>
-    <button onclick="goProfile()">👤</button>
+
+    <button onclick="goHome()">
+      🏠
+    </button>
+
+    <button onclick="goMessages()">
+      💬
+    </button>
+
+    <button
+    class="add-btn"
+    onclick="uploadVideo()">
+      ＋
+    </button>
+
+    <button onclick="goNotifications()">
+      🔔
+    </button>
+
+    <button onclick="goProfile()">
+      👤
+    </button>
+
   </div>
+
 </div>
 
 <script>
+
+// شاشة البداية
 setTimeout(()=>{
-  document.getElementById("splash").style.display="none";
-  document.getElementById("login").classList.remove("hidden");
+
+  document
+  .getElementById(
+    "splash"
+  )
+  .style.display="none";
+
+  document
+  .getElementById(
+    "login"
+  )
+  .classList.remove(
+    "hidden"
+  );
+
 },3000);
 
+// التنقل
 function goHome(){
-  window.location.href="feed.html";
+
+  window.location.href=
+    "feed.html";
 }
 
 function goMessages(){
-  window.location.href="inbox.html";
+
+  window.location.href=
+    "inbox.html";
 }
 
 function uploadVideo(){
-  window.location.href="upload.html";
+
+  window.location.href=
+    "upload.html";
 }
 
 function goNotifications(){
-  window.location.href="notify.html";
+
+  window.location.href=
+    "notify.html";
 }
 
 function goProfile(){
-  window.location.href="profile.html";
+
+  window.location.href=
+    "profile.html";
 }
+
 </script>
 
 </body>
