@@ -1,11 +1,24 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport"
-content="width=device-width,initial-scale=1.0">
+
+<meta
+name="viewport"
+content="
+width=device-width,
+initial-scale=1.0,
+maximum-scale=1.0,
+user-scalable=no,
+viewport-fit=cover
+">
 
 <title>Hos Hos</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#000000">
 
 <style>
 
@@ -14,12 +27,26 @@ content="width=device-width,initial-scale=1.0">
   padding:0;
   box-sizing:border-box;
   font-family:Arial,sans-serif;
+
+  -webkit-tap-highlight-color:
+  transparent;
+
+  user-select:none;
+}
+
+html,
+body{
+  width:100%;
+  height:100%;
+  overflow:hidden;
 }
 
 body{
-  background:black;
+  background:#000;
   overflow:hidden;
 }
+
+/* الفيديوهات */
 
 #feedContainer{
   height:100vh;
@@ -57,39 +84,102 @@ body{
   );
 }
 
+/* الشريط العلوي */
+
 .top-bar{
+
   position:fixed;
+
   top:0;
   left:0;
   right:0;
-  height:70px;
+
+  height:78px;
 
   display:flex;
   justify-content:center;
   align-items:center;
-
-  color:white;
-  font-size:24px;
-  font-weight:bold;
 
   z-index:999;
 
   background:
   linear-gradient(
     to bottom,
-    rgba(0,0,0,.55),
+    rgba(0,0,0,.75),
     transparent
   );
 
-  backdrop-filter:blur(10px);
+  backdrop-filter:blur(15px);
 }
+
+/* اللوجو */
+
+.logo-box{
+
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+  color:white;
+
+  font-size:28px;
+  font-weight:bold;
+
+  letter-spacing:2px;
+}
+
+.top-logo{
+
+  width:42px;
+  height:42px;
+
+  border-radius:14px;
+
+  object-fit:cover;
+
+  box-shadow:
+  0 4px 15px rgba(0,0,0,.4);
+}
+
+/* زر البحث */
+
+.top-left{
+
+  position:absolute;
+  left:15px;
+}
+
+.search-btn{
+
+  width:46px;
+  height:46px;
+
+  border:none;
+  border-radius:50%;
+
+  background:
+  rgba(255,255,255,.12);
+
+  color:white;
+
+  font-size:22px;
+
+  backdrop-filter:blur(10px);
+
+  cursor:pointer;
+}
+
+/* معلومات الفيديو */
 
 .video-info{
   position:absolute;
   left:15px;
-  bottom:100px;
+  bottom:120px;
+
   z-index:5;
+
   color:white;
+
   width:70%;
 }
 
@@ -105,10 +195,12 @@ body{
   line-height:1.5;
 }
 
+/* الأزرار الجانبية */
+
 .video-actions{
   position:absolute;
   right:12px;
-  bottom:110px;
+  bottom:125px;
 
   display:flex;
   flex-direction:column;
@@ -122,11 +214,13 @@ body{
   display:flex;
   flex-direction:column;
   align-items:center;
+
   color:white;
   font-size:13px;
 }
 
 .action button{
+
   width:60px;
   height:60px;
 
@@ -137,6 +231,7 @@ body{
   rgba(255,255,255,.12);
 
   color:white;
+
   font-size:28px;
 
   cursor:pointer;
@@ -145,6 +240,7 @@ body{
 }
 
 .profile-pic{
+
   width:62px;
   height:62px;
 
@@ -156,43 +252,84 @@ body{
   cursor:pointer;
 }
 
-.bottom-nav{
-  position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
+/* الشريط السفلي */
 
-  height:68px;
+.bottom-nav{
+
+  position:fixed;
+
+  bottom:12px;
+  left:12px;
+  right:12px;
+
+  height:70px;
+
+  border-radius:24px;
 
   background:
-  rgba(0,0,0,.92);
+  rgba(20,20,20,.88);
+
+  backdrop-filter:blur(20px);
+
+  border:
+  1px solid rgba(255,255,255,.08);
 
   display:flex;
   justify-content:space-around;
   align-items:center;
 
   z-index:999;
+
+  box-shadow:
+  0 5px 25px rgba(0,0,0,.45);
 }
+
+/* أزرار التنقل */
 
 .bottom-nav button{
+
   background:none;
   border:none;
+
   color:white;
+
   font-size:27px;
+
+  transition:.2s;
+
+  cursor:pointer;
 }
+
+.bottom-nav button:active{
+  transform:scale(.9);
+}
+
+/* زر الإضافة */
 
 .add-btn{
-  background:white !important;
-  color:black !important;
 
-  width:50px;
-  height:40px;
+  background:
+  linear-gradient(
+    135deg,
+    #ff2d55,
+    #ff0055
+  ) !important;
 
-  border-radius:14px;
+  color:white !important;
 
-  font-size:30px !important;
+  width:58px;
+  height:58px;
+
+  border-radius:18px;
+
+  font-size:34px !important;
   font-weight:bold;
+
+  box-shadow:
+  0 5px 18px rgba(255,0,85,.4);
 }
+
+/* التحميل */
 
 .loading{
   color:white;
@@ -201,18 +338,49 @@ body{
   font-size:22px;
 }
 
+/* اللايك */
+
 .liked{
   color:#ff2d55 !important;
 }
 
 </style>
+
 </head>
 
 <body>
 
+<!-- الشريط العلوي -->
+
 <div class="top-bar">
-  HOS HOS
+
+  <div class="top-left">
+
+    <button
+    class="search-btn"
+    onclick="goSearch()">
+
+      🔍
+
+    </button>
+
+  </div>
+
+  <div class="logo-box">
+
+    <img
+    src="icon-192.png"
+    class="top-logo">
+
+    <span>
+      HOS HOS
+    </span>
+
+  </div>
+
 </div>
+
+<!-- الفيديوهات -->
 
 <div id="feedContainer">
 
@@ -221,6 +389,8 @@ body{
   </div>
 
 </div>
+
+<!-- الشريط السفلي -->
 
 <div class="bottom-nav">
 
@@ -262,25 +432,28 @@ import {
   doc,
   updateDoc,
   increment
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+} from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const container =
-  document.getElementById(
-    "feedContainer"
-  );
+document.getElementById(
+  "feedContainer"
+);
+
+/* تحميل الفيديوهات */
 
 async function loadVideos(){
 
   container.innerHTML = "";
 
   const q =
-    query(
-      collection(db,"videos"),
-      orderBy("createdAt","desc")
-    );
+  query(
+    collection(db,"videos"),
+    orderBy("createdAt","desc")
+  );
 
   const snap =
-    await getDocs(q);
+  await getDocs(q);
 
   if(snap.empty){
 
@@ -296,10 +469,10 @@ async function loadVideos(){
   snap.forEach(videoDoc=>{
 
     const video =
-      videoDoc.data();
+    videoDoc.data();
 
     const videoId =
-      videoDoc.id;
+    videoDoc.id;
 
     container.innerHTML += `
 
@@ -318,8 +491,8 @@ async function loadVideos(){
       <div class="video-info">
 
         <h3 onclick="
-          location.href=
-          'user.html?uid=${video.uid}'
+        location.href=
+        'user.html?uid=${video.uid}'
         ">
           @${video.username}
         </h3>
@@ -338,8 +511,8 @@ async function loadVideos(){
           class="profile-pic"
 
           onclick="
-            location.href=
-            'user.html?uid=${video.uid}'
+          location.href=
+          'user.html?uid=${video.uid}'
           "
 
           src="${
@@ -366,7 +539,7 @@ async function loadVideos(){
         <div class="action">
 
           <button onclick="
-            openComments('${videoId}')
+          openComments('${videoId}')
           ">
             💬
           </button>
@@ -380,13 +553,13 @@ async function loadVideos(){
         <div class="action">
 
           <button onclick="
-            shareVideo('${video.videoUrl}')
+          shareVideo('${video.videoUrl}')
           ">
             ↗️
           </button>
 
           <span>
-            Share
+            مشاركة
           </span>
 
         </div>
@@ -401,12 +574,14 @@ async function loadVideos(){
   setupLikes();
 }
 
+/* اللايكات */
+
 function setupLikes(){
 
   const buttons =
-    document.querySelectorAll(
-      ".likeBtn"
-    );
+  document.querySelectorAll(
+    ".likeBtn"
+  );
 
   buttons.forEach(btn=>{
 
@@ -414,28 +589,28 @@ function setupLikes(){
     async()=>{
 
       const id =
-        btn.dataset.id;
+      btn.dataset.id;
 
       const likesText =
-        document.getElementById(
-          "likes-"+id
-        );
+      document.getElementById(
+        "likes-"+id
+      );
 
       let current =
-        parseInt(
-          likesText.innerText
-        );
+      parseInt(
+        likesText.innerText
+      );
 
       await updateDoc(
         doc(db,"videos",id),
         {
           likes:
-            increment(1)
+          increment(1)
         }
       );
 
       likesText.innerText =
-        current + 1;
+      current + 1;
 
       btn.classList.add(
         "liked"
@@ -446,13 +621,18 @@ function setupLikes(){
 
 }
 
+/* التعليقات */
+
 window.openComments =
 (id)=>{
 
   alert(
     "التعليقات قريباً 💬"
   );
+
 };
+
+/* مشاركة */
 
 window.shareVideo =
 (url)=>{
@@ -460,41 +640,75 @@ window.shareVideo =
   navigator.share({
     url:url
   });
+
 };
+
+/* تحميل */
 
 loadVideos();
 
-/* تنقل */
+/* التنقل */
 
 window.goHome = ()=>{
 
   location.href =
-    "feed.html";
+  "feed.html";
+
 };
 
 window.goMessages = ()=>{
 
   location.href =
-    "inbox.html";
+  "inbox.html";
+
 };
 
 window.uploadVideo = ()=>{
 
   location.href =
-    "upload.html";
+  "upload.html";
+
 };
 
 window.goNotifications = ()=>{
 
   location.href =
-    "notify.html";
+  "notifications.html";
+
 };
 
 window.goProfile = ()=>{
 
   location.href =
-    "profile.html";
+  "profile.html";
+
 };
+
+window.goSearch = ()=>{
+
+  location.href =
+  "search.html";
+
+};
+
+/* Service Worker */
+
+if(
+  "serviceWorker"
+  in navigator
+){
+
+  window.addEventListener(
+  "load",
+  ()=>{
+
+    navigator
+    .serviceWorker
+    .register("/sw.js");
+
+  });
+
+}
 
 </script>
 
