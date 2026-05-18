@@ -58,9 +58,10 @@ body{
   gap:8px;
   padding:10px;
   background:#111;
+  align-items:center;
 }
 
-input{
+input[type="text"]{
   flex:1;
   padding:12px;
   border:none;
@@ -71,7 +72,7 @@ input{
 button{
   border:none;
   border-radius:10px;
-  padding:12px 18px;
+  padding:12px 16px;
   background:#ff2d55;
   color:white;
   cursor:pointer;
@@ -81,6 +82,15 @@ button{
   text-align:center;
   color:gray;
   margin-top:40px;
+}
+
+.msg img{
+  max-width:220px;
+  border-radius:14px;
+}
+
+audio{
+  max-width:220px;
 }
 
 </style>
@@ -99,10 +109,29 @@ button{
 
 <div class="bottom">
 
+  <!-- صورة -->
   <input
+  type="file"
+  id="imageInput"
+  accept="image/*"
+  hidden>
+
+  <button id="imageBtn">
+    🖼️
+  </button>
+
+  <!-- فويس -->
+  <button id="voiceBtn">
+    🎤
+  </button>
+
+  <!-- كتابة -->
+  <input
+  type="text"
   id="text"
   placeholder="اكتب رسالة">
 
+  <!-- إرسال -->
   <button id="send">
     إرسال
   </button>
@@ -157,7 +186,6 @@ async(user)=>{
 
   try{
 
-    // جلب بيانات المستخدم
     const other =
       await getUserData(
         otherUid
@@ -171,7 +199,6 @@ async(user)=>{
       other.username ||
       "مستخدم";
 
-    // مراقبة الرسائل
     listenMessages(
       myUid,
       otherUid,
@@ -182,27 +209,21 @@ async(user)=>{
 
     console.error(err);
 
-    alert(
-      "حدث خطأ"
-    );
+    alert("حدث خطأ");
   }
 
 });
 
 // عرض الرسائل
-function renderMessages(
-  msgs
-){
+function renderMessages(msgs){
 
   const box =
-    document
-    .getElementById(
+    document.getElementById(
       "messages"
     );
 
   box.innerHTML = "";
 
-  // إذا لا توجد رسائل
   if(
     !msgs ||
     msgs.length === 0
@@ -220,8 +241,7 @@ function renderMessages(
   msgs.forEach(m=>{
 
     const div =
-      document
-      .createElement(
+      document.createElement(
         "div"
       );
 
@@ -233,21 +253,47 @@ function renderMessages(
         : "other"
       );
 
-    div.innerText =
-      m.text;
+    // صورة
+    if(
+      m.type === "image"
+    ){
 
-    box.appendChild(
-      div
-    );
+      div.innerHTML = `
+        <img
+        src="${m.image}">
+      `;
+
+    }
+
+    // فويس
+    else if(
+      m.type === "voice"
+    ){
+
+      div.innerHTML = `
+        <audio controls>
+          <source
+          src="${m.audio}">
+        </audio>
+      `;
+    }
+
+    // نص
+    else{
+
+      div.innerText =
+        m.text || "";
+    }
+
+    box.appendChild(div);
 
   });
 
-  // نزول لآخر رسالة
   box.scrollTop =
     box.scrollHeight;
 }
 
-// إرسال رسالة
+// إرسال نص
 document
 .getElementById(
   "send"
@@ -256,14 +302,12 @@ document
 async()=>{
 
   const input =
-    document
-    .getElementById(
+    document.getElementById(
       "text"
     );
 
   const text =
-    input.value
-    .trim();
+    input.value.trim();
 
   if(!text)
     return;
@@ -273,7 +317,10 @@ async()=>{
     await sendMessage(
       myUid,
       otherUid,
-      text
+      {
+        type:"text",
+        text:text
+      }
     );
 
     input.value = "";
@@ -289,7 +336,7 @@ async()=>{
 
 };
 
-// إرسال بـ Enter
+// Enter
 document
 .getElementById(
   "text"
@@ -311,6 +358,179 @@ document
 
   }
 );
+
+// إرسال صورة
+document
+.getElementById(
+  "imageBtn"
+)
+.onclick = ()=>{
+
+  document
+  .getElementById(
+    "imageInput"
+  )
+  .click();
+};
+
+document
+.getElementById(
+  "imageInput"
+)
+.onchange =
+async(e)=>{
+
+  const file =
+    e.target.files[0];
+
+  if(!file)
+    return;
+
+  const formData =
+    new FormData();
+
+  formData.append(
+    "file",
+    file
+  );
+
+  formData.append(
+    "upload_preset",
+    "hoshos_upload"
+  );
+
+  const res =
+    await fetch(
+      "https://api.cloudinary.com/v1_1/dgtazde5z/image/upload",
+      {
+        method:"POST",
+        body:formData
+      }
+    );
+
+  const data =
+    await res.json();
+
+  await sendMessage(
+    myUid,
+    otherUid,
+    {
+      type:"image",
+      image:data.secure_url
+    }
+  );
+};
+
+// تسجيل فويس
+let mediaRecorder;
+let audioChunks = [];
+
+document
+.getElementById(
+  "voiceBtn"
+)
+.onclick =
+async()=>{
+
+  const stream =
+    await navigator
+    .mediaDevices
+    .getUserMedia({
+      audio:true
+    });
+
+  mediaRecorder =
+    new MediaRecorder(
+      stream
+    );
+
+  audioChunks = [];
+
+  mediaRecorder.ondataavailable =
+    e=>{
+
+      audioChunks.push(
+        e.data
+      );
+    };
+
+  mediaRecorder.onstop =
+  async()=>{
+
+    const audioBlob =
+      new Blob(
+        audioChunks,
+        {
+          type:"audio/webm"
+        }
+      );
+
+    const formData =
+      new FormData();
+
+    formData.append(
+      "file",
+      audioBlob
+    );
+
+    formData.append(
+      "upload_preset",
+      "hoshos_upload"
+    );
+
+    formData.append(
+      "resource_type",
+      "video"
+    );
+
+    const res =
+      await fetch(
+        "https://api.cloudinary.com/v1_1/dgtazde5z/video/upload",
+        {
+          method:"POST",
+          body:formData
+        }
+      );
+
+    const data =
+      await res.json();
+
+    await sendMessage(
+      myUid,
+      otherUid,
+      {
+        type:"voice",
+        audio:data.secure_url
+      }
+    );
+
+  };
+
+  mediaRecorder.start();
+
+  document
+  .getElementById(
+    "voiceBtn"
+  )
+  .innerText = "⏹️";
+
+  document
+  .getElementById(
+    "voiceBtn"
+  )
+  .onclick = ()=>{
+
+    mediaRecorder.stop();
+
+    document
+    .getElementById(
+      "voiceBtn"
+    )
+    .innerText = "🎤";
+
+    location.reload();
+  };
+};
 
 </script>
 
