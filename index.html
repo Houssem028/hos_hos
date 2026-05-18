@@ -1,11 +1,19 @@
 <!DOCTYPE html>
 <html lang="ar">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
   <title>Hos Hos</title>
+
   <link rel="stylesheet" href="style.css">
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#000000">
 </head>
+
 <body>
 
   <!-- شاشة البداية -->
@@ -14,22 +22,53 @@
 
   <!-- صفحة تسجيل الدخول -->
   <section id="login" class="hidden">
+
     <div class="login-card">
+
       <h2>تسجيل الدخول</h2>
 
-      <input type="text" placeholder="اسم المستخدم أو البريد">
-      <input type="password" placeholder="كلمة المرور">
+      <input type="text"
+      placeholder="اسم المستخدم أو البريد">
 
-      <button onclick="login()">دخول</button>
+      <input type="password"
+      placeholder="كلمة المرور">
+
+      <button onclick="login()">
+        دخول
+      </button>
 
       <p class="signup">
-        ليس لديك حساب؟ <span>إنشاء حساب</span>
+        ليس لديك حساب؟
+        <span>إنشاء حساب</span>
       </p>
+
     </div>
+
   </section>
 
   <script src="app.js"></script>
+
+  <!-- Service Worker -->
+  <script>
+    if ("serviceWorker" in navigator) {
+
+      window.addEventListener("load", () => {
+
+        navigator.serviceWorker
+          .register("/sw.js")
+
+          .then(() => {
+            console.log("SW Registered ✅");
+          })
+
+          .catch((err) => {
+            console.log("SW Error ❌", err);
+          });
+
+      });
+
+    }
+  </script>
+
 </body>
 </html>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#000000">
