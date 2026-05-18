@@ -3,9 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
 <title>Search</title>
 
 <style>
+
 body{
   background:#000;
   color:white;
@@ -14,19 +16,36 @@ body{
   padding:20px;
 }
 
+h2{
+  margin-bottom:15px;
+}
+
 input{
   width:100%;
-  padding:12px;
+  padding:14px;
   border:none;
-  border-radius:10px;
+  border-radius:14px;
   box-sizing:border-box;
+  background:#111;
+  color:white;
+  font-size:15px;
+  outline:none;
+}
+
+input::placeholder{
+  color:#888;
+}
+
+#results{
+  margin-top:20px;
 }
 
 .user{
   background:#111;
-  margin-top:15px;
-  padding:12px;
-  border-radius:12px;
+  margin-bottom:14px;
+  padding:14px;
+  border-radius:18px;
+
   display:flex;
   justify-content:space-between;
   align-items:center;
@@ -35,113 +54,253 @@ input{
 .user-info{
   display:flex;
   align-items:center;
-  gap:10px;
+  gap:12px;
   cursor:pointer;
 }
 
 .user-info img{
-  width:45px;
-  height:45px;
+  width:52px;
+  height:52px;
   border-radius:50%;
   object-fit:cover;
+  border:2px solid #ff2d55;
+}
+
+.username{
+  font-size:17px;
+  font-weight:bold;
+}
+
+.actions{
+  display:flex;
+  gap:8px;
 }
 
 button{
-  background:#ff2d55;
-  color:white;
   border:none;
-  padding:8px 14px;
-  border-radius:8px;
+  padding:10px 14px;
+  border-radius:10px;
   cursor:pointer;
+  color:white;
+  font-size:14px;
 }
+
+.followBtn{
+  background:#ff2d55;
+}
+
+.msgBtn{
+  background:#333;
+  display:none;
+}
+
+.empty{
+  text-align:center;
+  margin-top:40px;
+  color:#777;
+}
+
 </style>
 </head>
 
 <body>
 
-<h2>البحث</h2>
+<h2>🔍 البحث</h2>
 
-<input id="searchInput" placeholder="ابحث عن مستخدم">
+<input
+id="searchInput"
+placeholder="ابحث عن مستخدم">
 
-<div id="results"></div>
+<div id="results">
+
+  <div class="empty">
+    ابدأ البحث...
+  </div>
+
+</div>
 
 <script type="module">
-import { auth, searchUsers, followUser } from "./firebase.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+  auth,
+  searchUsers,
+  followUser
+} from "./firebase.js";
+
+import {
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 let myUid = null;
 
-onAuthStateChanged(auth,(user)=>{
+onAuthStateChanged(
+auth,
+(user)=>{
+
   if(!user){
-    location.href = "login.html";
+
+    location.href =
+      "login.html";
+
     return;
   }
+
   myUid = user.uid;
 });
 
-const input = document.getElementById("searchInput");
-const results = document.getElementById("results");
+const input =
+  document.getElementById(
+    "searchInput"
+  );
 
-input.addEventListener("input", async ()=>{
+const results =
+  document.getElementById(
+    "results"
+  );
 
-  const text = input.value.trim();
+input.addEventListener(
+"input",
+async()=>{
+
+  const text =
+    input.value.trim();
 
   if(text === ""){
-    results.innerHTML = "";
-    return;
-  }
 
-  const users = await searchUsers(text);
-
-  results.innerHTML = "";
-
-  users.forEach((u)=>{
-
-    if(u.uid === myUid) return;
-
-    const div = document.createElement("div");
-    div.className = "user";
-
-    div.innerHTML = `
-      <div class="user-info" onclick="openUser('${u.uid}')">
-        <img src="${u.image || 'https://i.imgur.com/1X4n1ZL.png'}">
-        <span>${u.username}</span>
-      </div>
-
-      <div style="display:flex; gap:8px;">
-        <button class="followBtn">Follow</button>
-        <button class="msgBtn" style="display:none;background:#333;">
-          💬 رسالة
-        </button>
+    results.innerHTML = `
+      <div class="empty">
+        ابدأ البحث...
       </div>
     `;
 
-    const followBtn = div.querySelector(".followBtn");
-    const msgBtn = div.querySelector(".msgBtn");
+    return;
+  }
 
-    followBtn.onclick = async ()=>{
+  const users =
+    await searchUsers(text);
 
-      await followUser(myUid, u.uid);
+  results.innerHTML = "";
 
-      followBtn.innerText = "✓ متابَع";
-      followBtn.disabled = true;
-      followBtn.style.background = "#444";
+  let found = false;
 
-      msgBtn.style.display = "block";
+  users.forEach((u)=>{
+
+    if(u.uid === myUid)
+      return;
+
+    found = true;
+
+    const div =
+      document.createElement(
+        "div"
+      );
+
+    div.className =
+      "user";
+
+    div.innerHTML = `
+
+      <div
+      class="user-info"
+      onclick="openUser('${u.uid}')">
+
+        <img
+        src="${
+          u.image ||
+          'https://i.imgur.com/1X4n1ZL.png'
+        }">
+
+        <div class="username">
+          ${u.username}
+        </div>
+
+      </div>
+
+      <div class="actions">
+
+        <button
+        class="followBtn">
+          Follow
+        </button>
+
+        <button
+        class="msgBtn">
+          💬
+        </button>
+
+      </div>
+
+    `;
+
+    const followBtn =
+      div.querySelector(
+        ".followBtn"
+      );
+
+    const msgBtn =
+      div.querySelector(
+        ".msgBtn"
+      );
+
+    followBtn.onclick =
+    async()=>{
+
+      try{
+
+        await followUser(
+          myUid,
+          u.uid
+        );
+
+        followBtn.innerText =
+          "✓ متابَع";
+
+        followBtn.disabled =
+          true;
+
+        followBtn.style.background =
+          "#444";
+
+        msgBtn.style.display =
+          "block";
+
+      }catch(err){
+
+        console.error(err);
+
+        alert(
+          "فشل المتابعة"
+        );
+      }
     };
 
     msgBtn.onclick = ()=>{
-      location.href = "chat.html?uid=" + u.uid;
+
+      location.href =
+        "chat.html?uid=" +
+        u.uid;
     };
 
     results.appendChild(div);
+
   });
+
+  if(!found){
+
+    results.innerHTML = `
+      <div class="empty">
+        لا يوجد مستخدمين
+      </div>
+    `;
+  }
 
 });
 
-// فتح صفحة المستخدم
+// فتح البروفايل
 window.openUser = (uid)=>{
-  location.href = "user.html?uid=" + uid;
+
+  location.href =
+    "user.html?uid=" + uid;
 };
 
 </script>
