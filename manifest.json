@@ -2,7 +2,7 @@
   "name": "Hos Hos",
   "short_name": "HosHos",
   "start_url": "./index.html",
-  "scope": "/",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#000000",
