@@ -1,48 +1,329 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta name="viewport"
+  content="width=device-width,initial-scale=1.0">
+
   <title>Hos Hos - تسجيل الدخول</title>
-  <link rel="stylesheet" href="style.css">
+
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#000000">
+
+  <style>
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial,sans-serif;
+    }
+
+    body{
+      height:100vh;
+
+      display:flex;
+      justify-content:center;
+      align-items:center;
+
+      overflow:hidden;
+
+      background:
+      linear-gradient(
+        135deg,
+        #000000,
+        #111111,
+        #1a1a1a
+      );
+    }
+
+    /* خلفية متحركة */
+
+    body::before{
+      content:"";
+
+      position:absolute;
+      width:500px;
+      height:500px;
+
+      background:
+      radial-gradient(
+        circle,
+        rgba(255,0,100,.35),
+        transparent
+      );
+
+      top:-120px;
+      right:-120px;
+
+      animation:move1 8s infinite alternate;
+    }
+
+    body::after{
+      content:"";
+
+      position:absolute;
+      width:450px;
+      height:450px;
+
+      background:
+      radial-gradient(
+        circle,
+        rgba(0,140,255,.25),
+        transparent
+      );
+
+      bottom:-120px;
+      left:-120px;
+
+      animation:move2 8s infinite alternate;
+    }
+
+    @keyframes move1{
+      from{
+        transform:translateY(0);
+      }
+      to{
+        transform:translateY(40px);
+      }
+    }
+
+    @keyframes move2{
+      from{
+        transform:translateY(0);
+      }
+      to{
+        transform:translateY(-40px);
+      }
+    }
+
+    .login-card{
+
+      position:relative;
+      z-index:5;
+
+      width:90%;
+      max-width:380px;
+
+      padding:35px 25px;
+
+      border-radius:28px;
+
+      background:
+      rgba(255,255,255,.08);
+
+      backdrop-filter:blur(20px);
+
+      border:
+      1px solid rgba(255,255,255,.12);
+
+      box-shadow:
+      0 10px 40px rgba(0,0,0,.45);
+
+      text-align:center;
+    }
+
+    .logo{
+      font-size:38px;
+      font-weight:bold;
+      color:white;
+
+      margin-bottom:10px;
+
+      letter-spacing:2px;
+    }
+
+    .subtitle{
+      color:#ccc;
+      font-size:14px;
+
+      margin-bottom:35px;
+    }
+
+    .input-box{
+      margin-bottom:18px;
+    }
+
+    .input-box input{
+
+      width:100%;
+      height:55px;
+
+      border:none;
+      outline:none;
+
+      border-radius:18px;
+
+      padding:0 18px;
+
+      font-size:15px;
+
+      background:
+      rgba(255,255,255,.10);
+
+      color:white;
+
+      backdrop-filter:blur(10px);
+
+      transition:.25s;
+    }
+
+    .input-box input:focus{
+      border:
+      1px solid #ff2d55;
+
+      transform:scale(1.02);
+    }
+
+    .input-box input::placeholder{
+      color:#bbb;
+    }
+
+    .login-btn{
+
+      width:100%;
+      height:55px;
+
+      border:none;
+      border-radius:18px;
+
+      background:
+      linear-gradient(
+        135deg,
+        #ff2d55,
+        #ff0055
+      );
+
+      color:white;
+
+      font-size:18px;
+      font-weight:bold;
+
+      cursor:pointer;
+
+      margin-top:10px;
+
+      transition:.25s;
+    }
+
+    .login-btn:hover{
+      transform:scale(1.03);
+    }
+
+    .signup{
+      margin-top:22px;
+      color:#ccc;
+      font-size:14px;
+    }
+
+    .signup span{
+      color:#ff2d55;
+      font-weight:bold;
+      cursor:pointer;
+    }
+
+  </style>
+
 </head>
+
 <body>
 
   <div class="login-card">
-    <h2>تسجيل الدخول</h2>
 
-    <input id="email" type="email" placeholder="البريد الإلكتروني">
-    <input id="password" type="password" placeholder="كلمة المرور">
+    <div class="logo">
+      HOS HOS
+    </div>
 
-    <button onclick="loginUser()">دخول</button>
+    <div class="subtitle">
+      مرحباً بك مجدداً 👋
+    </div>
+
+    <div class="input-box">
+      <input
+      id="email"
+      type="email"
+      placeholder="البريد الإلكتروني">
+    </div>
+
+    <div class="input-box">
+      <input
+      id="password"
+      type="password"
+      placeholder="كلمة المرور">
+    </div>
+
+    <button
+    class="login-btn"
+    onclick="loginUser()">
+      دخول
+    </button>
 
     <p class="signup">
       ليس لديك حساب؟
-      <span onclick="goSignup()">إنشاء حساب</span>
+      <span onclick="goSignup()">
+        إنشاء حساب
+      </span>
     </p>
+
   </div>
 
   <script type="module">
-    import { login } from "./firebase.js";
+
+    import {
+      login
+    } from "./firebase.js";
 
     window.loginUser = function(){
 
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
+      const email =
+      document.getElementById(
+        "email"
+      ).value;
 
-      login(email, password)
-      .then(() => {
-        window.location.href = "feed.html";
+      const password =
+      document.getElementById(
+        "password"
+      ).value;
+
+      login(email,password)
+
+      .then(()=>{
+
+        window.location.href =
+        "feed.html";
+
       })
-      .catch(err => {
+
+      .catch(err=>{
+
         alert(err.message);
+
       });
 
     }
 
     window.goSignup = function(){
-      window.location.href = "signup.html";
+
+      window.location.href =
+      "signup.html";
+
     }
+
+    /* Service Worker */
+
+    if ("serviceWorker" in navigator) {
+
+      window.addEventListener(
+      "load",()=>{
+
+        navigator.serviceWorker
+        .register("/sw.js");
+
+      });
+
+    }
+
   </script>
 
 </body>
