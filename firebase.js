@@ -539,3 +539,39 @@ export function listenMessages(
 
   });
 }
+//
+// جلب قائمة المحادثات
+//
+export async function getChatsList(myUid){
+
+  const chatsSnap = await getDocs(
+    collection(db,"chats")
+  );
+
+  const result = [];
+
+  for(const chatDoc of chatsSnap.docs){
+
+    const roomId = chatDoc.id;
+
+    // نتأكد أن المستخدم داخل هذي الغرفة
+    if(!roomId.includes(myUid)) continue;
+
+    const ids = roomId.split("_");
+
+    const otherUid =
+      ids[0]===myUid
+      ? ids[1]
+      : ids[0];
+
+    const userData =
+      await getUserData(otherUid);
+
+    result.push({
+      uid: otherUid,
+      ...userData
+    });
+  }
+
+  return result;
+}
