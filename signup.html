@@ -1,61 +1,518 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
+
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+  <meta
+  name="viewport"
+  content="
+  width=device-width,
+  initial-scale=1.0,
+  maximum-scale=1.0,
+  user-scalable=no,
+  viewport-fit=cover
+  ">
+
   <title>Hos Hos - إنشاء حساب</title>
-  <link rel="stylesheet" href="style.css">
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#000000">
+
+  <style>
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+
+      font-family:Arial,sans-serif;
+
+      -webkit-tap-highlight-color:
+      transparent;
+
+      user-select:none;
+    }
+
+    html,
+    body{
+      width:100%;
+      height:100%;
+      overflow:hidden;
+    }
+
+    body{
+
+      position:fixed;
+      inset:0;
+
+      display:flex;
+      justify-content:center;
+      align-items:center;
+
+      overflow:hidden;
+
+      touch-action:none;
+      overscroll-behavior:none;
+
+      background:
+      linear-gradient(
+        135deg,
+        #000000,
+        #111111,
+        #1a1a1a
+      );
+    }
+
+    /* الخلفية */
+
+    body::before{
+
+      content:"";
+
+      position:absolute;
+
+      width:500px;
+      height:500px;
+
+      background:
+      radial-gradient(
+        circle,
+        rgba(255,0,100,.35),
+        transparent
+      );
+
+      top:-120px;
+      right:-120px;
+
+      animation:
+      move1 8s infinite alternate;
+    }
+
+    body::after{
+
+      content:"";
+
+      position:absolute;
+
+      width:450px;
+      height:450px;
+
+      background:
+      radial-gradient(
+        circle,
+        rgba(0,140,255,.25),
+        transparent
+      );
+
+      bottom:-120px;
+      left:-120px;
+
+      animation:
+      move2 8s infinite alternate;
+    }
+
+    @keyframes move1{
+
+      from{
+        transform:
+        translateY(0);
+      }
+
+      to{
+        transform:
+        translateY(40px);
+      }
+
+    }
+
+    @keyframes move2{
+
+      from{
+        transform:
+        translateY(0);
+      }
+
+      to{
+        transform:
+        translateY(-40px);
+      }
+
+    }
+
+    /* الكارد */
+
+    .login-card{
+
+      position:relative;
+      z-index:5;
+
+      width:90%;
+      max-width:380px;
+
+      padding:35px 25px;
+
+      border-radius:28px;
+
+      background:
+      rgba(255,255,255,.08);
+
+      backdrop-filter:blur(20px);
+
+      border:
+      1px solid rgba(255,255,255,.12);
+
+      box-shadow:
+      0 10px 40px rgba(0,0,0,.45);
+
+      text-align:center;
+
+      animation:
+      fadeIn .8s ease;
+    }
+
+    @keyframes fadeIn{
+
+      from{
+        opacity:0;
+        transform:
+        translateY(30px);
+      }
+
+      to{
+        opacity:1;
+        transform:
+        translateY(0);
+      }
+
+    }
+
+    /* اللوجو */
+
+    .logo-box{
+
+      display:flex;
+      align-items:center;
+      justify-content:center;
+
+      gap:12px;
+
+      margin-bottom:35px;
+    }
+
+    .logo-img{
+
+      width:58px;
+      height:58px;
+
+      border-radius:18px;
+
+      object-fit:cover;
+
+      box-shadow:
+      0 5px 20px rgba(0,0,0,.45);
+    }
+
+    .logo-text{
+
+      font-size:34px;
+      font-weight:bold;
+
+      color:white;
+
+      letter-spacing:2px;
+    }
+
+    /* الإدخالات */
+
+    .input-box{
+      margin-bottom:18px;
+    }
+
+    .input-box input{
+
+      width:100%;
+      height:56px;
+
+      border:none;
+      outline:none;
+
+      border-radius:18px;
+
+      padding:0 18px;
+
+      font-size:15px;
+
+      background:
+      rgba(255,255,255,.10);
+
+      color:white;
+
+      backdrop-filter:blur(10px);
+
+      transition:.25s;
+    }
+
+    .input-box input::placeholder{
+      color:#bbb;
+    }
+
+    .input-box input:focus{
+
+      border:
+      1px solid #ff2d55;
+
+      transform:
+      scale(1.02);
+    }
+
+    /* الزر */
+
+    .login-btn{
+
+      width:100%;
+      height:56px;
+
+      border:none;
+      border-radius:18px;
+
+      background:
+      linear-gradient(
+        135deg,
+        #ff2d55,
+        #ff0055
+      );
+
+      color:white;
+
+      font-size:18px;
+      font-weight:bold;
+
+      cursor:pointer;
+
+      margin-top:10px;
+
+      transition:.25s;
+    }
+
+    .login-btn:active{
+      transform:scale(.97);
+    }
+
+    /* تسجيل الدخول */
+
+    .signup{
+
+      margin-top:22px;
+
+      color:#ccc;
+
+      font-size:14px;
+    }
+
+    .signup span{
+
+      color:#ff2d55;
+
+      font-weight:bold;
+
+      cursor:pointer;
+    }
+
+  </style>
+
 </head>
+
 <body>
 
   <div class="login-card">
-    <h2>إنشاء حساب</h2>
 
-    <input id="username" type="text" placeholder="اسم المستخدم">
-    <input id="email" type="email" placeholder="البريد الإلكتروني">
-    <input id="password" type="password" placeholder="كلمة المرور">
+    <!-- اللوجو -->
 
-    <button onclick="registerUser()">إنشاء الحساب</button>
+    <div class="logo-box">
+
+      <img
+      src="icon-192.png"
+      class="logo-img">
+
+      <div class="logo-text">
+        HOS HOS
+      </div>
+
+    </div>
+
+    <!-- الإدخالات -->
+
+    <div class="input-box">
+
+      <input
+      id="username"
+      type="text"
+      placeholder="اسم المستخدم">
+
+    </div>
+
+    <div class="input-box">
+
+      <input
+      id="email"
+      type="email"
+      placeholder="البريد الإلكتروني">
+
+    </div>
+
+    <div class="input-box">
+
+      <input
+      id="password"
+      type="password"
+      placeholder="كلمة المرور">
+
+    </div>
+
+    <!-- الزر -->
+
+    <button
+    class="login-btn"
+    onclick="registerUser()">
+
+      إنشاء الحساب
+
+    </button>
+
+    <!-- تسجيل الدخول -->
 
     <p class="signup">
+
       لديك حساب؟
-      <span onclick="goLogin()">تسجيل الدخول</span>
+
+      <span onclick="goLogin()">
+        تسجيل الدخول
+      </span>
+
     </p>
+
   </div>
 
   <script type="module">
-    import { register } from "./firebase.js";
 
-    window.registerUser = function(){
+    import {
+      register
+    } from "./firebase.js";
 
-      const username = document.getElementById("username").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value;
+    window.registerUser =
+    function(){
 
-      // 🚨 تحقق من البيانات قبل الإرسال
-      if (!username || !email || !password) {
-        alert("رجاءً املأ كل الحقول");
+      const username =
+      document
+      .getElementById(
+        "username"
+      )
+      .value
+      .trim();
+
+      const email =
+      document
+      .getElementById(
+        "email"
+      )
+      .value
+      .trim();
+
+      const password =
+      document
+      .getElementById(
+        "password"
+      )
+      .value;
+
+      /* تحقق */
+
+      if(
+        !username ||
+        !email ||
+        !password
+      ){
+
+        alert(
+          "رجاءً املأ كل الحقول"
+        );
+
         return;
       }
 
-      if (password.length < 6) {
-        alert("كلمة المرور لازم تكون 6 أحرف أو أكثر");
+      if(
+        password.length < 6
+      ){
+
+        alert(
+          "كلمة المرور يجب أن تكون 6 أحرف أو أكثر"
+        );
+
         return;
       }
 
-      register(email, password, username)
-      .then(() => {
-        window.location.href = "feed.html";
+      register(
+        email,
+        password,
+        username
+      )
+
+      .then(()=>{
+
+        window.location.href =
+        "feed.html";
+
       })
-      .catch(err => {
-        alert("خطأ: " + err.message);
+
+      .catch(err=>{
+
+        alert(
+          "خطأ: " +
+          err.message
+        );
+
       });
 
     }
 
-    window.goLogin = function(){
-      window.location.href = "login.html";
+    window.goLogin =
+    function(){
+
+      window.location.href =
+      "login.html";
+
     }
+
+    /* منع الزوم */
+
+    document.addEventListener(
+    "gesturestart",
+    function(e){
+      e.preventDefault();
+    });
+
+    /* Service Worker */
+
+    if(
+      "serviceWorker"
+      in navigator
+    ){
+
+      window.addEventListener(
+      "load",
+      ()=>{
+
+        navigator
+        .serviceWorker
+        .register("/sw.js");
+
+      });
+
+    }
+
   </script>
 
 </body>
