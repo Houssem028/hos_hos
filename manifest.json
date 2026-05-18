@@ -1,7 +1,7 @@
 {
   "name": "Hos Hos",
   "short_name": "HosHos",
-  "start_url": "/index.html",
+  "start_url": "./index.html",
   "scope": "/",
   "display": "standalone",
   "background_color": "#000000",
