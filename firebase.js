@@ -464,3 +464,78 @@ export async function getFollowingList(uid){
 
   return result;
 }
+//
+// إرسال رسالة
+//
+import {
+  addDoc,
+  query,
+  orderBy,
+  onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+export async function sendMessage(
+  fromUid,
+  toUid,
+  text
+){
+
+  const roomId =
+    [fromUid,toUid]
+    .sort()
+    .join("_");
+
+  await addDoc(
+    collection(db,"chats",roomId,"messages"),
+    {
+      from: fromUid,
+      to: toUid,
+      text: text,
+      createdAt: Date.now()
+    }
+  );
+}
+
+//
+// مراقبة الرسائل
+//
+export function listenMessages(
+  myUid,
+  otherUid,
+  callback
+){
+
+  const roomId =
+    [myUid,otherUid]
+    .sort()
+    .join("_");
+
+  const q = query(
+    collection(
+      db,
+      "chats",
+      roomId,
+      "messages"
+    ),
+    orderBy(
+      "createdAt",
+      "asc"
+    )
+  );
+
+  return onSnapshot(q,(snap)=>{
+
+    const msgs=[];
+
+    snap.forEach(doc=>{
+
+      msgs.push(
+        doc.data()
+      );
+
+    });
+
+    callback(msgs);
+
+  });
+}
