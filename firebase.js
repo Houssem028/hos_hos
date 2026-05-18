@@ -416,3 +416,51 @@ export async function getUsersByIds(ids){
 
   return arr;
 }
+//
+// جلب قائمة المتابعين
+//
+export async function getFollowersList(uid){
+
+  const usersSnap = await getDocs(collection(db,"users"));
+  const result = [];
+
+  usersSnap.forEach(docSnap=>{
+
+    const data = docSnap.data();
+
+    const list = data.followingList || [];
+
+    if(list.includes(uid)){
+      result.push({
+        uid: docSnap.id,
+        ...data
+      });
+    }
+  });
+
+  return result;
+}
+
+//
+// جلب قائمة المتابَعين
+//
+export async function getFollowingList(uid){
+
+  const myData = await getUserData(uid);
+
+  const ids = myData.followingList || [];
+
+  const result = [];
+
+  for(const userId of ids){
+
+    const data = await getUserData(userId);
+
+    result.push({
+      uid:userId,
+      ...data
+    });
+  }
+
+  return result;
+}
