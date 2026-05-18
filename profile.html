@@ -6,6 +6,7 @@
 <title>Hos Hos - Profile</title>
 
 <style>
+
 body{
   margin:0;
   font-family:Arial;
@@ -17,8 +18,13 @@ body{
 .topbar{
   display:flex;
   justify-content:space-between;
+  align-items:center;
   padding:15px;
   font-size:22px;
+  background:#111;
+  position:sticky;
+  top:0;
+  z-index:99;
 }
 
 .profile{
@@ -88,9 +94,11 @@ body{
   bottom:60px;
   left:0;
   right:0;
+  z-index:999;
 }
 
-input, select{
+input,
+select{
   width:85%;
   padding:12px;
   margin:10px auto;
@@ -121,15 +129,52 @@ button{
   justify-content:space-around;
   align-items:center;
   border-top:1px solid #222;
+  z-index:1000;
 }
 
 .bottom-bar button{
   background:none;
   color:white;
   border:none;
-  font-size:14px;
+  font-size:20px;
   width:auto;
 }
+
+/* الفيديوهات */
+
+.videos-title{
+  margin-top:35px;
+  margin-bottom:15px;
+  font-size:22px;
+}
+
+.videos-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:4px;
+  padding:10px;
+  padding-bottom:90px;
+}
+
+.video-box{
+  position:relative;
+  background:#111;
+  aspect-ratio:9/16;
+  overflow:hidden;
+  border-radius:10px;
+}
+
+.video-box video{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.no-videos{
+  color:#777;
+  margin-top:20px;
+}
+
 </style>
 </head>
 <body>
@@ -144,12 +189,19 @@ button{
 
   <div class="img-box">
     <img id="img" src="https://i.imgur.com/1X4n1ZL.png">
-    <div class="edit-btn" onclick="toggleEdit()">✏️</div>
+
+    <div class="edit-btn"
+    onclick="toggleEdit()">
+      ✏️
+    </div>
   </div>
 
-  <h2 id="name">Loading...</h2>
+  <h2 id="name">
+    Loading...
+  </h2>
 
   <div class="stats">
+
     <div onclick="go('followers.html')">
       <h3 id="followers">0</h3>
       <p>متابعين</p>
@@ -164,40 +216,105 @@ button{
       <h3 id="videos">0</h3>
       <p>فيديوهات</p>
     </div>
+
+  </div>
+
+  <!-- فيديوهات -->
+
+  <h2 class="videos-title">
+    فيديوهاتي 🎬
+  </h2>
+
+  <div
+  class="videos-grid"
+  id="videosGrid">
   </div>
 
 </div>
 
 <!-- تعديل -->
+
 <div id="editPanel">
-  <input id="newName" placeholder="اسم المستخدم">
-  <input id="file" type="file">
-  <button id="save">حفظ</button>
+
+  <input
+  id="newName"
+  placeholder="اسم المستخدم">
+
+  <input
+  id="file"
+  type="file">
+
+  <button id="save">
+    حفظ
+  </button>
+
 </div>
 
 <!-- الإعدادات -->
+
 <div id="settingsPanel">
+
   <select id="langSelect">
-    <option value="ar">العربية</option>
-    <option value="en">English</option>
-    <option value="fr">Français</option>
+
+    <option value="ar">
+      العربية
+    </option>
+
+    <option value="en">
+      English
+    </option>
+
+    <option value="fr">
+      Français
+    </option>
+
   </select>
 
-  <button onclick="saveLanguage()">حفظ اللغة</button>
-  <button onclick="logout()" style="background:red;">تسجيل خروج</button>
+  <button onclick="saveLanguage()">
+    حفظ اللغة
+  </button>
+
+  <button
+  onclick="logout()"
+  style="background:red;">
+
+    تسجيل خروج
+
+  </button>
+
 </div>
 
+<!-- الأسفل -->
+
 <div class="bottom-bar">
-  <button onclick="go('feed.html')">🏠</button>
-  <button onclick="go('search.html')">🔍</button>
-  <button onclick="go('upload.html')">➕</button>
-  <button onclick="go('notify.html')">🔔</button>
-  <button>👤</button>
+
+  <button onclick="go('feed.html')">
+    🏠
+  </button>
+
+  <button onclick="go('search.html')">
+    🔍
+  </button>
+
+  <button onclick="go('upload.html')">
+    ➕
+  </button>
+
+  <button onclick="go('notify.html')">
+    🔔
+  </button>
+
+  <button>
+    👤
+  </button>
+
 </div>
 
 <script type="module">
+
 import {
   auth,
+  db,
   getUserData,
   updateUser,
   uploadProfileImage
@@ -208,104 +325,245 @@ import {
   signOut
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
+import {
+  collection,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
 let userNow = null;
 
-onAuthStateChanged(auth, async (user)=>{
+onAuthStateChanged(
+auth,
+async(user)=>{
 
   if(!user){
-    location.href="login.html";
+
+    location.href =
+      "login.html";
+
     return;
   }
 
   userNow = user;
 
-  const data = await getUserData(user.uid);
+  const data =
+    await getUserData(
+      user.uid
+    );
 
-  document.getElementById("name").innerText =
-    data?.username || "بدون اسم";
+  document.getElementById(
+    "name"
+  ).innerText =
+    data?.username ||
+    "بدون اسم";
 
-  document.getElementById("newName").value =
+  document.getElementById(
+    "newName"
+  ).value =
     data?.username || "";
 
-  document.getElementById("followers").innerText =
+  document.getElementById(
+    "followers"
+  ).innerText =
     data?.followers || 0;
 
-  document.getElementById("following").innerText =
+  document.getElementById(
+    "following"
+  ).innerText =
     data?.following || 0;
 
-  document.getElementById("videos").innerText =
-    data?.videos || 0;
-
   if(data?.image){
-    document.getElementById("img").src =
-      data.image + "?t=" + Date.now();
+
+    document.getElementById(
+      "img"
+    ).src =
+      data.image +
+      "?t=" +
+      Date.now();
   }
+
+  // جلب الفيديوهات
+
+  loadMyVideos(
+    user.uid
+  );
 });
 
+//
+// جلب فيديوهات الحساب
+//
+
+async function loadMyVideos(uid){
+
+  const grid =
+    document.getElementById(
+      "videosGrid"
+    );
+
+  grid.innerHTML = "";
+
+  const snap =
+    await getDocs(
+      collection(
+        db,
+        "videos"
+      )
+    );
+
+  let count = 0;
+
+  snap.forEach(doc=>{
+
+    const video =
+      doc.data();
+
+    if(
+      video.uid === uid
+    ){
+
+      count++;
+
+      grid.innerHTML += `
+
+        <div class="video-box">
+
+          <video
+          src="${video.videoUrl}"
+          muted
+          autoplay
+          loop
+          playsinline>
+          </video>
+
+        </div>
+
+      `;
+    }
+
+  });
+
+  document.getElementById(
+    "videos"
+  ).innerText = count;
+
+  if(count === 0){
+
+    grid.innerHTML = `
+      <div class="no-videos">
+        لا توجد فيديوهات
+      </div>
+    `;
+  }
+}
+
 window.toggleEdit = ()=>{
-  const panel = document.getElementById("editPanel");
+
+  const panel =
+    document.getElementById(
+      "editPanel"
+    );
 
   panel.style.display =
     panel.style.display==="block"
     ? "none"
     : "block";
 
-  document.getElementById("settingsPanel").style.display="none";
+  document.getElementById(
+    "settingsPanel"
+  ).style.display="none";
 };
 
 window.toggleSettings = ()=>{
-  const panel = document.getElementById("settingsPanel");
+
+  const panel =
+    document.getElementById(
+      "settingsPanel"
+    );
 
   panel.style.display =
     panel.style.display==="block"
     ? "none"
     : "block";
 
-  document.getElementById("editPanel").style.display="none";
+  document.getElementById(
+    "editPanel"
+  ).style.display="none";
 };
 
-document.getElementById("save").onclick = async ()=>{
+document.getElementById(
+  "save"
+).onclick =
+async ()=>{
 
   const name =
-    document.getElementById("newName").value;
+    document.getElementById(
+      "newName"
+    ).value;
 
   const file =
-    document.getElementById("file").files[0];
+    document.getElementById(
+      "file"
+    ).files[0];
 
   let img = null;
 
   if(file){
-    img = await uploadProfileImage(file);
+
+    img =
+      await uploadProfileImage(
+        file
+      );
   }
 
   const data = {};
 
-  if(name) data.username = name;
-  if(img) data.image = img;
+  if(name)
+    data.username = name;
 
-  await updateUser(userNow.uid,data);
+  if(img)
+    data.image = img;
+
+  await updateUser(
+    userNow.uid,
+    data
+  );
 
   alert("تم الحفظ ✔");
+
   location.reload();
 };
 
 window.saveLanguage = ()=>{
+
   const lang =
-    document.getElementById("langSelect").value;
+    document.getElementById(
+      "langSelect"
+    ).value;
 
-  localStorage.setItem("appLang", lang);
+  localStorage.setItem(
+    "appLang",
+    lang
+  );
 
-  alert("تم حفظ اللغة ✔");
+  alert(
+    "تم حفظ اللغة ✔"
+  );
 };
 
-window.logout = async ()=>{
+window.logout =
+async ()=>{
+
   await signOut(auth);
-  location.href="login.html";
+
+  location.href =
+    "login.html";
 };
 
 window.go = (p)=>{
+
   location.href = p;
 };
+
 </script>
 
 </body>
