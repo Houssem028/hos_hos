@@ -122,7 +122,7 @@ textarea{
     <input
     type="file"
     id="videoUpload"
-    accept="video/*">
+    accept="video/mp4,video/*">
 
     <h2>🎬 اختر فيديو</h2>
 
@@ -154,6 +154,8 @@ textarea{
   id="publishBtn">
     نشر الفيديو
   </button>
+
+  <!-- الحالة -->
 
   <div
   class="status"
@@ -203,7 +205,9 @@ const status =
 
 let selectedFile = null;
 
+//
 // تحقق من المستخدم
+//
 
 onAuthStateChanged(
 auth,
@@ -220,7 +224,9 @@ auth,
   currentUser = user;
 });
 
+//
 // معاينة الفيديو
+//
 
 input.addEventListener(
 "change",
@@ -231,6 +237,20 @@ function(){
 
   if(!file)
     return;
+
+  // حجم أقصى 100MB
+
+  if(
+    file.size >
+    100000000
+  ){
+
+    alert(
+      "الفيديو كبير جداً"
+    );
+
+    return;
+  }
 
   selectedFile = file;
 
@@ -245,7 +265,9 @@ function(){
     "block";
 });
 
+//
 // نشر الفيديو
+//
 
 publishBtn.onclick =
 async()=>{
@@ -270,7 +292,9 @@ async()=>{
     status.innerText =
       "جاري رفع الفيديو...";
 
-    // رفع إلى Cloudinary
+    //
+    // رفع الفيديو إلى Cloudinary
+    //
 
     const formData =
       new FormData();
@@ -285,6 +309,11 @@ async()=>{
       "hoshos_upload"
     );
 
+    formData.append(
+      "resource_type",
+      "video"
+    );
+
     const uploadRes =
       await fetch(
         "https://api.cloudinary.com/v1_1/dgtazde5z/video/upload",
@@ -297,14 +326,41 @@ async()=>{
     const uploadData =
       await uploadRes.json();
 
-    // بيانات المستخدم
+    console.log(
+      uploadData
+    );
+
+    // إذا فشل
+
+    if(
+      !uploadData.secure_url
+    ){
+
+      alert(
+        "فشل رفع الفيديو"
+      );
+
+      publishBtn.disabled =
+        false;
+
+      status.innerText =
+        "";
+
+      return;
+    }
+
+    //
+    // جلب بيانات المستخدم
+    //
 
     const userData =
       await getUserData(
         currentUser.uid
       );
 
-    // حفظ في Firebase
+    //
+    // حفظ الفيديو
+    //
 
     await addDoc(
       collection(
@@ -338,6 +394,10 @@ async()=>{
       }
     );
 
+    //
+    // نجاح
+    //
+
     status.innerText =
       "تم نشر الفيديو 🎉";
 
@@ -353,13 +413,14 @@ async()=>{
     console.error(err);
 
     alert(
-      "فشل رفع الفيديو"
+      "حدث خطأ أثناء رفع الفيديو"
     );
 
     publishBtn.disabled =
       false;
 
-    status.innerText = "";
+    status.innerText =
+      "";
   }
 
 };
