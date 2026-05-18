@@ -1,40 +1,370 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>Hos Hos - رفع فيديو</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width,initial-scale=1.0">
+
+<title>Hos Hos - رفع فيديو</title>
+
+<style>
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial,sans-serif;
+}
+
+body{
+  background:black;
+  color:white;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+}
+
+.page-box{
+  width:100%;
+  max-width:500px;
+  background:#111;
+  padding:25px;
+  border-radius:25px;
+  box-shadow:0 0 25px rgba(0,0,0,.5);
+}
+
+h1{
+  text-align:center;
+  margin-bottom:25px;
+}
+
+.upload-area{
+  border:2px dashed #444;
+  border-radius:18px;
+  padding:35px 20px;
+  text-align:center;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.upload-area:hover{
+  border-color:#ff2d55;
+}
+
+.upload-area p{
+  color:#bbb;
+  margin-top:10px;
+}
+
+input[type="file"]{
+  display:none;
+}
+
+video{
+  width:100%;
+  margin-top:20px;
+  border-radius:16px;
+  max-height:420px;
+  background:#000;
+}
+
+textarea{
+  width:100%;
+  margin-top:20px;
+  padding:15px;
+  border:none;
+  border-radius:14px;
+  resize:none;
+  background:#1a1a1a;
+  color:white;
+  font-size:15px;
+  outline:none;
+}
+
+.upload-btn{
+  width:100%;
+  margin-top:20px;
+  padding:16px;
+  border:none;
+  border-radius:16px;
+  background:#ff2d55;
+  color:white;
+  font-size:18px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.upload-btn:disabled{
+  opacity:.5;
+}
+
+.status{
+  text-align:center;
+  margin-top:15px;
+  color:#aaa;
+}
+
+</style>
 </head>
+
 <body>
 
-  <div class="page-box">
-    <h1>➕ رفع فيديو</h1>
+<div class="page-box">
 
-    <input type="file" id="videoUpload" accept="video/*">
+  <h1>➕ رفع فيديو</h1>
 
-    <video id="previewVideo" controls style="display:none; margin-top:20px; max-width:90%; border-radius:12px;"></video>
+  <!-- اختيار الفيديو -->
 
-    <button class="upload-btn" onclick="publishVideo()">نشر الفيديو</button>
+  <label class="upload-area">
+
+    <input
+    type="file"
+    id="videoUpload"
+    accept="video/*">
+
+    <h2>🎬 اختر فيديو</h2>
+
+    <p>
+      اضغط هنا لرفع فيديو جديد
+    </p>
+
+  </label>
+
+  <!-- معاينة -->
+
+  <video
+  id="previewVideo"
+  controls
+  style="display:none;">
+  </video>
+
+  <!-- وصف -->
+
+  <textarea
+  id="caption"
+  rows="4"
+  placeholder="اكتب وصف الفيديو..."></textarea>
+
+  <!-- زر النشر -->
+
+  <button
+  class="upload-btn"
+  id="publishBtn">
+    نشر الفيديو
+  </button>
+
+  <div
+  class="status"
+  id="status">
   </div>
 
-  <script>
-    const input = document.getElementById("videoUpload");
-    const preview = document.getElementById("previewVideo");
+</div>
 
-    input.addEventListener("change", function(){
-      const file = this.files[0];
-      if(file){
-        const url = URL.createObjectURL(file);
-        preview.src = url;
-        preview.style.display = "block";
+<script type="module">
+
+import {
+  auth,
+  db,
+  getUserData
+} from "./firebase.js";
+
+import {
+  addDoc,
+  collection
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+import {
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+let currentUser = null;
+
+const input =
+  document.getElementById(
+    "videoUpload"
+  );
+
+const preview =
+  document.getElementById(
+    "previewVideo"
+  );
+
+const publishBtn =
+  document.getElementById(
+    "publishBtn"
+  );
+
+const status =
+  document.getElementById(
+    "status"
+  );
+
+let selectedFile = null;
+
+// تحقق من المستخدم
+
+onAuthStateChanged(
+auth,
+(user)=>{
+
+  if(!user){
+
+    location.href =
+      "login.html";
+
+    return;
+  }
+
+  currentUser = user;
+});
+
+// معاينة الفيديو
+
+input.addEventListener(
+"change",
+function(){
+
+  const file =
+    this.files[0];
+
+  if(!file)
+    return;
+
+  selectedFile = file;
+
+  const url =
+    URL.createObjectURL(
+      file
+    );
+
+  preview.src = url;
+
+  preview.style.display =
+    "block";
+});
+
+// نشر الفيديو
+
+publishBtn.onclick =
+async()=>{
+
+  if(!selectedFile){
+
+    alert(
+      "اختر فيديو أولاً"
+    );
+
+    return;
+  }
+
+  if(!currentUser)
+    return;
+
+  try{
+
+    publishBtn.disabled =
+      true;
+
+    status.innerText =
+      "جاري رفع الفيديو...";
+
+    // رفع إلى Cloudinary
+
+    const formData =
+      new FormData();
+
+    formData.append(
+      "file",
+      selectedFile
+    );
+
+    formData.append(
+      "upload_preset",
+      "hoshos_upload"
+    );
+
+    const uploadRes =
+      await fetch(
+        "https://api.cloudinary.com/v1_1/dgtazde5z/video/upload",
+        {
+          method:"POST",
+          body:formData
+        }
+      );
+
+    const uploadData =
+      await uploadRes.json();
+
+    // بيانات المستخدم
+
+    const userData =
+      await getUserData(
+        currentUser.uid
+      );
+
+    // حفظ في Firebase
+
+    await addDoc(
+      collection(
+        db,
+        "videos"
+      ),
+      {
+        uid:
+          currentUser.uid,
+
+        username:
+          userData.username,
+
+        userImage:
+          userData.image || "",
+
+        videoUrl:
+          uploadData.secure_url,
+
+        caption:
+          document
+          .getElementById(
+            "caption"
+          )
+          .value || "",
+
+        likes:0,
+
+        createdAt:
+          Date.now()
       }
-    });
+    );
 
-    function publishVideo(){
-      alert("تم تجهيز الفيديو للنشر (سنربطه بالحفظ لاحقًا)");
-    }
-  </script>
+    status.innerText =
+      "تم نشر الفيديو 🎉";
+
+    setTimeout(()=>{
+
+      location.href =
+        "feed.html";
+
+    },1500);
+
+  }catch(err){
+
+    console.error(err);
+
+    alert(
+      "فشل رفع الفيديو"
+    );
+
+    publishBtn.disabled =
+      false;
+
+    status.innerText = "";
+  }
+
+};
+
+</script>
 
 </body>
 </html>
