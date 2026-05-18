@@ -8,6 +8,7 @@ content="width=device-width,initial-scale=1.0">
 <title>Inbox</title>
 
 <style>
+
 body{
   margin:0;
   background:#000;
@@ -29,6 +30,11 @@ h2{
   border-radius:12px;
   margin-bottom:12px;
   cursor:pointer;
+  transition:0.2s;
+}
+
+.chat:hover{
+  background:#1c1c1c;
 }
 
 .chat img{
@@ -41,6 +47,14 @@ h2{
 .name{
   font-size:18px;
 }
+
+.empty{
+  text-align:center;
+  color:gray;
+  margin-top:50px;
+  font-size:18px;
+}
+
 </style>
 </head>
 <body>
@@ -50,6 +64,7 @@ h2{
 <div id="list"></div>
 
 <script type="module">
+
 import {
   auth,
   getChatsList
@@ -63,59 +78,103 @@ onAuthStateChanged(
 auth,
 async(user)=>{
 
+  // إذا لم يسجل دخول
   if(!user){
-    location.href=
+
+    location.href =
       "login.html";
+
     return;
   }
 
-  const chats =
-    await getChatsList(
-      user.uid
-    );
-
   const list =
-    document
-    .getElementById(
+    document.getElementById(
       "list"
     );
 
-  chats.forEach(c=>{
+  // تنظيف القائمة
+  list.innerHTML = "";
 
-    const div =
-      document
-      .createElement(
-        "div"
+  try{
+
+    // جلب المحادثات
+    const chats =
+      await getChatsList(
+        user.uid
       );
 
-    div.className=
-      "chat";
-
-    div.innerHTML=`
-      <img src="${
-        c.image ||
-        'https://i.imgur.com/1X4n1ZL.png'
-      }">
-
-      <div class="name">
-        ${c.username}
-      </div>
-    `;
-
-    div.onclick=()=>{
-
-      location.href=
-        "chat.html?uid="+
-        c.uid;
-    };
-
-    list.appendChild(
-      div
+    console.log(
+      "Chats:",
+      chats
     );
 
-  });
+    // إذا لا توجد محادثات
+    if(
+      !chats ||
+      chats.length === 0
+    ){
+
+      list.innerHTML = `
+        <div class="empty">
+          لا توجد محادثات
+        </div>
+      `;
+
+      return;
+    }
+
+    // عرض المحادثات
+    chats.forEach(c=>{
+
+      const div =
+        document.createElement(
+          "div"
+        );
+
+      div.className =
+        "chat";
+
+      div.innerHTML = `
+        <img src="${
+          c.image ||
+          'https://i.imgur.com/1X4n1ZL.png'
+        }">
+
+        <div class="name">
+          ${
+            c.username ||
+            "مستخدم"
+          }
+        </div>
+      `;
+
+      // فتح المحادثة
+      div.onclick = ()=>{
+
+        location.href =
+          "chat.html?uid=" +
+          c.uid;
+      };
+
+      list.appendChild(
+        div
+      );
+
+    });
+
+  }catch(err){
+
+    console.error(err);
+
+    list.innerHTML = `
+      <div class="empty">
+        حدث خطأ أثناء تحميل الرسائل
+      </div>
+    `;
+  }
 
 });
+
 </script>
 
 </body>
