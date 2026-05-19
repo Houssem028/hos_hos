@@ -22,7 +22,7 @@ body{
 }
 
 #messages{
-  height:75vh;
+  height:70vh;
   overflow:auto;
   padding:15px;
 }
@@ -47,6 +47,7 @@ body{
   gap:8px;
   padding:10px;
   background:#111;
+  align-items:center;
 }
 
 input{
@@ -63,6 +64,11 @@ button{
   padding:12px;
   border-radius:10px;
 }
+
+.small{
+  padding:10px;
+  width:45px;
+}
 </style>
 </head>
 
@@ -72,8 +78,16 @@ button{
 <div id="messages"></div>
 
 <div class="bottom">
+
 <input id="text" placeholder="اكتب رسالة">
+
+<button id="imgBtn" class="small">🖼️</button>
+<button id="voiceBtn" class="small">🎤</button>
+
 <button id="send">إرسال</button>
+
+<input type="file" id="file" accept="image/*" hidden>
+
 </div>
 
 <script type="module">
@@ -90,6 +104,7 @@ if(!uid){
   location.href="inbox.html";
 }
 
+/* AUTH */
 onAuthStateChanged(auth, async(user)=>{
 
   if(!user){
@@ -106,15 +121,11 @@ onAuthStateChanged(auth, async(user)=>{
 
 });
 
+/* RENDER */
 function render(msgs){
 
   const box = document.getElementById("messages");
   box.innerHTML = "";
-
-  if(!msgs || msgs.length === 0){
-    box.innerHTML = "<div style='text-align:center;color:gray'>لا توجد رسائل</div>";
-    return;
-  }
 
   msgs.forEach(m=>{
 
@@ -124,17 +135,20 @@ function render(msgs){
     if(m.type === "image"){
       div.innerHTML = `<img src="${m.image}" style="max-width:200px;border-radius:10px">`;
     }
+    else if(m.type === "voice"){
+      div.innerHTML = `<audio controls src="${m.audio}"></audio>`;
+    }
     else{
       div.innerText = m.text;
     }
 
     box.appendChild(div);
-
   });
 
   box.scrollTop = box.scrollHeight;
 }
 
+/* SEND TEXT */
 document.getElementById("send").onclick = async()=>{
 
   const input = document.getElementById("text");
@@ -147,6 +161,82 @@ document.getElementById("send").onclick = async()=>{
   });
 
   input.value="";
+};
+
+/* IMAGE */
+document.getElementById("imgBtn").onclick = ()=>{
+  document.getElementById("file").click();
+};
+
+document.getElementById("file").onchange = async(e)=>{
+
+  const file = e.target.files[0];
+  if(!file) return;
+
+  const form = new FormData();
+  form.append("file", file);
+  form.append("upload_preset", "hoshos_upload");
+
+  const res = await fetch(
+    "https://api.cloudinary.com/v1_1/dgtazde5z/image/upload",
+    { method:"POST", body:form }
+  );
+
+  const data = await res.json();
+
+  await sendMessage(myUid, uid, {
+    type:"image",
+    image:data.secure_url
+  });
+
+};
+
+/* VOICE */
+let recorder;
+let chunks = [];
+let recording = false;
+
+document.getElementById("voiceBtn").onclick = async()=>{
+
+  if(recording){
+    recorder.stop();
+    recording = false;
+    return;
+  }
+
+  const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+
+  recorder = new MediaRecorder(stream);
+  chunks = [];
+
+  recorder.ondataavailable = e=>{
+    chunks.push(e.data);
+  };
+
+  recorder.onstop = async()=>{
+
+    const blob = new Blob(chunks,{type:"audio/webm"});
+
+    const form = new FormData();
+    form.append("file", blob, "voice.webm");
+    form.append("upload_preset", "hoshos_upload");
+
+    const res = await fetch(
+      "https://api.cloudinary.com/v1_1/dgtazde5z/video/upload",
+      { method:"POST", body:form }
+    );
+
+    const data = await res.json();
+
+    await sendMessage(myUid, uid, {
+      type:"voice",
+      audio:data.secure_url
+    });
+
+  };
+
+  recorder.start();
+  recording = true;
 };
 
 </script>
