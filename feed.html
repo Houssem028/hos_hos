@@ -2,551 +2,377 @@
 <html lang="ar" dir="rtl">
 
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Hos Hos - الفيد</title>
 
-<title>Hos Hos</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#000000">
 
-<style>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial,sans-serif;
--webkit-tap-highlight-color:transparent;
-}
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+      color: white;
+    }
 
-html,body{
-width:100%;
-height:100%;
-overflow:hidden;
-background:#000;
-color:white;
-}
+    /* حاوية الفيد الأساسية */
+    #feedContainer {
+      height: 100vh;
+      overflow-y: scroll;
+      scroll-snap-type: y mandatory;
+    }
 
-/* FEED */
-#feedContainer{
-height:100vh;
-overflow-y:scroll;
-scroll-snap-type:y mandatory;
-}
+    #feedContainer::-webkit-scrollbar {
+      display: none;
+    }
 
-#feedContainer::-webkit-scrollbar{
-display:none;
-}
+    .feed {
+      width: 100%;
+      height: 100vh;
+      position: relative;
+      scroll-snap-align: start;
+      overflow: hidden;
+      background: #000;
+    }
 
-.feed{
-width:100%;
-height:100vh;
-position:relative;
-scroll-snap-align:start;
-overflow:hidden;
-background:#000;
-}
+    .feed video, .feed img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1.01);
+    }
 
-/* VIDEO */
-.feed video,
-.feed img{
-width:100%;
-height:100%;
-object-fit:cover;
-transform:scale(1.01);
-}
+    /* غطاء تظليل سفلي وعلوي لجعل النصوص والأزرار واضحة */
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,.65), rgba(0,0,0,.05), rgba(0,0,0,.25));
+      z-index: 2;
+      pointer-events: none;
+    }
 
-/* overlay أخف مثل تيك توك */
-.overlay{
-position:absolute;
-inset:0;
-background:linear-gradient(
-to top,
-rgba(0,0,0,.65),
-rgba(0,0,0,.05),
-rgba(0,0,0,.25)
-);
-z-index:2;
-pointer-events:none;
-}
+    /* البار العلوي لقنوات المشاهدة */
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 70px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+      background: linear-gradient(to bottom, rgba(0,0,0,.6), transparent);
+    }
 
-/* TOP */
-.top-bar{
-position:fixed;
-top:0;
-left:0;
-right:0;
-height:70px;
-display:flex;
-justify-content:center;
-align-items:center;
-z-index:999;
-background:linear-gradient(to bottom, rgba(0,0,0,.6), transparent);
-}
+    .logo-box {
+      font-size: 26px;
+      font-weight: bold;
+      color: white;
+    }
 
-.logo-box{
-font-size:26px;
-font-weight:bold;
-}
+    /* بيانات صاحب الفيديو والتفاصيل */
+    .video-info {
+      position: absolute;
+      left: 15px;
+      bottom: 120px;
+      width: 70%;
+      z-index: 10;
+    }
 
-/* INFO */
-.video-info{
-position:absolute;
-left:15px;
-bottom:120px;
-width:70%;
-z-index:10;
-}
+    .video-info h3 {
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
 
-.video-info h3{
-font-size:20px;
-display:flex;
-align-items:center;
-gap:6px;
-}
+    .video-info p {
+      font-size: 14px;
+      color: #eee;
+      margin-top: 5px;
+    }
 
-.video-info p{
-font-size:14px;
-color:#eee;
-}
+    .verified-badge {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #1d9bf0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+    }
 
-/* VERIFIED */
-.verified-badge{
-width:16px;
-height:16px;
-border-radius:50%;
-background:#1d9bf0;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:10px;
-}
+    /* الأزرار التفاعلية الجانبية */
+    .video-actions {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 30px;
+      z-index: 50;
+    }
 
-/* ========================= */
-/* 🔥 RIGHT SIDE TIKTOK FIX */
-/* ========================= */
+    .action {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: white;
+    }
 
-.video-actions{
-position:absolute;
-right:10px;
-top:50%;
-transform:translateY(-50%);
+    .action button {
+      width: 50px;
+      height: 50px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(255,255,255,.12);
+      color: white;
+      font-size: 22px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: .15s;
+      cursor: pointer;
+    }
 
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
+    .action button:active {
+      transform: scale(.88);
+    }
 
-gap:30px;
+    .profile-pic {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid white;
+      box-shadow: 0 2px 8px rgba(0,0,0,.4);
+      cursor: pointer;
+    }
 
-z-index:50;
-}
+    /* القائمة السفلية للتطبيق */
+    .bottom-nav {
+      position: fixed;
+      bottom: 12px;
+      left: 12px;
+      right: 12px;
+      height: 70px;
+      border-radius: 24px;
+      background: rgba(20,20,20,.9);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 999;
+      backdrop-filter: blur(20px);
+    }
 
-.action{
-display:flex;
-flex-direction:column;
-align-items:center;
-gap:6px;
-font-size:11px;
-color:white;
-}
+    .bottom-nav button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 26px;
+      cursor: pointer;
+    }
 
-/* BUTTONS */
-.action button{
-width:50px;
-height:50px;
-border:none;
-border-radius:50%;
-background:rgba(255,255,255,.12);
-color:white;
-font-size:22px;
+    .add-btn {
+      background: #ff2d55 !important;
+      width: 56px;
+      height: 56px;
+      border-radius: 18px;
+    }
 
-display:flex;
-justify-content:center;
-align-items:center;
+    .loading {
+      text-align: center;
+      margin-top: 45vh;
+      font-size: 20px;
+      color: gray;
+    }
 
-transition:.15s;
-}
+    /* لوحة التعليقات المنبثقة من الأسفل */
+    .comments-panel {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: -100%;
+      height: 75vh;
+      background: #111;
+      border-radius: 25px 25px 0 0;
+      z-index: 99999;
+      transition: .3s ease-in-out;
+      display: flex;
+      flex-direction: column;
+    }
 
-.action button:active{
-transform:scale(.88);
-}
+    .comments-header {
+      padding: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #222;
+      font-size: 18px;
+      font-weight: bold;
+    }
 
-/* PROFILE */
-.profile-pic{
-width:42px;
-height:42px;
-border-radius:50%;
-object-fit:cover;
-border:2px solid white;
-box-shadow:0 2px 8px rgba(0,0,0,.4);
-}
+    .close-comments {
+      font-size: 28px;
+      cursor: pointer;
+      color: #aaa;
+    }
 
-/* bottom nav */
-.bottom-nav{
-position:fixed;
-bottom:12px;
-left:12px;
-right:12px;
+    .comments-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 15px;
+    }
 
-height:70px;
-border-radius:24px;
+    .comment {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      align-items: flex-start;
+    }
 
-background:rgba(20,20,20,.9);
+    .comment img {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
 
-display:flex;
-justify-content:space-around;
-align-items:center;
+    .comment-body {
+      background: #1a1a1a;
+      padding: 10px 14px;
+      border-radius: 14px;
+      flex: 1;
+    }
 
-z-index:999;
+    .comment-name {
+      color: #ff2d55;
+      font-weight: bold;
+      font-size: 13px;
+      margin-bottom: 3px;
+    }
 
-backdrop-filter:blur(20px);
-}
+    .comment-text {
+      font-size: 14px;
+      color: #fff;
+    }
 
-.bottom-nav button{
-background:none;
-border:none;
-color:white;
-font-size:26px;
-}
+    .comment-input {
+      display: flex;
+      gap: 10px;
+      padding: 15px;
+      border-top: 1px solid #222;
+      background: #111;
+    }
 
-.add-btn{
-background:#ff2d55 !important;
-width:56px;
-height:56px;
-border-radius:18px;
-}
+    .comment-input input {
+      flex: 1;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      background: #1a1a1a;
+      color: white;
+      outline: none;
+    }
 
-/* loading */
-.loading{
-text-align:center;
-margin-top:40vh;
-font-size:20px;
-}
-
-/* COMMENTS */
-.comments-panel{
-position:fixed;
-left:0;
-right:0;
-bottom:-100%;
-height:75vh;
-background:#111;
-border-radius:25px 25px 0 0;
-z-index:99999;
-transition:.3s;
-display:flex;
-flex-direction:column;
-}
-
-.comments-header{
-padding:18px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-border-bottom:1px solid #222;
-font-size:18px;
-font-weight:bold;
-}
-
-.close-comments{
-font-size:28px;
-cursor:pointer;
-}
-
-.comments-list{
-flex:1;
-overflow-y:auto;
-padding:15px;
-}
-
-.comment{
-display:flex;
-gap:10px;
-margin-bottom:15px;
-}
-
-.comment img{
-width:42px;
-height:42px;
-border-radius:50%;
-object-fit:cover;
-}
-
-.comment-body{
-background:#1a1a1a;
-padding:10px;
-border-radius:12px;
-flex:1;
-}
-
-.comment-name{
-color:#ff2d55;
-font-weight:bold;
-}
-
-.comment-input{
-display:flex;
-gap:10px;
-padding:15px;
-border-top:1px solid #222;
-}
-
-.comment-input input{
-flex:1;
-padding:12px;
-border:none;
-border-radius:12px;
-background:#1a1a1a;
-color:white;
-outline:none;
-}
-
-.comment-input button{
-border:none;
-padding:0 18px;
-border-radius:12px;
-background:#ff2d55;
-color:white;
-}
-
-</style>
+    .comment-input button {
+      border: none;
+      padding: 0 20px;
+      border-radius: 12px;
+      background: #ff2d55;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="top-bar">
-<div class="logo-box">HOS HOS</div>
-</div>
-
-<div id="feedContainer">
-<div class="loading">جاري تحميل الفيديوهات...</div>
-</div>
-
-<!-- COMMENTS -->
-<div class="comments-panel" id="commentsPanel">
-
-<div class="comments-header">
-<span>التعليقات 💬</span>
-<div class="close-comments" onclick="closeComments()">×</div>
-</div>
-
-<div class="comments-list" id="commentsList"></div>
-
-<div class="comment-input">
-<input id="commentText" placeholder="اكتب تعليق...">
-<button onclick="sendComment()">إرسال</button>
-</div>
-
-</div>
-
-<!-- BOTTOM NAV -->
-<div class="bottom-nav">
-<button onclick="goHome()">🏠</button>
-<button onclick="goMessages()">💬</button>
-<button class="add-btn" onclick="uploadVideo()">+</button>
-<button onclick="goNotifications()">🔔</button>
-<button onclick="goProfile()">👤</button>
-</div>
-
-<script type="module">
-
-import {db,auth,getUserData} from "./firebase.js";
-
-import {
-collection,getDocs,query,orderBy,doc,updateDoc,increment,addDoc,where
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-import {onAuthStateChanged} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-let currentUser=null;
-let currentCommentVideo=null;
-
-const container=document.getElementById("feedContainer");
-
-onAuthStateChanged(auth,(user)=>{
-currentUser=user;
-});
-
-/* LOAD VIDEOS */
-async function loadVideos(){
-
-container.innerHTML="";
-
-const q=query(collection(db,"videos"),orderBy("createdAt","desc"));
-const snap=await getDocs(q);
-
-if(snap.empty){
-container.innerHTML=`<div class="loading">لا يوجد محتوى</div>`;
-return;
-}
-
-for(const videoDoc of snap.docs){
-
-const v=videoDoc.data();
-const id=videoDoc.id;
-
-const commentsSnap=await getDocs(
-query(collection(db,"comments"),where("videoId","==",id))
-);
-
-const commentsCount=commentsSnap.size;
-
-container.innerHTML+=`
-
-<section class="feed">
-
-${v.type==="image"
-?`<img src="${v.videoUrl}">`
-:`<video class="videoPlayer" src="${v.videoUrl}" loop playsinline></video>`
-}
-
-<div class="overlay"></div>
-
-<div class="video-info">
-<h3>@${v.username} ${v.verified?`<span class="verified-badge">✓</span>`:""}</h3>
-<p>${v.caption||""}</p>
-</div>
-
-<div class="video-actions">
-
-<div class="action">
-<img class="profile-pic"
-src="${v.userImage || 'https://i.imgur.com/1X4n1ZL.png'}"
-onclick="location.href='user.html?uid=${v.uid}'">
-<span>حساب</span>
-</div>
-
-<div class="action">
-<button class="likeBtn" data-id="${id}">❤️</button>
-<span id="likes-${id}">${v.likes||0}</span>
-</div>
-
-<div class="action">
-<button onclick="openComments('${id}')">💬</button>
-<span>${commentsCount}</span>
-</div>
-
-</div>
-
-</section>
-
-`;
-}
-
-setupLikes();
-initVideos();
-}
-
-/* VIDEO CONTROL */
-function initVideos(){
-
-const vids=document.querySelectorAll(".videoPlayer");
-
-const observer=new IntersectionObserver(entries=>{
-entries.forEach(e=>{
-const v=e.target;
-
-if(e.isIntersecting){
-vids.forEach(x=>{if(x!==v) x.pause();});
-v.play();
-}else v.pause();
-
-});
-},{threshold:0.8});
-
-vids.forEach(v=>{
-observer.observe(v);
-v.onclick=()=>v.paused?v.play():v.pause();
-});
-
-}
-
-/* LIKE */
-function setupLikes(){
-
-document.querySelectorAll(".likeBtn").forEach(btn=>{
-btn.onclick=async()=>{
-
-const id=btn.dataset.id;
-const txt=document.getElementById("likes-"+id);
-
-let c=parseInt(txt.innerText);
-
-await updateDoc(doc(db,"videos",id),{
-likes:increment(1)
-});
-
-txt.innerText=c+1;
-
-};
-});
-
-}
-
-/* COMMENTS */
-window.openComments=async(id)=>{
-currentCommentVideo=id;
-document.getElementById("commentsPanel").style.bottom="0";
-loadComments();
-};
-
-window.closeComments=()=>{
-document.getElementById("commentsPanel").style.bottom="-100%";
-};
-
-async function loadComments(){
-
-const list=document.getElementById("commentsList");
-list.innerHTML="";
-
-const q=query(collection(db,"comments"),where("videoId","==",currentCommentVideo));
-const snap=await getDocs(q);
-
-snap.forEach(d=>{
-const c=d.data();
-
-list.innerHTML+=`
-<div class="comment">
-<img src="${c.userImage || 'https://i.imgur.com/1X4n1ZL.png'}">
-<div class="comment-body">
-<div class="comment-name">${c.username}</div>
-<div>${c.text}</div>
-</div>
-</div>
-`;
-});
-}
-
-/* SEND COMMENT */
-window.sendComment=async()=>{
-
-const input=document.getElementById("commentText");
-if(!input.value) return;
-
-const u=await getUserData(currentUser.uid);
-
-await addDoc(collection(db,"comments"),{
-videoId:currentCommentVideo,
-uid:currentUser.uid,
-username:u.username,
-userImage:u.image||"",
-text:input.value,
-createdAt:Date.now()
-});
-
-input.value="";
-loadComments();
-};
-
-/* NAV */
-window.goHome=()=>location.href="feed.html";
-window.goMessages=()=>location.href="inbox.html";
-window.uploadVideo=()=>location.href="upload.html";
-window.goNotifications=()=>location.href="notifications.html";
-window.goProfile=()=>location.href="profile.html";
-
-loadVideos();
-
-</script>
-
-</body>
-</html>
+  <div class="top-bar">
+    <div class="logo-box">HOS HOS</div>
+  </div>
+
+  <div id="feedContainer">
+    <div class="loading">جاري تحميل الفيديوهات...</div>
+  </div>
+
+  <div class="comments-panel" id="commentsPanel">
+    <div class="comments-header">
+      <span>التعليقات 💬</span>
+      <div class="close-comments" onclick="closeComments()">×</div>
+    </div>
+    <div class="comments-list" id="commentsList"></div>
+    <div class="comment-input">
+      <input id="commentText" placeholder="إضافة تعليق متاح للجميع...">
+      <button onclick="sendComment()">نشر</button>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <button onclick="goHome()">🏠</button>
+    <button onclick="goMessages()">💬</button>
+    <button class="add-btn" onclick="uploadVideo()">+</button>
+    <button onclick="goNotifications()">🔔</button>
+    <button onclick="goProfile()">👤</button>
+  </div>
+
+  <script type="module">
+    import { db, auth, getUserData } from "./firebase.js";
+    import { collection, getDocs, query, orderBy, doc, updateDoc, increment, addDoc, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    let currentUser = null;
+    let currentCommentVideo = null;
+    const container = document.getElementById("feedContainer");
+
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.href = "login.html";
+      } else {
+        currentUser = user;
+        loadVideos();
+      }
+    });
+
+    async function loadVideos() {
+      try {
+        container.innerHTML = "";
+        const q = query(collection(db, "videos"), orderBy("createdAt", "desc"));
+        const snap = await getDocs(q);
+
+        if (snap.empty) {
+          container.innerHTML = `<div class="loading">لا يوجد منشورات حالياً</div>`;
+          return;
+        }
+
+        for (const videoDoc of snap.docs) {
+          const v = videoDoc.data();
+          const id = videoDoc.id;
+
+          const commentsSnap = await getDocs(query(collection(db, "comments"), where("videoId", "==", id)));
+          const commentsCount = commentsSnap.size;
+
+          container.innerHTML += `
+            <section class="feed">
+              ${v.type === "image" 
+                ? `<img src="${v.videoUrl}">
+    
