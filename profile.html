@@ -56,13 +56,13 @@ body{
 }
 
 .topbar-title{
-  font-size:22px;
+  font-size:24px;
   font-weight:bold;
 }
 
 .settings-btn{
   cursor:pointer;
-  font-size:24px;
+  font-size:28px;
 }
 
 /* البروفايل */
@@ -233,67 +233,6 @@ body{
   margin-top:20px;
 }
 
-/* النوافذ */
-
-#editPanel,
-#settingsPanel{
-
-  display:none;
-
-  position:fixed;
-
-  left:0;
-  right:0;
-  bottom:0;
-
-  background:#111;
-
-  border-radius:24px 24px 0 0;
-
-  padding:25px;
-
-  z-index:999;
-}
-
-input,
-select{
-
-  width:100%;
-
-  padding:14px;
-
-  margin-top:12px;
-
-  border:none;
-  outline:none;
-
-  border-radius:14px;
-
-  background:#1c1c1c;
-
-  color:white;
-}
-
-button{
-
-  width:100%;
-
-  padding:14px;
-
-  margin-top:14px;
-
-  border:none;
-
-  border-radius:14px;
-
-  background:#ff2d55;
-
-  color:white;
-
-  font-size:16px;
-  font-weight:bold;
-}
-
 /* الشريط السفلي */
 
 .bottom-bar{
@@ -335,6 +274,180 @@ button{
   width:auto;
 
   margin:0;
+
+  cursor:pointer;
+}
+
+/* القائمة الجانبية */
+
+#menu{
+
+  position:fixed;
+
+  top:0;
+  right:-100%;
+
+  width:85%;
+  max-width:340px;
+
+  height:100vh;
+
+  background:#fff;
+
+  color:#111;
+
+  z-index:9999;
+
+  transition:.3s;
+
+  overflow-y:auto;
+}
+
+#menu.active{
+  right:0;
+}
+
+/* خلفية */
+
+#overlay{
+
+  position:fixed;
+
+  inset:0;
+
+  background:
+  rgba(0,0,0,.6);
+
+  z-index:9998;
+
+  display:none;
+}
+
+#overlay.active{
+  display:block;
+}
+
+/* عنوان القائمة */
+
+.menu-header{
+
+  padding:22px;
+
+  font-size:26px;
+  font-weight:bold;
+
+  border-bottom:
+  1px solid #eee;
+}
+
+/* الأقسام */
+
+.section-title{
+
+  color:#888;
+
+  font-size:14px;
+
+  margin:
+  20px 18px 10px;
+}
+
+/* العناصر */
+
+.menu-item{
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  padding:18px;
+
+  border-bottom:
+  1px solid #f1f1f1;
+
+  cursor:pointer;
+}
+
+.menu-left{
+
+  display:flex;
+  align-items:center;
+  gap:14px;
+
+  font-size:18px;
+}
+
+.menu-icon{
+  font-size:22px;
+}
+
+.arrow{
+  color:#888;
+  font-size:20px;
+}
+
+.logout{
+  color:red;
+  font-weight:bold;
+}
+
+/* نافذة التعديل */
+
+#editPanel{
+
+  display:none;
+
+  position:fixed;
+
+  left:0;
+  right:0;
+  bottom:0;
+
+  background:#111;
+
+  border-radius:24px 24px 0 0;
+
+  padding:25px;
+
+  z-index:99999;
+}
+
+input{
+
+  width:100%;
+
+  padding:14px;
+
+  margin-top:12px;
+
+  border:none;
+  outline:none;
+
+  border-radius:14px;
+
+  background:#1c1c1c;
+
+  color:white;
+}
+
+.save-btn{
+
+  width:100%;
+
+  padding:14px;
+
+  margin-top:14px;
+
+  border:none;
+
+  border-radius:14px;
+
+  background:#ff2d55;
+
+  color:white;
+
+  font-size:16px;
+  font-weight:bold;
 }
 
 </style>
@@ -343,23 +456,153 @@ button{
 
 <body>
 
+<!-- Overlay -->
+
+<div
+id="overlay"
+onclick="closeMenu()">
+</div>
+
+<!-- القائمة -->
+
+<div id="menu">
+
+  <div class="menu-header">
+    الإعدادات والخصوصية
+  </div>
+
+  <div class="section-title">
+    الأدوات الشخصية
+  </div>
+
+  <div class="menu-item">
+
+    <div class="menu-left">
+      <div class="menu-icon">🕓</div>
+      <div>مركز النشاطات</div>
+    </div>
+
+    <div class="arrow">›</div>
+
+  </div>
+
+  <div class="menu-item">
+
+    <div class="menu-left">
+      <div class="menu-icon">⬇️</div>
+      <div>الفيديوهات المحفوظة</div>
+    </div>
+
+    <div class="arrow">›</div>
+
+  </div>
+
+  <div class="menu-item">
+
+    <div class="menu-left">
+      <div class="menu-icon">🔳</div>
+      <div>QR الخاص بك</div>
+    </div>
+
+    <div class="arrow">›</div>
+
+  </div>
+
+  <div class="menu-item">
+
+    <div class="menu-left">
+      <div class="menu-icon">🎵</div>
+      <div>الموسيقى الخاصة بك</div>
+    </div>
+
+    <div class="arrow">›</div>
+
+  </div>
+
+  <div class="section-title">
+    الخصوصية والدعم
+  </div>
+
+  <div class="menu-item">
+
+    <div class="menu-left">
+      <div class="menu-icon">🛡️</div>
+      <div>مركز الخصوصية</div>
+    </div>
+
+    <div class="arrow">›</div>
+
+  </div>
+
+  <div class="menu-item">
+
+    <div class="menu-left">
+      <div class="menu-icon">📜</div>
+      <div>الشروط والسياسات</div>
+    </div>
+
+    <div class="arrow">›</div>
+
+  </div>
+
+  <div class="menu-item">
+
+    <div class="menu-left">
+      <div class="menu-icon">❓</div>
+      <div>مركز المساعدة</div>
+    </div>
+
+    <div class="arrow">›</div>
+
+  </div>
+
+  <div class="section-title">
+    الحساب
+  </div>
+
+  <div class="menu-item">
+
+    <div class="menu-left">
+      <div class="menu-icon">🔄</div>
+      <div>تبديل الحساب</div>
+    </div>
+
+    <div class="arrow">›</div>
+
+  </div>
+
+  <div
+  class="menu-item logout"
+  onclick="logout()">
+
+    <div class="menu-left">
+      <div class="menu-icon">🚪</div>
+      <div>تسجيل خروج</div>
+    </div>
+
+    <div class="arrow">›</div>
+
+  </div>
+
+</div>
+
 <!-- الشريط العلوي -->
 
 <div class="topbar">
 
-  <div></div>
+  <div
+  class="settings-btn"
+  onclick="openMenu()">
+
+    ☰
+
+  </div>
 
   <div class="topbar-title">
     Profile
   </div>
 
-  <div
-  class="settings-btn"
-  onclick="toggleSettings()">
-
-    ⚙️
-
-  </div>
+  <div></div>
 
 </div>
 
@@ -383,8 +626,6 @@ button{
 
   </div>
 
-  <!-- الاسم -->
-
   <h2 class="profile-name">
 
     <span id="name">
@@ -401,49 +642,24 @@ button{
 
   </h2>
 
-  <!-- الإحصائيات -->
-
   <div class="stats">
 
-    <div onclick="go('followers.html')">
-
-      <h3 id="followers">
-        0
-      </h3>
-
-      <p>
-        متابعين
-      </p>
-
-    </div>
-
-    <div onclick="go('following.html')">
-
-      <h3 id="following">
-        0
-      </h3>
-
-      <p>
-        متابَعين
-      </p>
-
+    <div>
+      <h3 id="followers">0</h3>
+      <p>متابعين</p>
     </div>
 
     <div>
+      <h3 id="following">0</h3>
+      <p>متابَعين</p>
+    </div>
 
-      <h3 id="videos">
-        0
-      </h3>
-
-      <p>
-        فيديوهات
-      </p>
-
+    <div>
+      <h3 id="videos">0</h3>
+      <p>فيديوهات</p>
     </div>
 
   </div>
-
-  <!-- الفيديوهات -->
 
   <h2 class="videos-title">
     فيديوهاتي 🎬
@@ -468,41 +684,11 @@ button{
   id="file"
   type="file">
 
-  <button id="save">
-    حفظ
-  </button>
-
-</div>
-
-<!-- الإعدادات -->
-
-<div id="settingsPanel">
-
-  <select id="langSelect">
-
-    <option value="ar">
-      العربية
-    </option>
-
-    <option value="en">
-      English
-    </option>
-
-    <option value="fr">
-      Français
-    </option>
-
-  </select>
-
-  <button onclick="saveLanguage()">
-    حفظ اللغة
-  </button>
-
   <button
-  onclick="logout()"
-  style="background:red;">
+  class="save-btn"
+  id="save">
 
-    تسجيل خروج
+    حفظ
 
   </button>
 
@@ -556,8 +742,6 @@ import {
 
 let userNow = null;
 
-/* المستخدم */
-
 onAuthStateChanged(
 auth,
 async(user)=>{
@@ -577,15 +761,11 @@ async(user)=>{
     user.uid
   );
 
-  /* الاسم */
-
   document.getElementById(
     "name"
   ).innerText =
   data?.username ||
   "بدون اسم";
-
-  /* توثيق */
 
   if(data?.verified){
 
@@ -593,10 +773,7 @@ async(user)=>{
       "verifiedBadge"
     ).style.display =
     "flex";
-
   }
-
-  /* بيانات */
 
   document.getElementById(
     "newName"
@@ -613,8 +790,6 @@ async(user)=>{
   ).innerText =
   data?.following || 0;
 
-  /* صورة */
-
   if(data?.image){
 
     document.getElementById(
@@ -625,15 +800,13 @@ async(user)=>{
     Date.now();
   }
 
-  /* فيديوهات */
-
   loadMyVideos(
     user.uid
   );
 
 });
 
-/* فيديوهات الحساب */
+/* الفيديوهات */
 
 async function loadMyVideos(uid){
 
@@ -659,9 +832,7 @@ async function loadMyVideos(uid){
     const video =
     doc.data();
 
-    if(
-      video.uid === uid
-    ){
+    if(video.uid===uid){
 
       count++;
 
@@ -691,15 +862,55 @@ async function loadMyVideos(uid){
   if(count===0){
 
     grid.innerHTML = `
-
     <div class="no-videos">
       لا توجد فيديوهات
     </div>
-
     `;
   }
 
 }
+
+/* القائمة */
+
+window.openMenu = ()=>{
+
+  document
+  .getElementById(
+    "menu"
+  )
+  .classList.add(
+    "active"
+  );
+
+  document
+  .getElementById(
+    "overlay"
+  )
+  .classList.add(
+    "active"
+  );
+
+};
+
+window.closeMenu = ()=>{
+
+  document
+  .getElementById(
+    "menu"
+  )
+  .classList.remove(
+    "active"
+  );
+
+  document
+  .getElementById(
+    "overlay"
+  )
+  .classList.remove(
+    "active"
+  );
+
+};
 
 /* تعديل */
 
@@ -715,30 +926,6 @@ window.toggleEdit = ()=>{
   ? "none"
   : "block";
 
-  document.getElementById(
-    "settingsPanel"
-  ).style.display =
-  "none";
-};
-
-/* الإعدادات */
-
-window.toggleSettings = ()=>{
-
-  const panel =
-  document.getElementById(
-    "settingsPanel"
-  );
-
-  panel.style.display =
-  panel.style.display==="block"
-  ? "none"
-  : "block";
-
-  document.getElementById(
-    "editPanel"
-  ).style.display =
-  "none";
 };
 
 /* حفظ */
@@ -746,7 +933,7 @@ window.toggleSettings = ()=>{
 document.getElementById(
   "save"
 ).onclick =
-async ()=>{
+async()=>{
 
   const name =
   document.getElementById(
@@ -789,30 +976,10 @@ async ()=>{
 
 };
 
-/* اللغة */
-
-window.saveLanguage = ()=>{
-
-  const lang =
-  document.getElementById(
-    "langSelect"
-  ).value;
-
-  localStorage.setItem(
-    "appLang",
-    lang
-  );
-
-  alert(
-    "تم حفظ اللغة ✔"
-  );
-
-};
-
-/* تسجيل خروج */
+/* خروج */
 
 window.logout =
-async ()=>{
+async()=>{
 
   await signOut(auth);
 
