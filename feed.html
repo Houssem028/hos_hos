@@ -10,8 +10,7 @@ content="
 width=device-width,
 initial-scale=1.0,
 maximum-scale=1.0,
-user-scalable=no,
-viewport-fit=cover
+user-scalable=no
 ">
 
 <title>Hos Hos</title>
@@ -35,8 +34,6 @@ background:#000;
 color:white;
 }
 
-/* FEED */
-
 #feedContainer{
 height:100vh;
 overflow-y:scroll;
@@ -48,24 +45,28 @@ display:none;
 }
 
 .feed{
+position:relative;
 width:100%;
 height:100vh;
-position:relative;
 scroll-snap-align:start;
 overflow:hidden;
-background:black;
+background:#000;
 }
+
+/* الفيديو والصورة */
 
 .feed video,
 .feed img{
+position:absolute;
+top:0;
+left:0;
 width:100%;
 height:100%;
 object-fit:cover;
-background:black;
-display:block;
+z-index:1;
 }
 
-/* OVERLAY */
+/* الطبقة */
 
 .overlay{
 position:absolute;
@@ -74,16 +75,16 @@ inset:0;
 background:
 linear-gradient(
 to top,
-rgba(0,0,0,.92),
-rgba(0,0,0,.1),
-rgba(0,0,0,.45)
+rgba(0,0,0,.85),
+rgba(0,0,0,.2),
+rgba(0,0,0,.5)
 );
 
-pointer-events:none;
 z-index:2;
+pointer-events:none;
 }
 
-/* TOP BAR */
+/* الأعلى */
 
 .top-bar{
 position:fixed;
@@ -94,7 +95,7 @@ height:75px;
 display:flex;
 justify-content:center;
 align-items:center;
-z-index:999;
+z-index:9999;
 
 background:
 linear-gradient(
@@ -102,8 +103,6 @@ to bottom,
 rgba(0,0,0,.7),
 transparent
 );
-
-backdrop-filter:blur(12px);
 }
 
 .logo-box{
@@ -112,14 +111,14 @@ font-weight:bold;
 letter-spacing:2px;
 }
 
-/* INFO */
+/* معلومات */
 
 .video-info{
 position:absolute;
 left:15px;
 bottom:120px;
 width:70%;
-z-index:10;
+z-index:50;
 }
 
 .video-info h3{
@@ -127,8 +126,7 @@ font-size:22px;
 margin-bottom:10px;
 display:flex;
 align-items:center;
-gap:7px;
-cursor:pointer;
+gap:6px;
 }
 
 .video-info p{
@@ -137,7 +135,7 @@ line-height:1.5;
 color:#eee;
 }
 
-/* VERIFIED */
+/* التوثيق */
 
 .verified-badge{
 width:18px;
@@ -150,17 +148,19 @@ align-items:center;
 font-size:11px;
 }
 
-/* ACTIONS */
+/* الأزرار */
 
 .video-actions{
 position:absolute;
 right:12px;
 bottom:120px;
+
 display:flex;
 flex-direction:column;
 align-items:center;
 gap:18px;
-z-index:10;
+
+z-index:50;
 }
 
 .action{
@@ -176,40 +176,46 @@ width:58px;
 height:58px;
 border:none;
 border-radius:50%;
-background:rgba(255,255,255,.13);
+
+background:
+rgba(255,255,255,.15);
+
 backdrop-filter:blur(10px);
+
 color:white;
 font-size:26px;
 cursor:pointer;
 }
 
 .profile-pic{
-width:60px;
-height:60px;
+width:62px;
+height:62px;
 border-radius:50%;
 object-fit:cover;
 border:3px solid white;
 cursor:pointer;
 }
 
-/* BOTTOM */
+/* أسفل */
 
 .bottom-nav{
 position:fixed;
 bottom:12px;
 left:12px;
 right:12px;
+
 height:70px;
+
 border-radius:24px;
 
 background:
-rgba(20,20,20,.88);
+rgba(20,20,20,.9);
 
 display:flex;
 justify-content:space-around;
 align-items:center;
 
-z-index:999;
+z-index:9999;
 
 backdrop-filter:blur(20px);
 }
@@ -229,7 +235,7 @@ height:56px;
 border-radius:18px;
 }
 
-/* LOADING */
+/* تحميل */
 
 .loading{
 text-align:center;
@@ -237,18 +243,24 @@ margin-top:40vh;
 font-size:22px;
 }
 
-/* COMMENTS */
+/* التعليقات */
 
 .comments-panel{
 position:fixed;
 left:0;
 right:0;
 bottom:-100%;
+
 height:75vh;
+
 background:#111;
+
 border-radius:25px 25px 0 0;
+
 z-index:99999;
+
 transition:.3s;
+
 display:flex;
 flex-direction:column;
 }
@@ -258,13 +270,15 @@ padding:18px;
 display:flex;
 justify-content:space-between;
 align-items:center;
+
 border-bottom:1px solid #222;
+
 font-size:20px;
 font-weight:bold;
 }
 
 .close-comments{
-font-size:28px;
+font-size:30px;
 cursor:pointer;
 }
 
@@ -288,7 +302,7 @@ object-fit:cover;
 }
 
 .comment-body{
-background:#1b1b1b;
+background:#1a1a1a;
 padding:12px;
 border-radius:15px;
 flex:1;
@@ -297,7 +311,7 @@ flex:1;
 .comment-name{
 color:#ff2d55;
 font-weight:bold;
-margin-bottom:6px;
+margin-bottom:5px;
 }
 
 .comment-input{
@@ -326,32 +340,10 @@ color:white;
 cursor:pointer;
 }
 
-/* LIKE */
-
-.liked{
-color:#ff2d55 !important;
-}
-
-/* PLAY */
-
-.play-icon{
-position:absolute;
-top:50%;
-left:50%;
-transform:translate(-50%,-50%);
-font-size:70px;
-z-index:20;
-opacity:0;
-pointer-events:none;
-transition:.2s;
-}
-
 </style>
 </head>
 
 <body>
-
-<!-- TOP -->
 
 <div class="top-bar">
 
@@ -361,17 +353,15 @@ HOS HOS
 
 </div>
 
-<!-- FEED -->
-
 <div id="feedContainer">
 
 <div class="loading">
-جاري تحميل الفيديوهات...
+جاري التحميل...
 </div>
 
 </div>
 
-<!-- COMMENTS -->
+<!-- التعليقات -->
 
 <div
 class="comments-panel"
@@ -410,7 +400,7 @@ placeholder="اكتب تعليق...">
 
 </div>
 
-<!-- NAV -->
+<!-- الأسفل -->
 
 <div class="bottom-nav">
 
@@ -458,36 +448,34 @@ onAuthStateChanged
 from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-let currentUser = null;
-let currentCommentVideo = null;
+let currentUser=null;
+let currentCommentVideo=null;
 
-const container =
+const container=
 document.getElementById(
 "feedContainer"
 );
 
-/* USER */
-
 onAuthStateChanged(
 auth,
 (user)=>{
-currentUser = user;
+currentUser=user;
 }
 );
 
-/* LOAD POSTS */
+/* تحميل */
 
 async function loadVideos(){
 
 container.innerHTML="";
 
-const q =
+const q=
 query(
 collection(db,"videos"),
 orderBy("createdAt","desc")
 );
 
-const snap =
+const snap=
 await getDocs(q);
 
 if(snap.empty){
@@ -503,13 +491,11 @@ return;
 
 for(const videoDoc of snap.docs){
 
-const video =
-videoDoc.data();
+const video=videoDoc.data();
 
-const id =
-videoDoc.id;
+const id=videoDoc.id;
 
-const commentsSnap =
+const commentsSnap=
 await getDocs(
 query(
 collection(db,"comments"),
@@ -517,24 +503,22 @@ where("videoId","==",id)
 )
 );
 
-const commentsCount =
+const commentsCount=
 commentsSnap.size;
 
 container.innerHTML += `
 
 <section class="feed">
 
-${video.type === "image"
+${video.type==="image"
 
-? `
+?`
 
 <img
-src="${video.mediaUrl || video.videoUrl}"
-class="postImage">
-
+src="${video.mediaUrl || video.videoUrl}">
 `
 
-: `
+:`
 
 <video
 class="videoPlayer"
@@ -542,11 +526,6 @@ src="${video.mediaUrl || video.videoUrl}"
 loop
 playsinline>
 </video>
-
-<div class="play-icon">
-▶
-</div>
-
 `
 }
 
@@ -554,18 +533,21 @@ playsinline>
 
 <div class="video-info">
 
-<h3 onclick="
-location.href=
-'user.html?uid=${video.uid}'
-">
+<h3>
 
 @${video.username}
 
-${video.verified ? `
+${video.verified
+
+?`
+
 <span class="verified-badge">
 ✓
 </span>
-` : ""}
+
+`
+
+:""}
 
 </h3>
 
@@ -646,38 +628,37 @@ setupLikes();
 initVideos();
 }
 
-/* VIDEOS */
+/* الفيديو */
 
 function initVideos(){
 
-const videos =
+const videos=
 document.querySelectorAll(
 ".videoPlayer"
 );
 
-const observer =
+const observer=
 new IntersectionObserver(
 
 (entries)=>{
 
 entries.forEach(entry=>{
 
-const video =
+const video=
 entry.target;
 
 if(entry.isIntersecting){
 
 videos.forEach(v=>{
 
-if(v !== video){
+if(v!==video){
 
 v.pause();
 
 }
-
 });
 
-video.play().catch(()=>{});
+video.play();
 
 }else{
 
@@ -698,58 +679,47 @@ videos.forEach(video=>{
 
 observer.observe(video);
 
-video.addEventListener(
-"click",
-()=>{
-
-const icon =
-video.parentElement.querySelector(
-".play-icon"
-);
+video.onclick=()=>{
 
 if(video.paused){
 
 video.play();
 
-icon.style.opacity="0";
-
 }else{
 
 video.pause();
 
-icon.style.opacity="1";
-
 }
+
+};
 
 });
 
-});
-
 }
 
-/* LIKE */
+/* لايك */
 
 function setupLikes(){
 
-const buttons =
+const buttons=
 document.querySelectorAll(
 ".likeBtn"
 );
 
 buttons.forEach(btn=>{
 
-btn.onclick =
+btn.onclick=
 async()=>{
 
-const id =
+const id=
 btn.dataset.id;
 
-const likesText =
+const likesText=
 document.getElementById(
 "likes-"+id
 );
 
-let current =
+let current=
 parseInt(
 likesText.innerText
 );
@@ -762,12 +732,8 @@ increment(1)
 }
 );
 
-likesText.innerText =
-current + 1;
-
-btn.classList.add(
-"liked"
-);
+likesText.innerText=
+current+1;
 
 };
 
@@ -775,9 +741,9 @@ btn.classList.add(
 
 }
 
-/* COMMENTS */
+/* تعليقات */
 
-window.openComments =
+window.openComments=
 async(id)=>{
 
 currentCommentVideo=id;
@@ -791,7 +757,7 @@ document
 loadComments();
 };
 
-window.closeComments =
+window.closeComments=
 ()=>{
 
 document
@@ -801,18 +767,16 @@ document
 .style.bottom="-100%";
 };
 
-/* LOAD COMMENTS */
-
 async function loadComments(){
 
-const list =
+const list=
 document.getElementById(
 "commentsList"
 );
 
 list.innerHTML="";
 
-const q =
+const q=
 query(
 collection(db,"comments"),
 where(
@@ -826,7 +790,7 @@ orderBy(
 )
 );
 
-const snap =
+const snap=
 await getDocs(q);
 
 if(snap.empty){
@@ -834,8 +798,8 @@ if(snap.empty){
 list.innerHTML=`
 <div style="
 text-align:center;
-color:#777;
 margin-top:20px;
+color:#777;
 ">
 لا توجد تعليقات
 </div>
@@ -846,8 +810,7 @@ return;
 
 snap.forEach(doc=>{
 
-const c =
-doc.data();
+const c=doc.data();
 
 list.innerHTML += `
 
@@ -871,19 +834,18 @@ ${c.text}
 </div>
 
 </div>
-
 `;
 
 });
 
 }
 
-/* SEND COMMENT */
+/* إرسال */
 
-window.sendComment =
+window.sendComment=
 async()=>{
 
-const input =
+const input=
 document.getElementById(
 "commentText"
 );
@@ -891,7 +853,7 @@ document.getElementById(
 if(!input.value)
 return;
 
-const userData =
+const userData=
 await getUserData(
 currentUser.uid
 );
@@ -923,19 +885,17 @@ input.value="";
 
 loadComments();
 
-const count =
+const count=
 document.getElementById(
 "comments-count-"+currentCommentVideo
 );
 
-count.innerText =
+count.innerText=
 parseInt(count.innerText)+1;
 
 };
 
-/* SHARE */
-
-window.shareVideo =
+window.shareVideo=
 (url)=>{
 
 navigator.share({
@@ -944,11 +904,9 @@ url:url
 
 };
 
-/* LOAD */
-
 loadVideos();
 
-/* NAV */
+/* تنقل */
 
 window.goHome=()=>{
 location.href="feed.html";
