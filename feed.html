@@ -45,23 +45,30 @@ overflow:hidden;
 background:#000;
 }
 
+/* VIDEO */
 .feed video,
 .feed img{
 width:100%;
 height:100%;
 object-fit:cover;
+transform:scale(1.01);
 }
 
-/* overlay */
+/* overlay أخف مثل تيك توك */
 .overlay{
 position:absolute;
 inset:0;
-background:linear-gradient(to top, rgba(0,0,0,.9), rgba(0,0,0,.1), rgba(0,0,0,.4));
+background:linear-gradient(
+to top,
+rgba(0,0,0,.65),
+rgba(0,0,0,.05),
+rgba(0,0,0,.25)
+);
 z-index:2;
 pointer-events:none;
 }
 
-/* top */
+/* TOP */
 .top-bar{
 position:fixed;
 top:0;
@@ -72,7 +79,7 @@ display:flex;
 justify-content:center;
 align-items:center;
 z-index:999;
-background:linear-gradient(to bottom, rgba(0,0,0,.7), transparent);
+background:linear-gradient(to bottom, rgba(0,0,0,.6), transparent);
 }
 
 .logo-box{
@@ -80,7 +87,7 @@ font-size:26px;
 font-weight:bold;
 }
 
-/* info */
+/* INFO */
 .video-info{
 position:absolute;
 left:15px;
@@ -101,6 +108,7 @@ font-size:14px;
 color:#eee;
 }
 
+/* VERIFIED */
 .verified-badge{
 width:16px;
 height:16px;
@@ -112,9 +120,9 @@ justify-content:center;
 font-size:10px;
 }
 
-/* ===================== */
-/* RIGHT SIDE TIKTOK FIX */
-/* ===================== */
+/* ========================= */
+/* 🔥 RIGHT SIDE TIKTOK FIX */
+/* ========================= */
 
 .video-actions{
 position:absolute;
@@ -127,7 +135,7 @@ flex-direction:column;
 align-items:center;
 justify-content:center;
 
-gap:26px;
+gap:30px;
 
 z-index:50;
 }
@@ -141,10 +149,10 @@ font-size:11px;
 color:white;
 }
 
-/* buttons */
+/* BUTTONS */
 .action button{
-width:48px;
-height:48px;
+width:50px;
+height:50px;
 border:none;
 border-radius:50%;
 background:rgba(255,255,255,.12);
@@ -154,15 +162,22 @@ font-size:22px;
 display:flex;
 justify-content:center;
 align-items:center;
+
+transition:.15s;
 }
 
-/* profile */
+.action button:active{
+transform:scale(.88);
+}
+
+/* PROFILE */
 .profile-pic{
 width:42px;
 height:42px;
 border-radius:50%;
 object-fit:cover;
 border:2px solid white;
+box-shadow:0 2px 8px rgba(0,0,0,.4);
 }
 
 /* bottom nav */
@@ -200,13 +215,14 @@ height:56px;
 border-radius:18px;
 }
 
+/* loading */
 .loading{
 text-align:center;
 margin-top:40vh;
 font-size:20px;
 }
 
-/* comments */
+/* COMMENTS */
 .comments-panel{
 position:fixed;
 left:0;
@@ -305,7 +321,7 @@ color:white;
 <div class="loading">جاري تحميل الفيديوهات...</div>
 </div>
 
-<!-- comments -->
+<!-- COMMENTS -->
 <div class="comments-panel" id="commentsPanel">
 
 <div class="comments-header">
@@ -322,7 +338,7 @@ color:white;
 
 </div>
 
-<!-- bottom -->
+<!-- BOTTOM NAV -->
 <div class="bottom-nav">
 <button onclick="goHome()">🏠</button>
 <button onclick="goMessages()">💬</button>
@@ -350,7 +366,7 @@ onAuthStateChanged(auth,(user)=>{
 currentUser=user;
 });
 
-/* LOAD */
+/* LOAD VIDEOS */
 async function loadVideos(){
 
 container.innerHTML="";
@@ -390,7 +406,6 @@ ${v.type==="image"
 <p>${v.caption||""}</p>
 </div>
 
-<!-- RIGHT SIDE -->
 <div class="video-actions">
 
 <div class="action">
@@ -407,7 +422,7 @@ onclick="location.href='user.html?uid=${v.uid}'">
 
 <div class="action">
 <button onclick="openComments('${id}')">💬</button>
-<span id="comments-${id}">${commentsCount}</span>
+<span>${commentsCount}</span>
 </div>
 
 </div>
