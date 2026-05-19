@@ -19,277 +19,249 @@ user-scalable=no
 <style>
 
 *{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:Arial,sans-serif;
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
 }
 
 body{
-
-  background:#000;
-  color:white;
-
-  min-height:100vh;
-
-  display:flex;
-  justify-content:center;
-  align-items:center;
-
-  padding:20px;
+background:#000;
+color:white;
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+padding:20px;
 }
-
-/* الكرت */
 
 .page-box{
 
-  width:100%;
-  max-width:520px;
+width:100%;
+max-width:520px;
 
-  background:
-  linear-gradient(
-    180deg,
-    #111,
-    #0a0a0a
-  );
+background:
+linear-gradient(
+180deg,
+#111,
+#0a0a0a
+);
 
-  padding:25px;
+padding:25px;
 
-  border-radius:30px;
+border-radius:30px;
 
-  border:
-  1px solid rgba(255,255,255,.06);
+border:
+1px solid rgba(255,255,255,.06);
 
-  box-shadow:
-  0 0 40px rgba(0,0,0,.5);
+box-shadow:
+0 0 40px rgba(0,0,0,.5);
 }
-
-/* العنوان */
 
 h1{
-
-  text-align:center;
-
-  margin-bottom:25px;
-
-  font-size:30px;
+text-align:center;
+margin-bottom:25px;
+font-size:30px;
 }
-
-/* منطقة الرفع */
 
 .upload-area{
 
-  border:
-  2px dashed rgba(255,255,255,.15);
+border:
+2px dashed rgba(255,255,255,.15);
 
-  border-radius:22px;
+border-radius:22px;
 
-  padding:45px 20px;
+padding:45px 20px;
 
-  text-align:center;
+text-align:center;
 
-  cursor:pointer;
+cursor:pointer;
 
-  transition:.25s;
+transition:.25s;
 
-  background:
-  rgba(255,255,255,.03);
+background:
+rgba(255,255,255,.03);
 }
 
 .upload-area:hover{
 
-  border-color:#ff2d55;
+border-color:#ff2d55;
 
-  transform:scale(1.01);
+transform:scale(1.01);
 }
 
 .upload-area h2{
-
-  font-size:26px;
+font-size:26px;
 }
 
 .upload-area p{
 
-  color:#aaa;
+color:#aaa;
 
-  margin-top:10px;
+margin-top:10px;
 
-  line-height:1.6;
+line-height:1.6;
 }
-
-/* input */
 
 input[type="file"]{
-  display:none;
+display:none;
 }
-
-/* المعاينة */
 
 .preview-box{
 
-  margin-top:22px;
+margin-top:22px;
 
-  position:relative;
+position:relative;
 
-  display:none;
+display:none;
 }
 
 video,
 img{
 
-  width:100%;
+width:100%;
 
-  border-radius:22px;
+border-radius:22px;
 
-  max-height:500px;
+max-height:500px;
 
-  object-fit:cover;
+object-fit:cover;
 
-  background:#000;
+background:#000;
 }
-
-/* النوع */
 
 .media-type{
 
-  position:absolute;
+position:absolute;
 
-  top:12px;
-  right:12px;
+top:12px;
+right:12px;
 
-  background:
-  rgba(0,0,0,.65);
+background:
+rgba(0,0,0,.65);
 
-  backdrop-filter:blur(10px);
+backdrop-filter:blur(10px);
 
-  padding:8px 14px;
+padding:8px 14px;
 
-  border-radius:30px;
+border-radius:30px;
 
-  font-size:13px;
+font-size:13px;
 
-  border:
-  1px solid rgba(255,255,255,.08);
+border:
+1px solid rgba(255,255,255,.08);
 }
-
-/* الوصف */
 
 textarea{
 
-  width:100%;
+width:100%;
 
-  margin-top:20px;
+margin-top:20px;
 
-  padding:18px;
+padding:18px;
 
-  border:none;
-  outline:none;
+border:none;
+outline:none;
 
-  border-radius:18px;
+border-radius:18px;
 
-  resize:none;
+resize:none;
 
-  background:#1a1a1a;
+background:#1a1a1a;
 
-  color:white;
+color:white;
 
-  font-size:15px;
+font-size:15px;
 
-  min-height:120px;
+min-height:120px;
 }
 
 textarea::placeholder{
-  color:#777;
+color:#777;
 }
-
-/* زر النشر */
 
 .upload-btn{
 
-  width:100%;
+width:100%;
 
-  margin-top:20px;
+margin-top:20px;
 
-  padding:18px;
+padding:18px;
 
-  border:none;
+border:none;
 
-  border-radius:20px;
+border-radius:20px;
 
-  background:
-  linear-gradient(
-    135deg,
-    #ff0050,
-    #ff2d55
-  );
+background:
+linear-gradient(
+135deg,
+#ff0050,
+#ff2d55
+);
 
-  color:white;
+color:white;
 
-  font-size:19px;
-  font-weight:bold;
+font-size:19px;
+font-weight:bold;
 
-  cursor:pointer;
+cursor:pointer;
 
-  transition:.2s;
+transition:.2s;
 
-  box-shadow:
-  0 10px 25px rgba(255,0,80,.35);
+box-shadow:
+0 10px 25px rgba(255,0,80,.35);
 }
 
 .upload-btn:active{
-  transform:scale(.98);
+transform:scale(.98);
 }
 
 .upload-btn:disabled{
-  opacity:.5;
+opacity:.5;
 }
-
-/* الحالة */
 
 .status{
 
-  text-align:center;
+text-align:center;
 
-  margin-top:18px;
+margin-top:18px;
 
-  color:#aaa;
+color:#aaa;
 
-  font-size:15px;
+font-size:15px;
 }
-
-/* شريط التحميل */
 
 .progress{
 
-  width:100%;
+width:100%;
 
-  height:10px;
+height:10px;
 
-  background:#222;
+background:#222;
 
-  border-radius:30px;
+border-radius:30px;
 
-  overflow:hidden;
+overflow:hidden;
 
-  margin-top:18px;
+margin-top:18px;
 
-  display:none;
+display:none;
 }
 
 .progress-bar{
 
-  height:100%;
+height:100%;
 
-  width:0%;
+width:0%;
 
-  background:
-  linear-gradient(
-    90deg,
-    #ff0050,
-    #ff2d55
-  );
+background:
+linear-gradient(
+90deg,
+#ff0050,
+#ff2d55
+);
 
-  transition:.2s;
+transition:.2s;
 }
 
 </style>
@@ -300,163 +272,153 @@ textarea::placeholder{
 
 <div class="page-box">
 
-  <h1>
-    ➕ إنشاء منشور
-  </h1>
+<h1>
+➕ إنشاء منشور
+</h1>
 
-  <!-- رفع -->
+<label class="upload-area">
 
-  <label class="upload-area">
+<input
+type="file"
+id="mediaUpload"
+accept="video/*,image/*">
 
-    <input
-    type="file"
-    id="mediaUpload"
-    accept="video/*,image/*">
+<h2>
+🎬🖼️
+</h2>
 
-    <h2>
-      🎬🖼️
-    </h2>
+<p>
 
-    <p>
+اضغط هنا لاختيار
+فيديو أو صورة
 
-      اضغط هنا لاختيار
-      فيديو أو صورة
+<br><br>
 
-      <br><br>
+يدعم:
+MP4 / JPG / PNG
 
-      يدعم:
-      MP4 / JPG / PNG
+</p>
 
-    </p>
+</label>
 
-  </label>
+<div
+class="preview-box"
+id="previewBox">
 
-  <!-- المعاينة -->
+<div
+class="media-type"
+id="mediaType">
+</div>
 
-  <div
-  class="preview-box"
-  id="previewBox">
+<video
+id="previewVideo"
+controls
+playsinline
+style="display:none;">
+</video>
 
-    <div
-    class="media-type"
-    id="mediaType">
-    </div>
+<img
+id="previewImage"
+style="display:none;">
 
-    <video
-    id="previewVideo"
-    controls
-    playsinline
-    style="display:none;">
-    </video>
+</div>
 
-    <img
-    id="previewImage"
-    style="display:none;">
-
-  </div>
-
-  <!-- الوصف -->
-
-  <textarea
-  id="caption"
-  placeholder="
+<textarea
+id="caption"
+placeholder="
 اكتب وصف المنشور...
 "></textarea>
 
-  <!-- زر النشر -->
+<button
+class="upload-btn"
+id="publishBtn">
 
-  <button
-  class="upload-btn"
-  id="publishBtn">
+نشر الآن 🚀
 
-    نشر الآن 🚀
+</button>
 
-  </button>
+<div
+class="progress"
+id="progress">
 
-  <!-- progress -->
+<div
+class="progress-bar"
+id="progressBar">
+</div>
 
-  <div
-  class="progress"
-  id="progress">
+</div>
 
-    <div
-    class="progress-bar"
-    id="progressBar">
-    </div>
-
-  </div>
-
-  <!-- الحالة -->
-
-  <div
-  class="status"
-  id="status">
-  </div>
+<div
+class="status"
+id="status">
+</div>
 
 </div>
 
 <script type="module">
 
 import {
-  auth,
-  db,
-  getUserData
+auth,
+db,
+getUserData
 } from "./firebase.js";
 
 import {
-  addDoc,
-  collection
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+addDoc,
+collection
+}
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 import {
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-/* العناصر */
+onAuthStateChanged
+}
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const input =
 document.getElementById(
-  "mediaUpload"
+"mediaUpload"
 );
 
 const previewBox =
 document.getElementById(
-  "previewBox"
+"previewBox"
 );
 
 const previewVideo =
 document.getElementById(
-  "previewVideo"
+"previewVideo"
 );
 
 const previewImage =
 document.getElementById(
-  "previewImage"
+"previewImage"
 );
 
 const publishBtn =
 document.getElementById(
-  "publishBtn"
+"publishBtn"
 );
 
 const status =
 document.getElementById(
-  "status"
+"status"
 );
 
 const progress =
 document.getElementById(
-  "progress"
+"progress"
 );
 
 const progressBar =
 document.getElementById(
-  "progressBar"
+"progressBar"
 );
 
 const mediaType =
 document.getElementById(
-  "mediaType"
+"mediaType"
 );
 
 let currentUser = null;
@@ -471,97 +433,102 @@ onAuthStateChanged(
 auth,
 (user)=>{
 
-  if(!user){
+if(!user){
 
-    location.href =
-    "login.html";
+location.href =
+"login.html";
 
-    return;
-  }
+return;
+}
 
-  currentUser = user;
+currentUser = user;
+
 });
 
-/* اختيار الملف */
+/* اختيار ملف */
 
 input.addEventListener(
 "change",
 function(){
 
-  const file =
-  this.files[0];
+const file =
+this.files[0];
 
-  if(!file)
-  return;
+if(!file)
+return;
 
-  /* الحجم */
+if(
+file.size >
+150000000
+){
 
-  if(
-    file.size >
-    150000000
-  ){
+alert(
+"الملف كبير جداً"
+);
 
-    alert(
-      "الملف كبير جداً"
-    );
+return;
+}
 
-    return;
-  }
+selectedFile =
+file;
 
-  selectedFile = file;
+const url =
+URL.createObjectURL(
+file
+);
 
-  const url =
-  URL.createObjectURL(
-    file
-  );
+previewBox.style.display =
+"block";
 
-  previewBox.style.display =
-  "block";
+/* فيديو */
 
-  /* فيديو */
+if(
+file.type.startsWith(
+"video"
+)
+){
 
-  if(
-    file.type.startsWith(
-      "video"
-    )
-  ){
+postType =
+"video";
 
-    postType = "video";
+mediaType.innerText =
+"🎬 فيديو";
 
-    mediaType.innerText =
-    "🎬 فيديو";
+previewVideo.src =
+url;
 
-    previewVideo.src = url;
+previewVideo.style.display =
+"block";
 
-    previewVideo.style.display =
-    "block";
+previewImage.style.display =
+"none";
 
-    previewImage.style.display =
-    "none";
+}
 
-  }
+/* صورة */
 
-  /* صورة */
+else if(
+file.type.startsWith(
+"image"
+)
+){
 
-  else if(
-    file.type.startsWith(
-      "image"
-    )
-  ){
+postType =
+"image";
 
-    postType = "image";
+mediaType.innerText =
+"🖼️ صورة";
 
-    mediaType.innerText =
-    "🖼️ صورة";
+previewImage.src =
+url;
 
-    previewImage.src = url;
+previewImage.style.display =
+"block";
 
-    previewImage.style.display =
-    "block";
+previewVideo.style.display =
+"none";
 
-    previewVideo.style.display =
-    "none";
-  }
+}
 
 });
 
@@ -570,179 +537,307 @@ function(){
 publishBtn.onclick =
 async()=>{
 
-  if(!selectedFile){
+if(!selectedFile){
 
-    alert(
-      "اختر صورة أو فيديو"
-    );
+alert(
+"اختر صورة أو فيديو"
+);
 
-    return;
-  }
+return;
+}
 
-  if(!currentUser)
-  return;
+if(!currentUser)
+return;
 
-  try{
+try{
 
-    publishBtn.disabled =
-    true;
+publishBtn.disabled =
+true;
 
-    progress.style.display =
-    "block";
+progress.style.display =
+"block";
 
-    status.innerText =
-    "جاري الرفع...";
+status.innerText =
+"جاري الرفع...";
 
-    progressBar.style.width =
-    "25%";
+progressBar.style.width =
+"20%";
 
-    /* بيانات */
+/* ضغط الصور */
 
-    const formData =
-    new FormData();
+let fileToUpload =
+selectedFile;
 
-    formData.append(
-      "file",
-      selectedFile
-    );
+if(postType === "image"){
 
-    formData.append(
-      "upload_preset",
-      "hoshos_upload"
-    );
+const canvas =
+document.createElement(
+"canvas"
+);
 
-    /* api */
+const ctx =
+canvas.getContext("2d");
 
-    const uploadUrl =
+const img =
+new Image();
 
-    postType === "video"
+img.src =
+URL.createObjectURL(
+selectedFile
+);
 
-    ?
+await new Promise(resolve=>{
 
-    "https://api.cloudinary.com/v1_1/dgtazde5z/video/upload"
+img.onload = ()=>{
 
-    :
+let width =
+img.width;
 
-    "https://api.cloudinary.com/v1_1/dgtazde5z/image/upload";
+let height =
+img.height;
 
-    progressBar.style.width =
-    "45%";
+const maxSize =
+1400;
 
-    const uploadRes =
-    await fetch(
-      uploadUrl,
-      {
-        method:"POST",
-        body:formData
-      }
-    );
+if(width > height){
 
-    const uploadData =
-    await uploadRes.json();
+if(width > maxSize){
 
-    progressBar.style.width =
-    "75%";
+height *=
+maxSize / width;
 
-    if(
-      !uploadData.secure_url
-    ){
+width =
+maxSize;
+}
 
-      throw new Error(
-        "Upload failed"
-      );
-    }
+}else{
 
-    /* بيانات الحساب */
+if(height > maxSize){
 
-    const userData =
-    await getUserData(
-      currentUser.uid
-    );
+width *=
+maxSize / height;
 
-    /* حفظ */
+height =
+maxSize;
+}
+}
 
-    await addDoc(
-      collection(
-        db,
-        "videos"
-      ),
-      {
+canvas.width =
+width;
 
-        uid:
-        currentUser.uid,
+canvas.height =
+height;
 
-        username:
-        userData.username || "",
+ctx.drawImage(
+img,
+0,
+0,
+width,
+height
+);
 
-        userImage:
-        userData.image || "",
+canvas.toBlob(
 
-        verified:
-        userData.verified || false,
+blob=>{
 
-        videoUrl:
-        uploadData.secure_url,
+fileToUpload =
+new File(
+[blob],
+selectedFile.name,
+{
+type:"image/jpeg"
+}
+);
 
-        type:
-        postType,
+resolve();
 
-        caption:
-        document
-        .getElementById(
-          "caption"
-        )
-        .value || "",
+},
 
-        likes:0,
+"image/jpeg",
+0.90
 
-        comments:0,
+);
 
-        shares:0,
+};
 
-        createdAt:
-        Date.now()
-      }
-    );
+});
 
-    progressBar.style.width =
-    "100%";
+}
 
-    status.innerText =
+/* رفع */
 
-    postType === "video"
+const formData =
+new FormData();
 
-    ?
+formData.append(
+"file",
+fileToUpload
+);
 
-    "تم نشر الفيديو 🎉"
+formData.append(
+"upload_preset",
+"hoshos_upload"
+);
 
-    :
+if(postType === "video"){
 
-    "تم نشر الصورة 🎉";
+formData.append(
+"resource_type",
+"video"
+);
 
-    setTimeout(()=>{
+}else{
 
-      location.href =
-      "feed.html";
+formData.append(
+"resource_type",
+"image"
+);
 
-    },1500);
+}
 
-  }catch(err){
+const uploadUrl =
 
-    console.error(err);
+postType === "video"
 
-    alert(
-      "حدث خطأ أثناء الرفع"
-    );
+?
 
-    publishBtn.disabled =
-    false;
+"https://api.cloudinary.com/v1_1/dgtazde5z/video/upload"
 
-    progress.style.display =
-    "none";
+:
 
-    status.innerText =
-    "";
-  }
+"https://api.cloudinary.com/v1_1/dgtazde5z/image/upload";
+
+progressBar.style.width =
+"50%";
+
+const uploadRes =
+await fetch(
+uploadUrl,
+{
+method:"POST",
+body:formData
+}
+);
+
+const uploadData =
+await uploadRes.json();
+
+progressBar.style.width =
+"80%";
+
+if(
+!uploadData.secure_url
+){
+
+throw new Error(
+"Upload failed"
+);
+}
+
+/* بيانات الحساب */
+
+const userData =
+await getUserData(
+currentUser.uid
+);
+
+/* حفظ */
+
+await addDoc(
+collection(
+db,
+"videos"
+),
+{
+
+uid:
+currentUser.uid,
+
+username:
+userData.username || "",
+
+userImage:
+userData.image || "",
+
+verified:
+userData.verified || false,
+
+videoUrl:
+
+postType === "image"
+
+?
+
+uploadData.secure_url
+.replace(
+"/upload/",
+"/upload/f_auto,q_auto/"
+)
+
+:
+
+uploadData.secure_url,
+
+type:
+postType,
+
+caption:
+document
+.getElementById(
+"caption"
+)
+.value || "",
+
+likes:0,
+
+comments:0,
+
+shares:0,
+
+createdAt:
+Date.now()
+}
+);
+
+progressBar.style.width =
+"100%";
+
+status.innerText =
+
+postType === "video"
+
+?
+
+"تم نشر الفيديو 🎉"
+
+:
+
+"تم نشر الصورة 🎉";
+
+setTimeout(()=>{
+
+location.href =
+"feed.html";
+
+},1500);
+
+}catch(err){
+
+console.error(err);
+
+alert(
+"حدث خطأ أثناء الرفع"
+);
+
+publishBtn.disabled =
+false;
+
+progress.style.display =
+"none";
+
+status.innerText =
+"";
+}
 
 };
 
