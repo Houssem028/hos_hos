@@ -20,7 +20,6 @@ addDoc,
 query,
 orderBy,
 onSnapshot,
-serverTimestamp,
 increment
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -44,9 +43,7 @@ export const db = getFirestore(app);
 export async function getUserData(uid){
 const snap = await getDoc(doc(db,"users",uid));
 
-if(snap.exists()){
-return snap.data();
-}
+if(snap.exists()) return snap.data();
 
 return {
 username:"مستخدم",
@@ -55,97 +52,7 @@ verified:false
 };
 }
 
-/* ================= MESSAGES ================= */
-
-export async function sendMessage(fromUid,toUid,data){
-
-const roomId = [fromUid,toUid].sort().join("_");
-
-await setDoc(doc(db,"chats",roomId),{
-users:[fromUid,toUid],
-updatedAt:Date.now(),
-lastMessage:data.text || "📩 رسالة"
-},{merge:true});
-
-await addDoc(collection(db,"chats",roomId,"messages"),{
-...data,
-from:fromUid,
-to:toUid,
-createdAt:Date.now()
-});
-}
-
-/* realtime messages */
-export function listenMessages(myUid,otherUid,cb){
-
-const roomId = [myUid,otherUid].sort().join("_");
-
-const q = query(
-collection(db,"chats",roomId,"messages"),
-orderBy("createdAt","asc")
-);
-
-return onSnapshot(q,snap=>{
-
-const msgs = [];
-
-snap.forEach(d=>{
-msgs.push({id:d.id,...d.data()});
-});
-
-cb(msgs);
-
-});
-}
-
-/* ================= CHATS LIST (IMPORTANT FIX) ================= */
-
-export async function getChatsList(uid){
-
-const snap = await getDocs(collection(db,"chats"));
-
-const chats = [];
-
-snap.forEach(d=>{
-
-const data = d.data();
-
-if(data.users && data.users.includes(uid)){
-
-const otherUid = data.users.find(u=>u !== uid);
-
-chats.push({
-uid: otherUid,
-lastMessage: data.lastMessage,
-updatedAt: data.updatedAt,
-image: "",
-username: "مستخدم"
-});
-
-}
-
-});
-
-return chats;
-}
-
-/* ================= COMMENTS FIX ================= */
-
-export async function addComment(videoId,uid,text){
-
-const user = await getUserData(uid);
-
-await addDoc(collection(db,"comments"),{
-videoId,
-uid,
-username:user.username,
-userImage:user.image || "",
-text,
-createdAt:Date.now()
-});
-}
-
-/* ================= FOLLOW (same) ================= */
+/* ================= FOLLOW (بدون تغيير) ================= */
 
 export async function toggleFollow(myUid,targetUid){
 
@@ -163,7 +70,9 @@ const targetData = targetSnap.data();
 let myList = myData.followingList || [];
 let targetList = targetData.followersList || [];
 
-if(myList.includes(targetUid)){
+const isFollowing = myList.includes(targetUid);
+
+if(isFollowing){
 
 myList = myList.filter(i=>i!==targetUid);
 targetList = targetList.filter(i=>i!==myUid);
@@ -194,4 +103,107 @@ followers:increment(1)
 });
 }
 
+}
+
+/* ================= COMMENTS (كما هي عندك) ================= */
+
+export async function addComment(videoId,uid,text){
+
+const user = await getUserData(uid);
+
+await addDoc(collection(db,"comments"),{
+videoId,
+uid,
+username:user.username,
+userImage:user.image || "",
+text,
+createdAt:Date.now()
+});
+}
+
+/* ================= MESSAGES (مهم جداً) ================= */
+
+export async function sendMessage(fromUid,toUid,data){
+
+const roomId = [fromUid,toUid].sort().join("_");
+
+/* حفظ أو إنشاء الشات */
+await setDoc(doc(db,"chats",roomId),{
+users:[fromUid,toUid],
+updatedAt:Date.now(),
+lastMessage:
+data.type === "text"
+? data.text
+: data.type === "image"
+? "🖼️ صورة"
+: data.type === "voice"
+? "🎤 فويس"
+: "📩 رسالة"
+},{merge:true});
+
+/* الرسالة نفسها */
+await addDoc(
+collection(db,"chats",roomId,"messages"),
+{
+...data,
+from:fromUid,
+to:toUid,
+createdAt:Date.now()
+}
+);
+
+}
+
+/* 🔥 REALTIME MESSAGES (كما كان عندك) */
+export function listenMessages(myUid,otherUid,cb){
+
+const roomId = [myUid,otherUid].sort().join("_");
+
+const q = query(
+collection(db,"chats",roomId,"messages"),
+orderBy("createdAt","asc")
+);
+
+return onSnapshot(q,snap=>{
+
+const msgs = [];
+
+snap.forEach(d=>{
+msgs.push({id:d.id,...d.data()});
+});
+
+cb(msgs);
+
+});
+}
+
+/* ================= 🔥 NEW FIX: CHAT LIST ================= */
+
+export async function getChatsList(uid){
+
+const snap = await getDocs(collection(db,"chats"));
+
+const chats = [];
+
+snap.forEach(d=>{
+
+const data = d.data();
+
+if(data.users?.includes(uid)){
+
+const otherUid = data.users.find(u=>u !== uid);
+
+chats.push({
+uid: otherUid,
+username: "مستخدم",
+image: "",
+lastMessage: data.lastMessage || "",
+updatedAt: data.updatedAt || 0
+});
+
+}
+
+});
+
+return chats.sort((a,b)=>b.updatedAt - a.updatedAt);
 }
