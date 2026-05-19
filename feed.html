@@ -187,12 +187,43 @@ body{
   font-size:22px;
   margin-bottom:10px;
   cursor:pointer;
+
+  display:flex;
+  align-items:center;
+  gap:6px;
 }
 
 .video-info p{
   font-size:15px;
   color:#eee;
   line-height:1.5;
+}
+
+/* شارة التوثيق */
+
+.verified-badge{
+
+  display:inline-flex;
+
+  justify-content:center;
+  align-items:center;
+
+  width:18px;
+  height:18px;
+
+  border-radius:50%;
+
+  background:#1d9bf0;
+
+  color:white;
+
+  font-size:11px;
+  font-weight:bold;
+
+  transform:translateY(-1px);
+
+  box-shadow:
+  0 0 10px rgba(29,155,240,.7);
 }
 
 /* الأزرار الجانبية */
@@ -494,7 +525,15 @@ async function loadVideos(){
         location.href=
         'user.html?uid=${video.uid}'
         ">
+
           @${video.username}
+
+          ${video.verified ? `
+          <span class="verified-badge">
+            ✓
+          </span>
+          ` : ""}
+
         </h3>
 
         <p>
