@@ -2,156 +2,103 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Inbox</title>
 
 <style>
-
 body{
-margin:0;
-background:#000;
-color:white;
-font-family:Arial;
-padding:20px;
+  margin:0;
+  background:#000;
+  color:white;
+  font-family:Arial;
+  padding:20px;
 }
 
-h2{
-margin-bottom:20px;
-}
+h2{margin-bottom:20px;}
 
 .chat{
-display:flex;
-align-items:center;
-gap:12px;
-background:#111;
-padding:12px;
-border-radius:12px;
-margin-bottom:12px;
-cursor:pointer;
-transition:0.2s;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  background:#111;
+  padding:12px;
+  border-radius:12px;
+  margin-bottom:12px;
+  cursor:pointer;
 }
 
-.chat:hover{
-background:#1c1c1c;
-}
+.chat:hover{background:#1c1c1c;}
 
 .chat img{
-width:50px;
-height:50px;
-border-radius:50%;
-object-fit:cover;
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  object-fit:cover;
+  background:#222;
 }
 
-.name{
-font-size:16px;
-font-weight:bold;
-}
+.name{font-size:16px;}
 
 .empty{
-text-align:center;
-color:gray;
-margin-top:50px;
-font-size:18px;
+  text-align:center;
+  color:gray;
+  margin-top:50px;
 }
-
 </style>
 </head>
 
 <body>
 
-<h2>الرسائل 💬</h2>
-
+<h2>الرسائل</h2>
 <div id="list"></div>
 
 <script type="module">
 
-import { auth, db } from "./firebase.js";
-
-import {
-onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-import {
-collection,
-getDocs,
-query,
-where
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-
-onAuthStateChanged(auth, async (user) => {
-
-if (!user) {
-location.href = "login.html";
-return;
-}
+import { auth, getChatsList } from "./firebase.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const list = document.getElementById("list");
-list.innerHTML = "";
 
-try {
+onAuthStateChanged(auth, async(user)=>{
 
-/* 🔥 جلب كل الرسائل */
-const q = query(
-collection(db, "messages"),
-where("participants", "array-contains", user.uid)
-);
+  if(!user){
+    location.href = "login.html";
+    return;
+  }
 
-const snap = await getDocs(q);
+  try{
 
-if (snap.empty) {
-list.innerHTML = `
-<div class="empty">لا توجد محادثات</div>
-`;
-return;
-}
+    const chats = await getChatsList(user.uid);
 
-/* 🔥 تجميع المحادثات بدون تكرار */
-const chats = {};
+    list.innerHTML = "";
 
-snap.forEach(doc => {
+    if(!chats || chats.length === 0){
+      list.innerHTML = `<div class="empty">لا توجد محادثات</div>`;
+      return;
+    }
 
-const m = doc.data();
+    chats.forEach(c=>{
 
-/* الطرف الثاني */
-const otherId =
-m.from === user.uid ? m.to : m.from;
+      const div = document.createElement("div");
+      div.className = "chat";
 
-chats[otherId] = {
-uid: otherId,
-username: m.fromName || "مستخدم",
-image: m.fromImage || "https://i.imgur.com/1X4n1ZL.png"
-};
+      div.innerHTML = `
+        <img src="${c.image || 'https://i.imgur.com/1X4n1ZL.png'}">
+        <div class="name">${c.username || "مستخدم"}</div>
+      `;
 
-});
+      div.onclick = ()=>{
+        location.href = "chat.html?uid=" + c.uid;
+      };
 
-/* عرض المحادثات */
-Object.values(chats).forEach(c => {
+      list.appendChild(div);
 
-const div = document.createElement("div");
-div.className = "chat";
+    });
 
-div.innerHTML = `
-<img src="${c.image}">
-<div class="name">${c.username}</div>
-`;
-
-div.onclick = () => {
-location.href = "chat.html?uid=" + c.uid;
-};
-
-list.appendChild(div);
-
-});
-
-} catch (err) {
-console.error(err);
-
-list.innerHTML = `
-<div class="empty">حدث خطأ في تحميل الرسائل</div>
-`;
-}
+  }catch(err){
+    console.log(err);
+    list.innerHTML = `<div class="empty">خطأ في تحميل الرسائل</div>`;
+  }
 
 });
 
