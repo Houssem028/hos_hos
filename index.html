@@ -2,73 +2,93 @@
 <html lang="ar">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-  <title>Hos Hos</title>
+<title>Login</title>
 
-  <link rel="stylesheet" href="style.css">
+<style>
+body{
+margin:0;
+background:#000;
+color:#fff;
+font-family:Arial;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+}
 
-  <!-- PWA -->
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#000000">
+.card{
+width:90%;
+max-width:350px;
+background:#111;
+padding:20px;
+border-radius:15px;
+}
+
+input{
+width:100%;
+padding:12px;
+margin:8px 0;
+border:none;
+border-radius:10px;
+background:#222;
+color:#fff;
+}
+
+button{
+width:100%;
+padding:12px;
+border:none;
+border-radius:10px;
+background:#ff2d55;
+color:#fff;
+font-size:16px;
+}
+</style>
 </head>
 
 <body>
 
-  <!-- شاشة البداية -->
-  <section id="splash">
-  </section>
+<div class="card">
 
-  <!-- صفحة تسجيل الدخول -->
-  <section id="login" class="hidden">
+<h2>تسجيل الدخول</h2>
 
-    <div class="login-card">
+<input id="email" placeholder="البريد">
+<input id="password" type="password" placeholder="كلمة المرور">
 
-      <h2>تسجيل الدخول</h2>
+<button onclick="login()">دخول</button>
 
-      <input type="text"
-      placeholder="اسم المستخدم أو البريد">
+</div>
 
-      <input type="password"
-      placeholder="كلمة المرور">
+<script type="module">
 
-      <button onclick="login()">
-        دخول
-      </button>
+import { auth } from "./firebase.js";
+import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-      <p class="signup">
-        ليس لديك حساب؟
-        <span>إنشاء حساب</span>
-      </p>
+window.login = async()=>{
 
-    </div>
+const email = document.getElementById("email").value;
+const password = document.getElementById("password").value;
 
-  </section>
+try{
 
-  <script src="app.js"></script>
+await signInWithEmailAndPassword(auth,email,password);
 
-  <!-- Service Worker -->
-  <script>
-    if ("serviceWorker" in navigator) {
+alert("تم الدخول");
 
-      window.addEventListener("load", () => {
+location.href="feed.html";
 
-        navigator.serviceWorker
-          .register("/sw.js")
+}catch(err){
 
-          .then(() => {
-            console.log("SW Registered ✅");
-          })
+alert("خطأ: " + err.message);
 
-          .catch((err) => {
-            console.log("SW Error ❌", err);
-          });
+}
 
-      });
+};
 
-    }
-  </script>
+</script>
 
 </body>
 </html>
