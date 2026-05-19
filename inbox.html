@@ -2,176 +2,156 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Inbox</title>
 
 <style>
 
 body{
-  margin:0;
-  background:#000;
-  color:white;
-  font-family:Arial;
-  padding:20px;
+margin:0;
+background:#000;
+color:white;
+font-family:Arial;
+padding:20px;
 }
 
 h2{
-  margin-bottom:20px;
+margin-bottom:20px;
 }
 
 .chat{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  background:#111;
-  padding:12px;
-  border-radius:12px;
-  margin-bottom:12px;
-  cursor:pointer;
-  transition:0.2s;
+display:flex;
+align-items:center;
+gap:12px;
+background:#111;
+padding:12px;
+border-radius:12px;
+margin-bottom:12px;
+cursor:pointer;
+transition:0.2s;
 }
 
 .chat:hover{
-  background:#1c1c1c;
+background:#1c1c1c;
 }
 
 .chat img{
-  width:50px;
-  height:50px;
-  border-radius:50%;
-  object-fit:cover;
+width:50px;
+height:50px;
+border-radius:50%;
+object-fit:cover;
 }
 
 .name{
-  font-size:18px;
+font-size:16px;
+font-weight:bold;
 }
 
 .empty{
-  text-align:center;
-  color:gray;
-  margin-top:50px;
-  font-size:18px;
+text-align:center;
+color:gray;
+margin-top:50px;
+font-size:18px;
 }
 
 </style>
 </head>
+
 <body>
 
-<h2>الرسائل</h2>
+<h2>الرسائل 💬</h2>
 
 <div id="list"></div>
 
 <script type="module">
 
-import {
-  auth,
-  getChatsList
-} from "./firebase.js";
+import { auth, db } from "./firebase.js";
 
 import {
-  onAuthStateChanged
+onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-onAuthStateChanged(
-auth,
-async(user)=>{
+import {
+collection,
+getDocs,
+query,
+where
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  // إذا لم يسجل دخول
-  if(!user){
 
-    location.href =
-      "login.html";
+onAuthStateChanged(auth, async (user) => {
 
-    return;
-  }
+if (!user) {
+location.href = "login.html";
+return;
+}
 
-  const list =
-    document.getElementById(
-      "list"
-    );
+const list = document.getElementById("list");
+list.innerHTML = "";
 
-  // تنظيف القائمة
-  list.innerHTML = "";
+try {
 
-  try{
+/* 🔥 جلب كل الرسائل */
+const q = query(
+collection(db, "messages"),
+where("participants", "array-contains", user.uid)
+);
 
-    // جلب المحادثات
-    const chats =
-      await getChatsList(
-        user.uid
-      );
+const snap = await getDocs(q);
 
-    console.log(
-      "Chats:",
-      chats
-    );
+if (snap.empty) {
+list.innerHTML = `
+<div class="empty">لا توجد محادثات</div>
+`;
+return;
+}
 
-    // إذا لا توجد محادثات
-    if(
-      !chats ||
-      chats.length === 0
-    ){
+/* 🔥 تجميع المحادثات بدون تكرار */
+const chats = {};
 
-      list.innerHTML = `
-        <div class="empty">
-          لا توجد محادثات
-        </div>
-      `;
+snap.forEach(doc => {
 
-      return;
-    }
+const m = doc.data();
 
-    // عرض المحادثات
-    chats.forEach(c=>{
+/* الطرف الثاني */
+const otherId =
+m.from === user.uid ? m.to : m.from;
 
-      const div =
-        document.createElement(
-          "div"
-        );
+chats[otherId] = {
+uid: otherId,
+username: m.fromName || "مستخدم",
+image: m.fromImage || "https://i.imgur.com/1X4n1ZL.png"
+};
 
-      div.className =
-        "chat";
+});
 
-      div.innerHTML = `
-        <img src="${
-          c.image ||
-          'https://i.imgur.com/1X4n1ZL.png'
-        }">
+/* عرض المحادثات */
+Object.values(chats).forEach(c => {
 
-        <div class="name">
-          ${
-            c.username ||
-            "مستخدم"
-          }
-        </div>
-      `;
+const div = document.createElement("div");
+div.className = "chat";
 
-      // فتح المحادثة
-      div.onclick = ()=>{
+div.innerHTML = `
+<img src="${c.image}">
+<div class="name">${c.username}</div>
+`;
 
-        location.href =
-          "chat.html?uid=" +
-          c.uid;
-      };
+div.onclick = () => {
+location.href = "chat.html?uid=" + c.uid;
+};
 
-      list.appendChild(
-        div
-      );
+list.appendChild(div);
 
-    });
+});
 
-  }catch(err){
+} catch (err) {
+console.error(err);
 
-    console.error(err);
-
-    list.innerHTML = `
-      <div class="empty">
-        حدث خطأ أثناء تحميل الرسائل
-      </div>
-    `;
-  }
+list.innerHTML = `
+<div class="empty">حدث خطأ في تحميل الرسائل</div>
+`;
+}
 
 });
 
