@@ -1,74 +1,500 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Hos Hos - الرئيسية</title>
 
-  <title>Hos Hos</title>
-
-  <link rel="stylesheet" href="style.css">
-
-  <!-- PWA -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#000000">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+      color: white;
+    }
+
+    /* حاوية الفيد (مثل التيك توك) */
+    #feedContainer {
+      height: 100vh;
+      overflow-y: scroll;
+      scroll-snap-type: y mandatory;
+    }
+
+    #feedContainer::-webkit-scrollbar {
+      display: none;
+    }
+
+    .feed {
+      width: 100%;
+      height: 100vh;
+      position: relative;
+      scroll-snap-align: start;
+      overflow: hidden;
+      background: #000;
+    }
+
+    .feed video, .feed img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1.01);
+    }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,.65), rgba(0,0,0,.05), rgba(0,0,0,.25));
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* البار العلوي */
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 70px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+      background: linear-gradient(to bottom, rgba(0,0,0,.6), transparent);
+    }
+
+    .logo-box {
+      font-size: 26px;
+      font-weight: bold;
+      color: white;
+    }
+
+    /* بيانات الفيديو */
+    .video-info {
+      position: absolute;
+      left: 15px;
+      bottom: 120px;
+      width: 70%;
+      z-index: 10;
+    }
+
+    .video-info h3 {
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .video-info p {
+      font-size: 14px;
+      color: #eee;
+    }
+
+    .verified-badge {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #1d9bf0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+    }
+
+    /* الأزرار الجانبية */
+    .video-actions {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 30px;
+      z-index: 50;
+    }
+
+    .action {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: white;
+    }
+
+    .action button {
+      width: 50px;
+      height: 50px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(255,255,255,.12);
+      color: white;
+      font-size: 22px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: .15s;
+    }
+
+    .action button:active {
+      transform: scale(.88);
+    }
+
+    .profile-pic {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid white;
+      box-shadow: 0 2px 8px rgba(0,0,0,.4);
+    }
+
+    /* القائمة السفلية */
+    .bottom-nav {
+      position: fixed;
+      bottom: 12px;
+      left: 12px;
+      right: 12px;
+      height: 70px;
+      border-radius: 24px;
+      background: rgba(20,20,20,.9);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 999;
+      backdrop-filter: blur(20px);
+    }
+
+    .bottom-nav button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 26px;
+      cursor: pointer;
+    }
+
+    .add-btn {
+      background: #ff2d55 !important;
+      width: 56px;
+      height: 56px;
+      border-radius: 18px;
+    }
+
+    .loading {
+      text-align: center;
+      margin-top: 45vh;
+      font-size: 20px;
+      color: gray;
+    }
+
+    /* لوحة التعليقات السفلية */
+    .comments-panel {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: -100%;
+      height: 75vh;
+      background: #111;
+      border-radius: 25px 25px 0 0;
+      z-index: 99999;
+      transition: .3s;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .comments-header {
+      padding: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #222;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .close-comments {
+      font-size: 28px;
+      cursor: pointer;
+    }
+
+    .comments-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 15px;
+    }
+
+    .comment {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .comment img {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .comment-body {
+      background: #1a1a1a;
+      padding: 10px;
+      border-radius: 12px;
+      flex: 1;
+    }
+
+    .comment-name {
+      color: #ff2d55;
+      font-weight: bold;
+    }
+
+    .comment-input {
+      display: flex;
+      gap: 10px;
+      padding: 15px;
+      border-top: 1px solid #222;
+    }
+
+    .comment-input input {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 12px;
+      background: #1a1a1a;
+      color: white;
+      outline: none;
+    }
+
+    .comment-input button {
+      border: none;
+      padding: 0 18px;
+      border-radius: 12px;
+      background: #ff2d55;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
 </head>
 
 <body>
 
-  <!-- شاشة البداية -->
-  <section id="splash">
-  </section>
+  <div class="top-bar">
+    <div class="logo-box">HOS HOS</div>
+  </div>
 
-  <!-- صفحة تسجيل الدخول -->
-  <section id="login" class="hidden">
+  <div id="feedContainer">
+    <div class="loading">جاري فحص الحساب وتحميل الفيديوهات...</div>
+  </div>
 
-    <div class="login-card">
-
-      <h2>تسجيل الدخول</h2>
-
-      <input type="text"
-      placeholder="اسم المستخدم أو البريد">
-
-      <input type="password"
-      placeholder="كلمة المرور">
-
-      <button onclick="login()">
-        دخول
-      </button>
-
-      <p class="signup">
-        ليس لديك حساب؟
-        <span>إنشاء حساب</span>
-      </p>
-
+  <div class="comments-panel" id="commentsPanel">
+    <div class="comments-header">
+      <span>التعليقات 💬</span>
+      <div class="close-comments" onclick="closeComments()">×</div>
     </div>
+    <div class="comments-list" id="commentsList"></div>
+    <div class="comment-input">
+      <input id="commentText" placeholder="اكتب تعليق...">
+      <button onclick="sendComment()">إرسال</button>
+    </div>
+  </div>
 
-  </section>
+  <div class="bottom-nav">
+    <button onclick="goHome()">🏠</button>
+    <button onclick="goMessages()">💬</button>
+    <button class="add-btn" onclick="uploadVideo()">+</button>
+    <button onclick="goNotifications()">🔔</button>
+    <button onclick="goProfile()">👤</button>
+  </div>
 
-  <script src="app.js"></script>
+  <script type="module">
+    import { db, auth, getUserData } from "./firebase.js";
+    import { collection, getDocs, query, orderBy, doc, updateDoc, increment, addDoc, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-  <!-- Service Worker -->
-  <script>
-    if ("serviceWorker" in navigator) {
+    let currentUser = null;
+    let currentCommentVideo = null;
+    const container = document.getElementById("feedContainer");
 
-      window.addEventListener("load", () => {
+    // 1. تحقق من الحساب أولاً (إذا لم يسجل دخول يتم تحويله لصفحة login.html)
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.href = "login.html";
+      } else {
+        currentUser = user;
+        loadVideos(); // تحميل الفيديوهات فوراً بعد التأكد من الحساب
+      }
+    });
 
-        navigator.serviceWorker
-          .register("/sw.js")
+    /* جلب الفيديوهات من السيرفر */
+    async function loadVideos() {
+      try {
+        container.innerHTML = "";
+        const q = query(collection(db, "videos"), orderBy("createdAt", "desc"));
+        const snap = await getDocs(q);
 
-          .then(() => {
-            console.log("SW Registered ✅");
-          })
+        if (snap.empty) {
+          container.innerHTML = `<div class="loading">لا يوجد محتوى حالياً</div>`;
+          return;
+        }
 
-          .catch((err) => {
-            console.log("SW Error ❌", err);
-          });
+        for (const videoDoc of snap.docs) {
+          const v = videoDoc.data();
+          const id = videoDoc.id;
 
+          const commentsSnap = await getDocs(query(collection(db, "comments"), where("videoId", "==", id)));
+          const commentsCount = commentsSnap.size;
+
+          container.innerHTML += `
+            <section class="feed">
+              ${v.type === "image" 
+                ? `<img src="${v.videoUrl}">` 
+                : `<video class="videoPlayer" src="${v.videoUrl}" loop playsinline></video>`
+              }
+              <div class="overlay"></div>
+              <div class="video-info">
+                <h3>@${v.username} ${v.verified ? `<span class="verified-badge">✓</span>` : ""}</h3>
+                <p>${v.caption || ""}</p>
+              </div>
+              <div class="video-actions">
+                <div class="action">
+                  <img class="profile-pic" src="${v.userImage || 'https://i.imgur.com/1X4n1ZL.png'}" onclick="location.href='user.html?uid=${v.uid}'">
+                  <span>حساب</span>
+                </div>
+                <div class="action">
+                  <button class="likeBtn" data-id="${id}">❤️</button>
+                  <span id="likes-${id}">${v.likes || 0}</span>
+                </div>
+                <div class="action">
+                  <button onclick="openComments('${id}')">💬</button>
+                  <span>${commentsCount}</span>
+                </div>
+              </div>
+            </section>
+          `;
+        }
+
+        setupLikes();
+        initVideos();
+
+      } catch (err) {
+        console.error(err);
+        container.innerHTML = `<div class="loading">حدث خطأ أثناء تحميل الفيديوهات</div>`;
+      }
+    }
+
+    /* تشغيل وإيقاف الفيديو التلقائي عند التمرير */
+    function initVideos() {
+      const vids = document.querySelectorAll(".videoPlayer");
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          const v = e.target;
+          if (e.isIntersecting) {
+            vids.forEach(x => { if (x !== v) x.pause(); });
+            v.play().catch(err => console.log("تحتاج للتفاعل مع الشاشة أولاً لتشغيل الصوت"));
+          } else {
+            v.pause();
+          }
+        });
+      }, { threshold: 0.8 });
+
+      vids.forEach(v => {
+        observer.observe(v);
+        v.onclick = () => v.paused ? v.play() : v.pause();
+      });
+    }
+
+    /* عمل لايك */
+    function setupLikes() {
+      document.querySelectorAll(".likeBtn").forEach(btn => {
+        btn.onclick = async () => {
+          const id = btn.dataset.id;
+          const txt = document.getElementById("likes-" + id);
+          let c = parseInt(txt.innerText);
+          await updateDoc(doc(db, "videos", id), { likes: increment(1) });
+          txt.innerText = c + 1;
+        };
+      });
+    }
+
+    /* التحكم بالتعليقات */
+    window.openComments = async (id) => {
+      currentCommentVideo = id;
+      document.getElementById("commentsPanel").style.bottom = "0";
+      loadComments();
+    };
+
+    window.closeComments = () => {
+      document.getElementById("commentsPanel").style.bottom = "-100%";
+    };
+
+    async function loadComments() {
+      const list = document.getElementById("commentsList");
+      list.innerHTML = "";
+      const q = query(collection(db, "comments"), where("videoId", "==", currentCommentVideo));
+      const snap = await getDocs(q);
+
+      snap.forEach(d => {
+        const c = d.data();
+        list.innerHTML += `
+          <div class="comment">
+            <img src="${c.userImage || 'https://i.imgur.com/1X4n1ZL.png'}">
+            <div class="comment-body">
+              <div class="comment-name">${c.username}</div>
+              <div>${c.text}</div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    /* إرسال تعليق */
+    window.sendComment = async () => {
+      const input = document.getElementById("commentText");
+      if (!input.value.trim()) return;
+
+      const u = await getUserData(currentUser.uid);
+      await addDoc(collection(db, "comments"), {
+        videoId: currentCommentVideo,
+        uid: currentUser.uid,
+        username: u.username,
+        userImage: u.image || "",
+        text: input.value,
+        createdAt: Date.now()
       });
 
+      input.value = "";
+      await loadComments();
+    };
+
+    /* أزرار التنقل السفلية */
+    window.goHome = () => location.href = "index.html";
+    window.goMessages = () => location.href = "inbox.html";
+    window.uploadVideo = () => location.href = "upload.html";
+    window.goNotifications = () => location.href = "notifications.html";
+    window.goProfile = () => location.href = "profile.html";
+
+    // تفعيل الـ Service Worker ليدعم ميزة الـ PWA والتثبيت على الهاتف
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/sw.js")
+          .then(() => console.log("SW Registered ✅"))
+          .catch((err) => console.log("SW Error ❌", err));
+      });
     }
   </script>
-
 </body>
 </html>
