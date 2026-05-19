@@ -1,10 +1,25 @@
 <!DOCTYPE html>
-<html lang="ar">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<html lang="ar" dir="rtl">
 
-<title>App</title>
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="
+width=device-width,
+initial-scale=1.0,
+maximum-scale=1.0,
+user-scalable=no,
+viewport-fit=cover
+">
+
+<title>Hos Hos</title>
+
+<link rel="manifest" href="manifest.json">
+
+<meta name="theme-color" content="#000000">
 
 <style>
 
@@ -12,53 +27,98 @@
   margin:0;
   padding:0;
   box-sizing:border-box;
+
   font-family:Arial,sans-serif;
+
+  -webkit-tap-highlight-color:
+  transparent;
+
+  user-select:none;
+}
+
+html,
+body{
+  width:100%;
+  height:100%;
+  overflow:hidden;
 }
 
 body{
   background:black;
   color:white;
-  overflow:hidden;
 }
 
-/* دخول ناعم */
-@keyframes fadeIn{
-  from{
-    opacity:0;
-    transform:scale(1.08);
-  }
-  to{
-    opacity:1;
-    transform:scale(1);
-  }
-}
+/* Splash */
 
-/* شاشة البداية */
 #splash{
-  width:100%;
-  height:100vh;
+
+  position:fixed;
+  inset:0;
+
+  z-index:9999;
+
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
 
   background:
   linear-gradient(
-    rgba(0,0,0,.25),
-    rgba(0,0,0,.75)
+    rgba(0,0,0,.45),
+    rgba(0,0,0,.85)
   ),
   url("Picsart_26-05-17_20-56-36-645.jpg");
 
   background-size:cover;
   background-position:center;
-  background-repeat:no-repeat;
+}
+
+.logo{
+
+  width:120px;
+  height:120px;
+
+  border-radius:30px;
+
+  object-fit:cover;
+
+  box-shadow:
+  0 0 40px rgba(255,0,80,.35);
 
   animation:
-  fadeIn 1.5s ease forwards;
+  pulse 2s infinite;
+}
 
-  position:fixed;
-  inset:0;
-  z-index:9999;
+.app-name{
+
+  margin-top:20px;
+
+  font-size:38px;
+  font-weight:bold;
+
+  letter-spacing:3px;
+}
+
+@keyframes pulse{
+
+  0%{
+    transform:scale(1);
+  }
+
+  50%{
+    transform:scale(1.05);
+  }
+
+  100%{
+    transform:scale(1);
+  }
+
 }
 
 /* صفحة الدخول */
+
 #login{
+
   width:100%;
   height:100vh;
 
@@ -71,14 +131,17 @@ body{
   background:
   linear-gradient(
     180deg,
-    #0d0d0d,
+    #080808,
     #000
   );
-
-  position:relative;
 }
 
-/* كرت الدخول */
+.hidden{
+  display:none;
+}
+
+/* كرت */
+
 .login-card{
 
   width:100%;
@@ -91,31 +154,45 @@ body{
   blur(25px);
 
   border:
-  1px solid
-  rgba(255,255,255,.08);
+  1px solid rgba(255,255,255,.08);
 
-  border-radius:28px;
+  border-radius:30px;
 
   padding:35px;
 
   box-shadow:
-  0 0 40px
-  rgba(0,0,0,.45);
-
+  0 0 35px rgba(0,0,0,.45);
 }
 
-.login-card h2{
+/* لوجو داخل الكرت */
+
+.card-logo{
+
+  width:85px;
+  height:85px;
+
+  border-radius:24px;
+
+  display:block;
+
+  margin:auto;
+  margin-bottom:20px;
+
+  object-fit:cover;
+}
+
+.title{
 
   text-align:center;
 
-  margin-bottom:30px;
-
   font-size:32px;
-
   font-weight:bold;
+
+  margin-bottom:30px;
 }
 
-/* الحقول */
+/* Inputs */
+
 input{
 
   width:100%;
@@ -126,46 +203,39 @@ input{
 
   border:none;
 
-  border-radius:16px;
-
-  font-size:17px;
+  border-radius:18px;
 
   background:
-  rgba(255,255,255,.09);
+  rgba(255,255,255,.08);
 
   color:white;
 
+  font-size:16px;
+
   outline:none;
-
-  transition:.2s;
-}
-
-input:focus{
-
-  background:
-  rgba(255,255,255,.14);
-
-  transform:scale(1.01);
 }
 
 input::placeholder{
   color:#bbb;
 }
 
+input:focus{
+
+  border:
+  1px solid #ff2d55;
+}
+
 /* زر الدخول */
+
 .login-btn{
 
   width:100%;
 
-  padding:17px;
+  height:58px;
 
   border:none;
 
   border-radius:18px;
-
-  font-size:20px;
-
-  cursor:pointer;
 
   background:
   linear-gradient(
@@ -176,172 +246,116 @@ input::placeholder{
 
   color:white;
 
+  font-size:19px;
   font-weight:bold;
+
+  cursor:pointer;
 
   transition:.2s;
 }
 
 .login-btn:active{
-  transform:scale(.97);
+  transform:scale(.96);
 }
 
-.hidden{
-  display:none;
+/* إنشاء حساب */
+
+.signup{
+
+  margin-top:22px;
+
+  text-align:center;
+
+  color:#aaa;
+
+  font-size:15px;
 }
 
-/* شريط تيكتوك السفلي */
-.bottom-nav{
+.signup span{
 
-  position:fixed;
+  color:#ff2d55;
 
-  bottom:0;
-  left:0;
-  right:0;
-
-  height:68px;
-
-  background:
-  rgba(10,10,10,.96);
-
-  backdrop-filter:
-  blur(20px);
-
-  border-top:
-  1px solid
-  rgba(255,255,255,.08);
-
-  display:flex;
-
-  justify-content:space-around;
-
-  align-items:center;
-
-  z-index:999;
-}
-
-/* أزرار */
-.bottom-nav button{
-
-  background:none;
-
-  border:none;
-
-  color:white;
-
-  font-size:26px;
-
-  width:52px;
-  height:52px;
-
-  border-radius:16px;
-
-  display:flex;
-
-  justify-content:center;
-  align-items:center;
-
-  transition:.2s;
+  font-weight:bold;
 
   cursor:pointer;
 }
 
-/* تأثير */
-.bottom-nav button:hover{
-
-  background:
-  rgba(255,255,255,.08);
-}
-
-.bottom-nav button:active{
-
-  transform:scale(.88);
-}
-
-/* زر الإضافة */
-.add-btn{
-
-  background:
-  linear-gradient(
-    135deg,
-    #00f2ff,
-    #ff0050
-  ) !important;
-
-  color:white !important;
-
-  width:56px !important;
-  height:56px !important;
-
-  border-radius:18px !important;
-
-  font-size:28px !important;
-
-  box-shadow:
-  0 0 18px
-  rgba(255,0,80,.45);
-}
-
 </style>
+
 </head>
 
 <body>
 
 <!-- Splash -->
-<div id="splash"></div>
+
+<div id="splash">
+
+  <img
+  src="icon-512.png"
+  class="logo">
+
+  <div class="app-name">
+    HOS HOS
+  </div>
+
+</div>
 
 <!-- Login -->
+
 <div id="login" class="hidden">
 
   <div class="login-card">
 
-    <h2>مرحباً 👋</h2>
+    <img
+    src="icon-192.png"
+    class="card-logo">
+
+    <div class="title">
+      تسجيل الدخول
+    </div>
 
     <input
-    type="text"
-    placeholder="اسم المستخدم">
+    id="email"
+    type="email"
+    placeholder="البريد الإلكتروني">
 
     <input
+    id="password"
     type="password"
     placeholder="كلمة المرور">
 
-    <button class="login-btn">
-      دخول
-    </button>
-
-  </div>
-
-  <!-- الشريط السفلي -->
-  <div class="bottom-nav">
-
-    <button onclick="goHome()">
-      🏠
-    </button>
-
-    <button onclick="goMessages()">
-      💬
-    </button>
-
     <button
-    class="add-btn"
-    onclick="uploadVideo()">
-      ＋
+    class="login-btn"
+    onclick="loginUser()">
+
+      دخول
+
     </button>
 
-    <button onclick="goNotifications()">
-      🔔
-    </button>
+    <div class="signup">
 
-    <button onclick="goProfile()">
-      👤
-    </button>
+      ليس لديك حساب؟
+
+      <span onclick="goSignup()">
+
+        إنشاء حساب
+
+      </span>
+
+    </div>
 
   </div>
 
 </div>
 
-<script>
+<script type="module">
 
-// شاشة البداية
+import {
+  login
+} from "./firebase.js";
+
+/* Splash */
+
 setTimeout(()=>{
 
   document
@@ -358,37 +372,65 @@ setTimeout(()=>{
     "hidden"
   );
 
-},3000);
+},2500);
 
-// التنقل
-function goHome(){
+/* Login */
 
-  window.location.href=
+window.loginUser = function(){
+
+  const email =
+  document.getElementById(
+    "email"
+  ).value;
+
+  const password =
+  document.getElementById(
+    "password"
+  ).value;
+
+  login(email,password)
+
+  .then(()=>{
+
+    window.location.href =
     "feed.html";
+
+  })
+
+  .catch(err=>{
+
+    alert(err.message);
+
+  });
+
 }
 
-function goMessages(){
+/* Signup */
 
-  window.location.href=
-    "inbox.html";
+window.goSignup = function(){
+
+  window.location.href =
+  "signup.html";
+
 }
 
-function uploadVideo(){
+/* Service Worker */
 
-  window.location.href=
-    "upload.html";
-}
+if(
+  "serviceWorker"
+  in navigator
+){
 
-function goNotifications(){
+  window.addEventListener(
+  "load",
+  ()=>{
 
-  window.location.href=
-    "notify.html";
-}
+    navigator
+    .serviceWorker
+    .register("./sw.js");
 
-function goProfile(){
+  });
 
-  window.location.href=
-    "profile.html";
 }
 
 </script>
