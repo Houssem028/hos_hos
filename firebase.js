@@ -1,14 +1,17 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-// AUTH
+/* AUTH */
+
 import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  onAuthStateChanged
+  onAuthStateChanged,
+  signOut
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-// FIRESTORE
+/* FIRESTORE */
+
 import {
   getFirestore,
   setDoc,
@@ -21,28 +24,48 @@ import {
   addDoc,
   query,
   orderBy,
-  onSnapshot
+  onSnapshot,
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// Firebase config
+/* CONFIG */
+
 const firebaseConfig = {
-  apiKey: "AIzaSyBfHLGUVuqrzxc42BkO4ZAzbIxJSt7jZFw",
-  authDomain: "hos-hos.firebaseapp.com",
-  projectId: "hos-hos",
-  storageBucket: "hos-hos.appspot.com",
-  messagingSenderId: "817137342563",
-  appId: "1:817137342563:web:d714d48c46796cc4c34056"
+
+  apiKey:
+  "AIzaSyBfHLGUVuqrzxc42BkO4ZAzbIxJSt7jZFw",
+
+  authDomain:
+  "hos-hos.firebaseapp.com",
+
+  projectId:
+  "hos-hos",
+
+  storageBucket:
+  "hos-hos.appspot.com",
+
+  messagingSenderId:
+  "817137342563",
+
+  appId:
+  "1:817137342563:web:d714d48c46796cc4c34056"
 };
 
-// init
-const app = initializeApp(firebaseConfig);
+/* INIT */
 
-export const auth = getAuth(app);
-export const db = getFirestore(app);
+const app =
+initializeApp(firebaseConfig);
 
-//
-// تسجيل حساب
-//
+export const auth =
+getAuth(app);
+
+export const db =
+getFirestore(app);
+
+/* =========================
+   REGISTER
+========================= */
+
 export async function register(
   email,
   password,
@@ -50,42 +73,53 @@ export async function register(
 ){
 
   const userCred =
-    await createUserWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
+  await createUserWithEmailAndPassword(
+    auth,
+    email,
+    password
+  );
 
   const user =
-    userCred.user;
+  userCred.user;
 
   await setDoc(
     doc(db,"users",user.uid),
     {
+
       username,
+
       email,
 
       image:"",
 
-      followers:0,
-      following:0,
+      verified:false,
 
-      followingList:[],
-      followersList:[],
+      followers:0,
+
+      following:0,
 
       videos:0,
 
+      likes:0,
+
+      bio:"",
+
+      followingList:[],
+
+      followersList:[],
+
       createdAt:
-        new Date().toISOString()
+      Date.now()
     }
   );
 
   return user;
 }
 
-//
-// تسجيل دخول
-//
+/* =========================
+   LOGIN
+========================= */
+
 export function login(
   email,
   password
@@ -98,12 +132,20 @@ export function login(
   );
 }
 
-//
-// مراقبة المستخدم
-//
-export function getUser(
-  callback
-){
+/* =========================
+   LOGOUT
+========================= */
+
+export function logout(){
+
+  return signOut(auth);
+}
+
+/* =========================
+   USER LISTENER
+========================= */
+
+export function getUser(callback){
 
   onAuthStateChanged(
     auth,
@@ -111,58 +153,68 @@ export function getUser(
   );
 }
 
-//
-// جلب بيانات المستخدم
-//
+/* =========================
+   GET USER DATA
+========================= */
+
 export async function getUserData(uid){
 
   const snap =
-    await getDoc(
-      doc(db,"users",uid)
-    );
+  await getDoc(
+    doc(db,"users",uid)
+  );
 
-  if(
-    snap.exists()
-  ){
+  if(snap.exists()){
 
     return snap.data();
   }
 
   return {
+
     username:"بدون اسم",
+
     image:"",
+
+    verified:false,
+
     followers:0,
+
     following:0,
+
     followingList:[],
+
     followersList:[],
+
     videos:0
   };
 }
 
-//
-// تحديث المستخدم
-//
+/* =========================
+   UPDATE USER
+========================= */
+
 export async function updateUser(
   uid,
   data
 ){
 
-  return updateDoc(
+  return await updateDoc(
     doc(db,"users",uid),
     data
   );
 }
 
-//
-// رفع صورة
-//
+/* =========================
+   UPLOAD IMAGE
+========================= */
+
 export async function uploadProfileImage(file){
 
   if(!file)
-    return null;
+  return null;
 
   const formData =
-    new FormData();
+  new FormData();
 
   formData.append(
     "file",
@@ -175,48 +227,56 @@ export async function uploadProfileImage(file){
   );
 
   const res =
-    await fetch(
-      "https://api.cloudinary.com/v1_1/dgtazde5z/image/upload",
-      {
-        method:"POST",
-        body:formData
-      }
-    );
+  await fetch(
+    "https://api.cloudinary.com/v1_1/dgtazde5z/image/upload",
+    {
+      method:"POST",
+      body:formData
+    }
+  );
 
   const data =
-    await res.json();
+  await res.json();
 
   return data.secure_url;
 }
 
-//
-// البحث
-//
-export async function searchUsers(searchText){
+/* =========================
+   SEARCH USERS
+========================= */
+
+export async function searchUsers(
+  searchText
+){
 
   const snap =
-    await getDocs(
-      collection(db,"users")
-    );
+  await getDocs(
+    collection(db,"users")
+  );
 
   const results=[];
 
   snap.forEach(docSnap=>{
 
     const data =
-      docSnap.data();
+    docSnap.data();
 
     if(
+
       data.username &&
+
       data.username
       .toLowerCase()
       .includes(
         searchText.toLowerCase()
       )
+
     ){
 
       results.push({
+
         uid:docSnap.id,
+
         ...data
       });
     }
@@ -226,28 +286,25 @@ export async function searchUsers(searchText){
   return results;
 }
 
-//
-// هل أتابعه؟
-//
+/* =========================
+   FOLLOW SYSTEM
+========================= */
+
 export async function isFollowing(
   myUid,
   targetUid
 ){
 
   const snap =
-    await getDoc(
-      doc(
-        db,
-        "users",
-        myUid
-      )
-    );
+  await getDoc(
+    doc(db,"users",myUid)
+  );
 
   if(!snap.exists())
-    return false;
+  return false;
 
   const data =
-    snap.data();
+  snap.data();
 
   return (
     data.followingList
@@ -256,79 +313,69 @@ export async function isFollowing(
   );
 }
 
-//
-// متابعة / إلغاء متابعة
-//
 export async function toggleFollow(
   myUid,
   targetUid
 ){
 
-  if(
-    myUid === targetUid
-  ) return false;
+  if(myUid === targetUid)
+  return false;
 
   const myRef =
-    doc(
-      db,
-      "users",
-      myUid
-    );
+  doc(db,"users",myUid);
 
   const targetRef =
-    doc(
-      db,
-      "users",
-      targetUid
-    );
+  doc(db,"users",targetUid);
 
   const mySnap =
-    await getDoc(myRef);
+  await getDoc(myRef);
 
   const targetSnap =
-    await getDoc(targetRef);
+  await getDoc(targetRef);
 
   if(
     !mySnap.exists() ||
     !targetSnap.exists()
   ){
+
     return false;
   }
 
   const myData =
-    mySnap.data();
+  mySnap.data();
 
   const targetData =
-    targetSnap.data();
+  targetSnap.data();
 
   let followingList =
-    myData.followingList || [];
+  myData.followingList || [];
 
   let followersList =
-    targetData.followersList || [];
+  targetData.followersList || [];
 
   const alreadyFollowing =
-    followingList.includes(
-      targetUid
-    );
+  followingList.includes(
+    targetUid
+  );
 
   if(alreadyFollowing){
 
     followingList =
-      followingList.filter(
-        id => id !== targetUid
-      );
+    followingList.filter(
+      id => id !== targetUid
+    );
 
     followersList =
-      followersList.filter(
-        id => id !== myUid
-      );
+    followersList.filter(
+      id => id !== myUid
+    );
 
     await updateDoc(
       myRef,
       {
+
         following:
-          increment(-1),
+        increment(-1),
 
         followingList
       }
@@ -337,8 +384,9 @@ export async function toggleFollow(
     await updateDoc(
       targetRef,
       {
+
         followers:
-          increment(-1),
+        increment(-1),
 
         followersList
       }
@@ -359,8 +407,9 @@ export async function toggleFollow(
     await updateDoc(
       myRef,
       {
+
         following:
-          increment(1),
+        increment(1),
 
         followingList
       }
@@ -369,8 +418,9 @@ export async function toggleFollow(
     await updateDoc(
       targetRef,
       {
+
         followers:
-          increment(1),
+        increment(1),
 
         followersList
       }
@@ -380,229 +430,251 @@ export async function toggleFollow(
   }
 }
 
-//
-// متابعة
-//
-export async function followUser(
-  myUid,
-  targetUid
+/* =========================
+   COMMENTS
+========================= */
+
+export async function addComment(
+
+  videoId,
+
+  uid,
+
+  text
+
 ){
 
-  return await toggleFollow(
-    myUid,
-    targetUid
+  const user =
+  await getUserData(uid);
+
+  await addDoc(
+
+    collection(
+      db,
+      "videos",
+      videoId,
+      "comments"
+    ),
+
+    {
+
+      uid,
+
+      username:
+      user.username || "مستخدم",
+
+      userImage:
+      user.image || "",
+
+      text,
+
+      createdAt:
+      Date.now()
+    }
+  );
+
+  await updateDoc(
+
+    doc(db,"videos",videoId),
+
+    {
+
+      comments:
+      increment(1)
+    }
   );
 }
 
-//
-// جلب مستخدمين
-//
-export async function getUsersByIds(ids){
+/* =========================
+   LISTEN COMMENTS
+========================= */
 
-  const arr=[];
+export function listenComments(
 
-  for(
-    const uid of ids
-  ){
+  videoId,
 
-    const snap =
-      await getDoc(
-        doc(
-          db,
-          "users",
-          uid
-        )
-      );
+  callback
 
-    if(
-      snap.exists()
-    ){
+){
 
-      arr.push({
-        uid,
-        ...snap.data()
+  const q =
+  query(
+
+    collection(
+      db,
+      "videos",
+      videoId,
+      "comments"
+    ),
+
+    orderBy(
+      "createdAt",
+      "asc"
+    )
+  );
+
+  return onSnapshot(
+    q,
+    snap=>{
+
+      const arr=[];
+
+      snap.forEach(doc=>{
+
+        arr.push({
+
+          id:doc.id,
+
+          ...doc.data()
+        });
+
       });
+
+      callback(arr);
+
     }
-  }
-
-  return arr;
+  );
 }
 
-//
-// المتابعين
-//
-export async function getFollowersList(uid){
+/* =========================
+   MESSAGES
+========================= */
 
-  const usersSnap =
-    await getDocs(
-      collection(db,"users")
-    );
-
-  const result=[];
-
-  usersSnap.forEach(docSnap=>{
-
-    const data =
-      docSnap.data();
-
-    const list =
-      data.followingList || [];
-
-    if(
-      list.includes(uid)
-    ){
-
-      result.push({
-        uid:docSnap.id,
-        ...data
-      });
-    }
-
-  });
-
-  return result;
-}
-
-//
-// المتابَعين
-//
-export async function getFollowingList(uid){
-
-  const myData =
-    await getUserData(uid);
-
-  const ids =
-    myData.followingList || [];
-
-  const result=[];
-
-  for(
-    const userId of ids
-  ){
-
-    const data =
-      await getUserData(userId);
-
-    result.push({
-      uid:userId,
-      ...data
-    });
-  }
-
-  return result;
-}
-
-//
-// إرسال رسالة
-//
 export async function sendMessage(
+
   fromUid,
+
   toUid,
+
   data
+
 ){
 
   const roomId =
-    [fromUid,toUid]
-    .sort()
-    .join("_");
+  [fromUid,toUid]
+  .sort()
+  .join("_");
 
-  // نص آخر رسالة
-  let lastMsg = "📩 رسالة";
+  let lastMsg =
+  "📩 رسالة";
 
-  if(data.type === "text"){
-    lastMsg = data.text;
+  if(data.type==="text"){
+
+    lastMsg =
+    data.text;
   }
 
-  if(data.type === "image"){
-    lastMsg = "🖼️ صورة";
+  if(data.type==="image"){
+
+    lastMsg =
+    "🖼️ صورة";
   }
 
-  if(data.type === "voice"){
-    lastMsg = "🎤 رسالة صوتية";
+  if(data.type==="voice"){
+
+    lastMsg =
+    "🎤 رسالة صوتية";
   }
 
-  // إنشاء الغرفة
   await setDoc(
+
     doc(
       db,
       "chats",
       roomId
     ),
+
     {
+
       users:[
         fromUid,
         toUid
       ],
 
-      lastMessage:lastMsg,
+      lastMessage:
+      lastMsg,
 
       updatedAt:
-        Date.now()
+      Date.now()
     },
+
     {
       merge:true
     }
   );
 
-  // إضافة الرسالة
   await addDoc(
+
     collection(
       db,
       "chats",
       roomId,
       "messages"
     ),
+
     {
+
       ...data,
 
-      from:fromUid,
-      to:toUid,
+      from:
+      fromUid,
+
+      to:
+      toUid,
 
       createdAt:
-        Date.now()
+      Date.now()
     }
   );
 }
 
-//
-// مراقبة الرسائل
-//
+/* =========================
+   LISTEN MESSAGES
+========================= */
+
 export function listenMessages(
+
   myUid,
+
   otherUid,
+
   callback
+
 ){
 
   const roomId =
-    [myUid,otherUid]
-    .sort()
-    .join("_");
+  [myUid,otherUid]
+  .sort()
+  .join("_");
 
   const q =
-    query(
-      collection(
-        db,
-        "chats",
-        roomId,
-        "messages"
-      ),
+  query(
 
-      orderBy(
-        "createdAt",
-        "asc"
-      )
-    );
+    collection(
+      db,
+      "chats",
+      roomId,
+      "messages"
+    ),
+
+    orderBy(
+      "createdAt",
+      "asc"
+    )
+  );
 
   return onSnapshot(
     q,
-    (snap)=>{
+    snap=>{
 
       const msgs=[];
 
       snap.forEach(doc=>{
 
         msgs.push({
+
           id:doc.id,
+
           ...doc.data()
         });
 
@@ -612,70 +684,4 @@ export function listenMessages(
 
     }
   );
-}
-
-//
-// جلب المحادثات
-//
-export async function getChatsList(myUid){
-
-  const chatsSnap =
-    await getDocs(
-      collection(
-        db,
-        "chats"
-      )
-    );
-
-  const result=[];
-
-  for(
-    const chatDoc of chatsSnap.docs
-  ){
-
-    const data =
-      chatDoc.data();
-
-    const users =
-      data.users || [];
-
-    if(
-      !users.includes(myUid)
-    ) continue;
-
-    const otherUid =
-      users.find(
-        uid =>
-          uid !== myUid
-      );
-
-    if(!otherUid)
-      continue;
-
-    const userData =
-      await getUserData(
-        otherUid
-      );
-
-    result.push({
-      uid:otherUid,
-      ...userData,
-
-      lastMessage:
-        data.lastMessage || "",
-
-      updatedAt:
-        data.updatedAt || 0
-    });
-
-  }
-
-  // ترتيب حسب الأحدث
-  result.sort(
-    (a,b)=>
-      b.updatedAt -
-      a.updatedAt
-  );
-
-  return result;
     }
