@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1.0">
+
+<title>الإعدادات</title>
+
+<style>
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial;
+}
+
+body{
+  background:#f5f5f5;
+  color:#111;
+}
+
+/* العنوان */
+
+.topbar{
+
+  height:65px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  position:sticky;
+  top:0;
+
+  background:white;
+
+  font-size:24px;
+  font-weight:bold;
+
+  border-bottom:
+  1px solid #ddd;
+
+  z-index:99;
+}
+
+/* الأقسام */
+
+.section-title{
+
+  color:#888;
+
+  font-size:15px;
+
+  margin:
+  25px 18px 10px;
+}
+
+/* الكروت */
+
+.card{
+
+  background:white;
+
+  margin:0 14px 20px;
+
+  border-radius:18px;
+
+  overflow:hidden;
+}
+
+/* العنصر */
+
+.item{
+
+  height:62px;
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  padding:0 18px;
+
+  border-bottom:
+  1px solid #eee;
+
+  cursor:pointer;
+}
+
+.item:last-child{
+  border-bottom:none;
+}
+
+.left{
+
+  display:flex;
+  align-items:center;
+  gap:14px;
+
+  font-size:18px;
+}
+
+.icon{
+  font-size:22px;
+}
+
+.arrow{
+  color:#999;
+  font-size:20px;
+}
+
+/* زر تسجيل الخروج */
+
+.logout{
+
+  color:red;
+  font-weight:bold;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="topbar">
+  الإعدادات والخصوصية
+</div>
+
+<!-- أدوات -->
+
+<div class="section-title">
+  الأدوات الشخصية
+</div>
+
+<div class="card">
+
+  <div class="item">
+
+    <div class="left">
+      <div class="icon">🕓</div>
+      <div>
+        مركز النشاطات
+      </div>
+    </div>
+
+    <div class="arrow">
+      ›
+    </div>
+
+  </div>
+
+  <div class="item">
+
+    <div class="left">
+      <div class="icon">⬇️</div>
+      <div>
+        الفيديوهات المحفوظة
+      </div>
+    </div>
+
+    <div class="arrow">
+      ›
+    </div>
+
+  </div>
+
+  <div class="item">
+
+    <div class="left">
+      <div class="icon">🔳</div>
+      <div>
+        QR الخاص بك
+      </div>
+    </div>
+
+    <div class="arrow">
+      ›
+    </div>
+
+  </div>
+
+  <div class="item">
+
+    <div class="left">
+      <div class="icon">🎵</div>
+      <div>
+        الموسيقى الخاصة بك
+      </div>
+    </div>
+
+    <div class="arrow">
+      ›
+    </div>
+
+  </div>
+
+</div>
+
+<!-- الخصوصية -->
+
+<div class="section-title">
+  الخصوصية والدعم
+</div>
+
+<div class="card">
+
+  <div class="item">
+
+    <div class="left">
+      <div class="icon">🛡️</div>
+      <div>
+        مركز الخصوصية
+      </div>
+    </div>
+
+    <div class="arrow">
+      ›
+    </div>
+
+  </div>
+
+  <div class="item">
+
+    <div class="left">
+      <div class="icon">📜</div>
+      <div>
+        الشروط والسياسات
+      </div>
+    </div>
+
+    <div class="arrow">
+      ›
+    </div>
+
+  </div>
+
+  <div class="item">
+
+    <div class="left">
+      <div class="icon">❓</div>
+      <div>
+        مركز المساعدة
+      </div>
+    </div>
+
+    <div class="arrow">
+      ›
+    </div>
+
+  </div>
+
+</div>
+
+<!-- الحساب -->
+
+<div class="section-title">
+  الحساب
+</div>
+
+<div class="card">
+
+  <div class="item">
+
+    <div class="left">
+      <div class="icon">🔄</div>
+      <div>
+        تبديل الحساب
+      </div>
+    </div>
+
+    <div class="arrow">
+      ›
+    </div>
+
+  </div>
+
+  <div
+  class="item logout"
+  onclick="logout()">
+
+    <div class="left">
+      <div class="icon">🚪</div>
+      <div>
+        تسجيل الخروج
+      </div>
+    </div>
+
+    <div class="arrow">
+      ›
+    </div>
+
+  </div>
+
+</div>
+
+<script type="module">
+
+import {
+  auth
+} from "./firebase.js";
+
+import {
+  signOut
+} from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+window.logout =
+async()=>{
+
+  await signOut(auth);
+
+  location.href =
+  "login.html";
+};
+
+</script>
+
+</body>
+        </html>
