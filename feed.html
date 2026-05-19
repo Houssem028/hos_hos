@@ -26,13 +26,16 @@ font-family:Arial,sans-serif;
 -webkit-tap-highlight-color:transparent;
 }
 
-html,body{
+html,
+body{
 width:100%;
 height:100%;
 overflow:hidden;
 background:#000;
 color:white;
 }
+
+/* FEED */
 
 #feedContainer{
 height:100vh;
@@ -53,21 +56,16 @@ overflow:hidden;
 background:black;
 }
 
-/* الفيديو والصورة */
-
 .feed video,
 .feed img{
-position:absolute;
-top:0;
-left:0;
 width:100%;
 height:100%;
 object-fit:cover;
 background:black;
-z-index:1;
+display:block;
 }
 
-/* طبقة */
+/* OVERLAY */
 
 .overlay{
 position:absolute;
@@ -76,15 +74,16 @@ inset:0;
 background:
 linear-gradient(
 to top,
-rgba(0,0,0,.9),
+rgba(0,0,0,.92),
 rgba(0,0,0,.1),
-rgba(0,0,0,.4)
+rgba(0,0,0,.45)
 );
 
+pointer-events:none;
 z-index:2;
 }
 
-/* الشريط العلوي */
+/* TOP BAR */
 
 .top-bar{
 position:fixed;
@@ -103,21 +102,24 @@ to bottom,
 rgba(0,0,0,.7),
 transparent
 );
+
+backdrop-filter:blur(12px);
 }
 
 .logo-box{
 font-size:28px;
 font-weight:bold;
+letter-spacing:2px;
 }
 
-/* معلومات */
+/* INFO */
 
 .video-info{
 position:absolute;
 left:15px;
 bottom:120px;
 width:70%;
-z-index:50;
+z-index:10;
 }
 
 .video-info h3{
@@ -126,6 +128,7 @@ margin-bottom:10px;
 display:flex;
 align-items:center;
 gap:7px;
+cursor:pointer;
 }
 
 .video-info p{
@@ -134,7 +137,7 @@ line-height:1.5;
 color:#eee;
 }
 
-/* توثيق */
+/* VERIFIED */
 
 .verified-badge{
 width:18px;
@@ -147,7 +150,7 @@ align-items:center;
 font-size:11px;
 }
 
-/* أزرار */
+/* ACTIONS */
 
 .video-actions{
 position:absolute;
@@ -157,7 +160,7 @@ display:flex;
 flex-direction:column;
 align-items:center;
 gap:18px;
-z-index:50;
+z-index:10;
 }
 
 .action{
@@ -174,6 +177,7 @@ height:58px;
 border:none;
 border-radius:50%;
 background:rgba(255,255,255,.13);
+backdrop-filter:blur(10px);
 color:white;
 font-size:26px;
 cursor:pointer;
@@ -188,7 +192,7 @@ border:3px solid white;
 cursor:pointer;
 }
 
-/* الأسفل */
+/* BOTTOM */
 
 .bottom-nav{
 position:fixed;
@@ -197,11 +201,16 @@ left:12px;
 right:12px;
 height:70px;
 border-radius:24px;
-background:rgba(20,20,20,.9);
+
+background:
+rgba(20,20,20,.88);
+
 display:flex;
 justify-content:space-around;
 align-items:center;
+
 z-index:999;
+
 backdrop-filter:blur(20px);
 }
 
@@ -220,13 +229,15 @@ height:56px;
 border-radius:18px;
 }
 
+/* LOADING */
+
 .loading{
 text-align:center;
 margin-top:40vh;
 font-size:22px;
 }
 
-/* التعليقات */
+/* COMMENTS */
 
 .comments-panel{
 position:fixed;
@@ -315,12 +326,32 @@ color:white;
 cursor:pointer;
 }
 
+/* LIKE */
+
+.liked{
+color:#ff2d55 !important;
+}
+
+/* PLAY */
+
+.play-icon{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+font-size:70px;
+z-index:20;
+opacity:0;
+pointer-events:none;
+transition:.2s;
+}
+
 </style>
 </head>
 
 <body>
 
-<!-- الأعلى -->
+<!-- TOP -->
 
 <div class="top-bar">
 
@@ -330,7 +361,7 @@ HOS HOS
 
 </div>
 
-<!-- المحتوى -->
+<!-- FEED -->
 
 <div id="feedContainer">
 
@@ -340,7 +371,7 @@ HOS HOS
 
 </div>
 
-<!-- التعليقات -->
+<!-- COMMENTS -->
 
 <div
 class="comments-panel"
@@ -379,7 +410,7 @@ placeholder="اكتب تعليق...">
 
 </div>
 
-<!-- الأسفل -->
+<!-- NAV -->
 
 <div class="bottom-nav">
 
@@ -435,7 +466,7 @@ document.getElementById(
 "feedContainer"
 );
 
-/* المستخدم */
+/* USER */
 
 onAuthStateChanged(
 auth,
@@ -444,7 +475,7 @@ currentUser = user;
 }
 );
 
-/* تحميل المنشورات */
+/* LOAD POSTS */
 
 async function loadVideos(){
 
@@ -494,18 +525,28 @@ container.innerHTML += `
 <section class="feed">
 
 ${video.type === "image"
+
 ? `
+
 <img
 src="${video.mediaUrl || video.videoUrl}"
 class="postImage">
+
 `
+
 : `
+
 <video
 class="videoPlayer"
 src="${video.mediaUrl || video.videoUrl}"
 loop
 playsinline>
 </video>
+
+<div class="play-icon">
+▶
+</div>
+
 `
 }
 
@@ -581,6 +622,20 @@ ${commentsCount}
 
 </div>
 
+<div class="action">
+
+<button onclick="
+shareVideo('${video.mediaUrl || video.videoUrl}')
+">
+↗️
+</button>
+
+<span>
+مشاركة
+</span>
+
+</div>
+
 </div>
 
 </section>
@@ -591,7 +646,7 @@ setupLikes();
 initVideos();
 }
 
-/* تشغيل الفيديو */
+/* VIDEOS */
 
 function initVideos(){
 
@@ -619,9 +674,10 @@ if(v !== video){
 v.pause();
 
 }
+
 });
 
-video.play();
+video.play().catch(()=>{});
 
 }else{
 
@@ -642,25 +698,36 @@ videos.forEach(video=>{
 
 observer.observe(video);
 
-video.onclick = ()=>{
+video.addEventListener(
+"click",
+()=>{
+
+const icon =
+video.parentElement.querySelector(
+".play-icon"
+);
 
 if(video.paused){
 
 video.play();
 
+icon.style.opacity="0";
+
 }else{
 
 video.pause();
 
+icon.style.opacity="1";
+
 }
 
-};
+});
 
 });
 
 }
 
-/* لايك */
+/* LIKE */
 
 function setupLikes(){
 
@@ -698,13 +765,17 @@ increment(1)
 likesText.innerText =
 current + 1;
 
+btn.classList.add(
+"liked"
+);
+
 };
 
 });
 
 }
 
-/* فتح التعليقات */
+/* COMMENTS */
 
 window.openComments =
 async(id)=>{
@@ -720,8 +791,6 @@ document
 loadComments();
 };
 
-/* إغلاق */
-
 window.closeComments =
 ()=>{
 
@@ -732,7 +801,7 @@ document
 .style.bottom="-100%";
 };
 
-/* تحميل التعليقات */
+/* LOAD COMMENTS */
 
 async function loadComments(){
 
@@ -809,7 +878,7 @@ ${c.text}
 
 }
 
-/* إرسال تعليق */
+/* SEND COMMENT */
 
 window.sendComment =
 async()=>{
@@ -864,11 +933,22 @@ parseInt(count.innerText)+1;
 
 };
 
-/* تحميل */
+/* SHARE */
+
+window.shareVideo =
+(url)=>{
+
+navigator.share({
+url:url
+});
+
+};
+
+/* LOAD */
 
 loadVideos();
 
-/* تنقل */
+/* NAV */
 
 window.goHome=()=>{
 location.href="feed.html";
