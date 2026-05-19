@@ -54,7 +54,7 @@ h2{margin-bottom:20px;}
 
 <script type="module">
 
-import { auth, getChatsList } from "./firebase.js";
+import { auth, getChatsList, getUserData } from "./firebase.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const list = document.getElementById("list");
@@ -77,14 +77,19 @@ onAuthStateChanged(auth, async(user)=>{
       return;
     }
 
-    chats.forEach(c=>{
+    // 🔥 هنا الإصلاح الحقيقي
+    for(const c of chats){
+
+      const userData = await getUserData(c.uid);
 
       const div = document.createElement("div");
       div.className = "chat";
 
       div.innerHTML = `
-        <img src="${c.image || 'https://i.imgur.com/1X4n1ZL.png'}">
-        <div class="name">${c.username || "مستخدم"}</div>
+        <img src="${userData.image || 'https://i.imgur.com/1X4n1ZL.png'}">
+        <div class="name">
+          ${userData.username || "مستخدم"}
+        </div>
       `;
 
       div.onclick = ()=>{
@@ -93,7 +98,7 @@ onAuthStateChanged(auth, async(user)=>{
 
       list.appendChild(div);
 
-    });
+    }
 
   }catch(err){
     console.log(err);
