@@ -1,687 +1,197 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-/* AUTH */
-
 import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  onAuthStateChanged,
-  signOut
+getAuth,
+createUserWithEmailAndPassword,
+signInWithEmailAndPassword,
+onAuthStateChanged,
+signOut
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-/* FIRESTORE */
-
 import {
-  getFirestore,
-  setDoc,
-  doc,
-  getDoc,
-  updateDoc,
-  collection,
-  getDocs,
-  increment,
-  addDoc,
-  query,
-  orderBy,
-  onSnapshot,
-  serverTimestamp
+getFirestore,
+setDoc,
+doc,
+getDoc,
+updateDoc,
+collection,
+getDocs,
+addDoc,
+query,
+orderBy,
+onSnapshot,
+serverTimestamp,
+increment
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 /* CONFIG */
-
 const firebaseConfig = {
-
-  apiKey:
-  "AIzaSyBfHLGUVuqrzxc42BkO4ZAzbIxJSt7jZFw",
-
-  authDomain:
-  "hos-hos.firebaseapp.com",
-
-  projectId:
-  "hos-hos",
-
-  storageBucket:
-  "hos-hos.appspot.com",
-
-  messagingSenderId:
-  "817137342563",
-
-  appId:
-  "1:817137342563:web:d714d48c46796cc4c34056"
+apiKey: "AIzaSyBfHLGUVuqrzxc42BkO4ZAzbIxJSt7jZFw",
+authDomain: "hos-hos.firebaseapp.com",
+projectId: "hos-hos",
+storageBucket: "hos-hos.appspot.com",
+messagingSenderId: "817137342563",
+appId: "1:817137342563:web:d714d48c46796cc4c34056"
 };
 
-/* INIT */
+const app = initializeApp(firebaseConfig);
 
-const app =
-initializeApp(firebaseConfig);
+export const auth = getAuth(app);
+export const db = getFirestore(app);
 
-export const auth =
-getAuth(app);
-
-export const db =
-getFirestore(app);
-
-/* =========================
-   REGISTER
-========================= */
-
-export async function register(
-  email,
-  password,
-  username
-){
-
-  const userCred =
-  await createUserWithEmailAndPassword(
-    auth,
-    email,
-    password
-  );
-
-  const user =
-  userCred.user;
-
-  await setDoc(
-    doc(db,"users",user.uid),
-    {
-
-      username,
-
-      email,
-
-      image:"",
-
-      verified:false,
-
-      followers:0,
-
-      following:0,
-
-      videos:0,
-
-      likes:0,
-
-      bio:"",
-
-      followingList:[],
-
-      followersList:[],
-
-      createdAt:
-      Date.now()
-    }
-  );
-
-  return user;
-}
-
-/* =========================
-   LOGIN
-========================= */
-
-export function login(
-  email,
-  password
-){
-
-  return signInWithEmailAndPassword(
-    auth,
-    email,
-    password
-  );
-}
-
-/* =========================
-   LOGOUT
-========================= */
-
-export function logout(){
-
-  return signOut(auth);
-}
-
-/* =========================
-   USER LISTENER
-========================= */
-
-export function getUser(callback){
-
-  onAuthStateChanged(
-    auth,
-    callback
-  );
-}
-
-/* =========================
-   GET USER DATA
-========================= */
+/* ================= USERS ================= */
 
 export async function getUserData(uid){
+const snap = await getDoc(doc(db,"users",uid));
 
-  const snap =
-  await getDoc(
-    doc(db,"users",uid)
-  );
-
-  if(snap.exists()){
-
-    return snap.data();
-  }
-
-  return {
-
-    username:"بدون اسم",
-
-    image:"",
-
-    verified:false,
-
-    followers:0,
-
-    following:0,
-
-    followingList:[],
-
-    followersList:[],
-
-    videos:0
-  };
+if(snap.exists()){
+return snap.data();
 }
 
-/* =========================
-   UPDATE USER
-========================= */
-
-export async function updateUser(
-  uid,
-  data
-){
-
-  return await updateDoc(
-    doc(db,"users",uid),
-    data
-  );
+return {
+username:"مستخدم",
+image:"",
+verified:false
+};
 }
 
-/* =========================
-   UPLOAD IMAGE
-========================= */
+/* ================= MESSAGES ================= */
 
-export async function uploadProfileImage(file){
+export async function sendMessage(fromUid,toUid,data){
 
-  if(!file)
-  return null;
+const roomId = [fromUid,toUid].sort().join("_");
 
-  const formData =
-  new FormData();
+await setDoc(doc(db,"chats",roomId),{
+users:[fromUid,toUid],
+updatedAt:Date.now(),
+lastMessage:data.text || "📩 رسالة"
+},{merge:true});
 
-  formData.append(
-    "file",
-    file
-  );
-
-  formData.append(
-    "upload_preset",
-    "hoshos_upload"
-  );
-
-  const res =
-  await fetch(
-    "https://api.cloudinary.com/v1_1/dgtazde5z/image/upload",
-    {
-      method:"POST",
-      body:formData
-    }
-  );
-
-  const data =
-  await res.json();
-
-  return data.secure_url;
+await addDoc(collection(db,"chats",roomId,"messages"),{
+...data,
+from:fromUid,
+to:toUid,
+createdAt:Date.now()
+});
 }
 
-/* =========================
-   SEARCH USERS
-========================= */
+/* realtime messages */
+export function listenMessages(myUid,otherUid,cb){
 
-export async function searchUsers(
-  searchText
-){
+const roomId = [myUid,otherUid].sort().join("_");
 
-  const snap =
-  await getDocs(
-    collection(db,"users")
-  );
+const q = query(
+collection(db,"chats",roomId,"messages"),
+orderBy("createdAt","asc")
+);
 
-  const results=[];
+return onSnapshot(q,snap=>{
 
-  snap.forEach(docSnap=>{
+const msgs = [];
 
-    const data =
-    docSnap.data();
+snap.forEach(d=>{
+msgs.push({id:d.id,...d.data()});
+});
 
-    if(
+cb(msgs);
 
-      data.username &&
-
-      data.username
-      .toLowerCase()
-      .includes(
-        searchText.toLowerCase()
-      )
-
-    ){
-
-      results.push({
-
-        uid:docSnap.id,
-
-        ...data
-      });
-    }
-
-  });
-
-  return results;
+});
 }
 
-/* =========================
-   FOLLOW SYSTEM
-========================= */
+/* ================= CHATS LIST (IMPORTANT FIX) ================= */
 
-export async function isFollowing(
-  myUid,
-  targetUid
-){
+export async function getChatsList(uid){
 
-  const snap =
-  await getDoc(
-    doc(db,"users",myUid)
-  );
+const snap = await getDocs(collection(db,"chats"));
 
-  if(!snap.exists())
-  return false;
+const chats = [];
 
-  const data =
-  snap.data();
+snap.forEach(d=>{
 
-  return (
-    data.followingList
-    ?.includes(targetUid)
-    || false
-  );
+const data = d.data();
+
+if(data.users && data.users.includes(uid)){
+
+const otherUid = data.users.find(u=>u !== uid);
+
+chats.push({
+uid: otherUid,
+lastMessage: data.lastMessage,
+updatedAt: data.updatedAt,
+image: "",
+username: "مستخدم"
+});
+
 }
 
-export async function toggleFollow(
-  myUid,
-  targetUid
-){
+});
 
-  if(myUid === targetUid)
-  return false;
-
-  const myRef =
-  doc(db,"users",myUid);
-
-  const targetRef =
-  doc(db,"users",targetUid);
-
-  const mySnap =
-  await getDoc(myRef);
-
-  const targetSnap =
-  await getDoc(targetRef);
-
-  if(
-    !mySnap.exists() ||
-    !targetSnap.exists()
-  ){
-
-    return false;
-  }
-
-  const myData =
-  mySnap.data();
-
-  const targetData =
-  targetSnap.data();
-
-  let followingList =
-  myData.followingList || [];
-
-  let followersList =
-  targetData.followersList || [];
-
-  const alreadyFollowing =
-  followingList.includes(
-    targetUid
-  );
-
-  if(alreadyFollowing){
-
-    followingList =
-    followingList.filter(
-      id => id !== targetUid
-    );
-
-    followersList =
-    followersList.filter(
-      id => id !== myUid
-    );
-
-    await updateDoc(
-      myRef,
-      {
-
-        following:
-        increment(-1),
-
-        followingList
-      }
-    );
-
-    await updateDoc(
-      targetRef,
-      {
-
-        followers:
-        increment(-1),
-
-        followersList
-      }
-    );
-
-    return false;
-
-  }else{
-
-    followingList.push(
-      targetUid
-    );
-
-    followersList.push(
-      myUid
-    );
-
-    await updateDoc(
-      myRef,
-      {
-
-        following:
-        increment(1),
-
-        followingList
-      }
-    );
-
-    await updateDoc(
-      targetRef,
-      {
-
-        followers:
-        increment(1),
-
-        followersList
-      }
-    );
-
-    return true;
-  }
+return chats;
 }
 
-/* =========================
-   COMMENTS
-========================= */
+/* ================= COMMENTS FIX ================= */
 
-export async function addComment(
+export async function addComment(videoId,uid,text){
 
-  videoId,
+const user = await getUserData(uid);
 
-  uid,
-
-  text
-
-){
-
-  const user =
-  await getUserData(uid);
-
-  await addDoc(
-
-    collection(
-      db,
-      "videos",
-      videoId,
-      "comments"
-    ),
-
-    {
-
-      uid,
-
-      username:
-      user.username || "مستخدم",
-
-      userImage:
-      user.image || "",
-
-      text,
-
-      createdAt:
-      Date.now()
-    }
-  );
-
-  await updateDoc(
-
-    doc(db,"videos",videoId),
-
-    {
-
-      comments:
-      increment(1)
-    }
-  );
+await addDoc(collection(db,"comments"),{
+videoId,
+uid,
+username:user.username,
+userImage:user.image || "",
+text,
+createdAt:Date.now()
+});
 }
 
-/* =========================
-   LISTEN COMMENTS
-========================= */
+/* ================= FOLLOW (same) ================= */
 
-export function listenComments(
+export async function toggleFollow(myUid,targetUid){
 
-  videoId,
+const myRef = doc(db,"users",myUid);
+const targetRef = doc(db,"users",targetUid);
 
-  callback
+const mySnap = await getDoc(myRef);
+const targetSnap = await getDoc(targetRef);
 
-){
+if(!mySnap.exists() || !targetSnap.exists()) return;
 
-  const q =
-  query(
+const myData = mySnap.data();
+const targetData = targetSnap.data();
 
-    collection(
-      db,
-      "videos",
-      videoId,
-      "comments"
-    ),
+let myList = myData.followingList || [];
+let targetList = targetData.followersList || [];
 
-    orderBy(
-      "createdAt",
-      "asc"
-    )
-  );
+if(myList.includes(targetUid)){
 
-  return onSnapshot(
-    q,
-    snap=>{
+myList = myList.filter(i=>i!==targetUid);
+targetList = targetList.filter(i=>i!==myUid);
 
-      const arr=[];
+await updateDoc(myRef,{
+followingList:myList,
+following:increment(-1)
+});
 
-      snap.forEach(doc=>{
+await updateDoc(targetRef,{
+followersList:targetList,
+followers:increment(-1)
+});
 
-        arr.push({
+}else{
 
-          id:doc.id,
+myList.push(targetUid);
+targetList.push(myUid);
 
-          ...doc.data()
-        });
+await updateDoc(myRef,{
+followingList:myList,
+following:increment(1)
+});
 
-      });
-
-      callback(arr);
-
-    }
-  );
+await updateDoc(targetRef,{
+followersList:targetList,
+followers:increment(1)
+});
 }
 
-/* =========================
-   MESSAGES
-========================= */
-
-export async function sendMessage(
-
-  fromUid,
-
-  toUid,
-
-  data
-
-){
-
-  const roomId =
-  [fromUid,toUid]
-  .sort()
-  .join("_");
-
-  let lastMsg =
-  "📩 رسالة";
-
-  if(data.type==="text"){
-
-    lastMsg =
-    data.text;
-  }
-
-  if(data.type==="image"){
-
-    lastMsg =
-    "🖼️ صورة";
-  }
-
-  if(data.type==="voice"){
-
-    lastMsg =
-    "🎤 رسالة صوتية";
-  }
-
-  await setDoc(
-
-    doc(
-      db,
-      "chats",
-      roomId
-    ),
-
-    {
-
-      users:[
-        fromUid,
-        toUid
-      ],
-
-      lastMessage:
-      lastMsg,
-
-      updatedAt:
-      Date.now()
-    },
-
-    {
-      merge:true
-    }
-  );
-
-  await addDoc(
-
-    collection(
-      db,
-      "chats",
-      roomId,
-      "messages"
-    ),
-
-    {
-
-      ...data,
-
-      from:
-      fromUid,
-
-      to:
-      toUid,
-
-      createdAt:
-      Date.now()
-    }
-  );
 }
-
-/* =========================
-   LISTEN MESSAGES
-========================= */
-
-export function listenMessages(
-
-  myUid,
-
-  otherUid,
-
-  callback
-
-){
-
-  const roomId =
-  [myUid,otherUid]
-  .sort()
-  .join("_");
-
-  const q =
-  query(
-
-    collection(
-      db,
-      "chats",
-      roomId,
-      "messages"
-    ),
-
-    orderBy(
-      "createdAt",
-      "asc"
-    )
-  );
-
-  return onSnapshot(
-    q,
-    snap=>{
-
-      const msgs=[];
-
-      snap.forEach(doc=>{
-
-        msgs.push({
-
-          id:doc.id,
-
-          ...doc.data()
-        });
-
-      });
-
-      callback(msgs);
-
-    }
-  );
-    }
