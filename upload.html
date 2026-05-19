@@ -1,11 +1,20 @@
 <!DOCTYPE html>
-<html lang="ar">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport"
-content="width=device-width,initial-scale=1.0">
+<html lang="ar" dir="rtl">
 
-<title>Hos Hos - رفع فيديو</title>
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="
+width=device-width,
+initial-scale=1.0,
+maximum-scale=1.0,
+user-scalable=no
+">
+
+<title>Hos Hos - Upload</title>
 
 <style>
 
@@ -17,143 +26,365 @@ content="width=device-width,initial-scale=1.0">
 }
 
 body{
-  background:black;
+
+  background:#000;
   color:white;
+
   min-height:100vh;
+
   display:flex;
   justify-content:center;
   align-items:center;
+
   padding:20px;
 }
 
+/* الكرت */
+
 .page-box{
+
   width:100%;
-  max-width:500px;
-  background:#111;
+  max-width:520px;
+
+  background:
+  linear-gradient(
+    180deg,
+    #111,
+    #0a0a0a
+  );
+
   padding:25px;
-  border-radius:25px;
-  box-shadow:0 0 25px rgba(0,0,0,.5);
+
+  border-radius:30px;
+
+  border:
+  1px solid rgba(255,255,255,.06);
+
+  box-shadow:
+  0 0 40px rgba(0,0,0,.5);
 }
+
+/* العنوان */
 
 h1{
+
   text-align:center;
+
   margin-bottom:25px;
+
+  font-size:30px;
 }
 
+/* منطقة الرفع */
+
 .upload-area{
-  border:2px dashed #444;
-  border-radius:18px;
-  padding:35px 20px;
+
+  border:
+  2px dashed rgba(255,255,255,.15);
+
+  border-radius:22px;
+
+  padding:45px 20px;
+
   text-align:center;
+
   cursor:pointer;
-  transition:.2s;
+
+  transition:.25s;
+
+  background:
+  rgba(255,255,255,.03);
 }
 
 .upload-area:hover{
+
   border-color:#ff2d55;
+
+  transform:scale(1.01);
+}
+
+.upload-area h2{
+
+  font-size:26px;
 }
 
 .upload-area p{
-  color:#bbb;
+
+  color:#aaa;
+
   margin-top:10px;
+
+  line-height:1.6;
 }
+
+/* input */
 
 input[type="file"]{
   display:none;
 }
 
-video{
+/* المعاينة */
+
+.preview-box{
+
+  margin-top:22px;
+
+  position:relative;
+
+  display:none;
+}
+
+video,
+img{
+
   width:100%;
-  margin-top:20px;
-  border-radius:16px;
-  max-height:420px;
+
+  border-radius:22px;
+
+  max-height:500px;
+
+  object-fit:cover;
+
   background:#000;
 }
 
-textarea{
-  width:100%;
-  margin-top:20px;
-  padding:15px;
-  border:none;
-  border-radius:14px;
-  resize:none;
-  background:#1a1a1a;
-  color:white;
-  font-size:15px;
-  outline:none;
+/* النوع */
+
+.media-type{
+
+  position:absolute;
+
+  top:12px;
+  right:12px;
+
+  background:
+  rgba(0,0,0,.65);
+
+  backdrop-filter:blur(10px);
+
+  padding:8px 14px;
+
+  border-radius:30px;
+
+  font-size:13px;
+
+  border:
+  1px solid rgba(255,255,255,.08);
 }
 
-.upload-btn{
+/* الوصف */
+
+textarea{
+
   width:100%;
+
   margin-top:20px;
-  padding:16px;
+
+  padding:18px;
+
   border:none;
-  border-radius:16px;
-  background:#ff2d55;
+  outline:none;
+
+  border-radius:18px;
+
+  resize:none;
+
+  background:#1a1a1a;
+
   color:white;
-  font-size:18px;
+
+  font-size:15px;
+
+  min-height:120px;
+}
+
+textarea::placeholder{
+  color:#777;
+}
+
+/* زر النشر */
+
+.upload-btn{
+
+  width:100%;
+
+  margin-top:20px;
+
+  padding:18px;
+
+  border:none;
+
+  border-radius:20px;
+
+  background:
+  linear-gradient(
+    135deg,
+    #ff0050,
+    #ff2d55
+  );
+
+  color:white;
+
+  font-size:19px;
   font-weight:bold;
+
   cursor:pointer;
+
+  transition:.2s;
+
+  box-shadow:
+  0 10px 25px rgba(255,0,80,.35);
+}
+
+.upload-btn:active{
+  transform:scale(.98);
 }
 
 .upload-btn:disabled{
   opacity:.5;
 }
 
+/* الحالة */
+
 .status{
+
   text-align:center;
-  margin-top:15px;
+
+  margin-top:18px;
+
   color:#aaa;
+
+  font-size:15px;
+}
+
+/* شريط التحميل */
+
+.progress{
+
+  width:100%;
+
+  height:10px;
+
+  background:#222;
+
+  border-radius:30px;
+
+  overflow:hidden;
+
+  margin-top:18px;
+
+  display:none;
+}
+
+.progress-bar{
+
+  height:100%;
+
+  width:0%;
+
+  background:
+  linear-gradient(
+    90deg,
+    #ff0050,
+    #ff2d55
+  );
+
+  transition:.2s;
 }
 
 </style>
+
 </head>
 
 <body>
 
 <div class="page-box">
 
-  <h1>➕ رفع فيديو</h1>
+  <h1>
+    ➕ إنشاء منشور
+  </h1>
 
-  <!-- اختيار الفيديو -->
+  <!-- رفع -->
 
   <label class="upload-area">
 
     <input
     type="file"
-    id="videoUpload"
-    accept="video/mp4,video/*">
+    id="mediaUpload"
+    accept="video/*,image/*">
 
-    <h2>🎬 اختر فيديو</h2>
+    <h2>
+      🎬🖼️
+    </h2>
 
     <p>
-      اضغط هنا لرفع فيديو جديد
+
+      اضغط هنا لاختيار
+      فيديو أو صورة
+
+      <br><br>
+
+      يدعم:
+      MP4 / JPG / PNG
+
     </p>
 
   </label>
 
-  <!-- معاينة -->
+  <!-- المعاينة -->
 
-  <video
-  id="previewVideo"
-  controls
-  style="display:none;">
-  </video>
+  <div
+  class="preview-box"
+  id="previewBox">
 
-  <!-- وصف -->
+    <div
+    class="media-type"
+    id="mediaType">
+    </div>
+
+    <video
+    id="previewVideo"
+    controls
+    playsinline
+    style="display:none;">
+    </video>
+
+    <img
+    id="previewImage"
+    style="display:none;">
+
+  </div>
+
+  <!-- الوصف -->
 
   <textarea
   id="caption"
-  rows="4"
-  placeholder="اكتب وصف الفيديو..."></textarea>
+  placeholder="
+اكتب وصف المنشور...
+"></textarea>
 
   <!-- زر النشر -->
 
   <button
   class="upload-btn"
   id="publishBtn">
-    نشر الفيديو
+
+    نشر الآن 🚀
+
   </button>
+
+  <!-- progress -->
+
+  <div
+  class="progress"
+  id="progress">
+
+    <div
+    class="progress-bar"
+    id="progressBar">
+    </div>
+
+  </div>
 
   <!-- الحالة -->
 
@@ -181,33 +412,60 @@ import {
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-let currentUser = null;
+/* العناصر */
 
 const input =
-  document.getElementById(
-    "videoUpload"
-  );
+document.getElementById(
+  "mediaUpload"
+);
 
-const preview =
-  document.getElementById(
-    "previewVideo"
-  );
+const previewBox =
+document.getElementById(
+  "previewBox"
+);
+
+const previewVideo =
+document.getElementById(
+  "previewVideo"
+);
+
+const previewImage =
+document.getElementById(
+  "previewImage"
+);
 
 const publishBtn =
-  document.getElementById(
-    "publishBtn"
-  );
+document.getElementById(
+  "publishBtn"
+);
 
 const status =
-  document.getElementById(
-    "status"
-  );
+document.getElementById(
+  "status"
+);
+
+const progress =
+document.getElementById(
+  "progress"
+);
+
+const progressBar =
+document.getElementById(
+  "progressBar"
+);
+
+const mediaType =
+document.getElementById(
+  "mediaType"
+);
+
+let currentUser = null;
 
 let selectedFile = null;
 
-//
-// تحقق من المستخدم
-//
+let postType = "video";
+
+/* المستخدم */
 
 onAuthStateChanged(
 auth,
@@ -216,7 +474,7 @@ auth,
   if(!user){
 
     location.href =
-      "login.html";
+    "login.html";
 
     return;
   }
@@ -224,29 +482,27 @@ auth,
   currentUser = user;
 });
 
-//
-// معاينة الفيديو
-//
+/* اختيار الملف */
 
 input.addEventListener(
 "change",
 function(){
 
   const file =
-    this.files[0];
+  this.files[0];
 
   if(!file)
-    return;
+  return;
 
-  // حجم أقصى 100MB
+  /* الحجم */
 
   if(
     file.size >
-    100000000
+    150000000
   ){
 
     alert(
-      "الفيديو كبير جداً"
+      "الملف كبير جداً"
     );
 
     return;
@@ -255,19 +511,61 @@ function(){
   selectedFile = file;
 
   const url =
-    URL.createObjectURL(
-      file
-    );
+  URL.createObjectURL(
+    file
+  );
 
-  preview.src = url;
+  previewBox.style.display =
+  "block";
 
-  preview.style.display =
+  /* فيديو */
+
+  if(
+    file.type.startsWith(
+      "video"
+    )
+  ){
+
+    postType = "video";
+
+    mediaType.innerText =
+    "🎬 فيديو";
+
+    previewVideo.src = url;
+
+    previewVideo.style.display =
     "block";
+
+    previewImage.style.display =
+    "none";
+
+  }
+
+  /* صورة */
+
+  else if(
+    file.type.startsWith(
+      "image"
+    )
+  ){
+
+    postType = "image";
+
+    mediaType.innerText =
+    "🖼️ صورة";
+
+    previewImage.src = url;
+
+    previewImage.style.display =
+    "block";
+
+    previewVideo.style.display =
+    "none";
+  }
+
 });
 
-//
-// نشر الفيديو
-//
+/* النشر */
 
 publishBtn.onclick =
 async()=>{
@@ -275,29 +573,33 @@ async()=>{
   if(!selectedFile){
 
     alert(
-      "اختر فيديو أولاً"
+      "اختر صورة أو فيديو"
     );
 
     return;
   }
 
   if(!currentUser)
-    return;
+  return;
 
   try{
 
     publishBtn.disabled =
-      true;
+    true;
+
+    progress.style.display =
+    "block";
 
     status.innerText =
-      "جاري رفع الفيديو...";
+    "جاري الرفع...";
 
-    //
-    // رفع الفيديو إلى Cloudinary
-    //
+    progressBar.style.width =
+    "25%";
+
+    /* بيانات */
 
     const formData =
-      new FormData();
+    new FormData();
 
     formData.append(
       "file",
@@ -309,58 +611,55 @@ async()=>{
       "hoshos_upload"
     );
 
-    formData.append(
-      "resource_type",
-      "video"
-    );
+    /* api */
+
+    const uploadUrl =
+
+    postType === "video"
+
+    ?
+
+    "https://api.cloudinary.com/v1_1/dgtazde5z/video/upload"
+
+    :
+
+    "https://api.cloudinary.com/v1_1/dgtazde5z/image/upload";
+
+    progressBar.style.width =
+    "45%";
 
     const uploadRes =
-      await fetch(
-        "https://api.cloudinary.com/v1_1/dgtazde5z/video/upload",
-        {
-          method:"POST",
-          body:formData
-        }
-      );
-
-    const uploadData =
-      await uploadRes.json();
-
-    console.log(
-      uploadData
+    await fetch(
+      uploadUrl,
+      {
+        method:"POST",
+        body:formData
+      }
     );
 
-    // إذا فشل
+    const uploadData =
+    await uploadRes.json();
+
+    progressBar.style.width =
+    "75%";
 
     if(
       !uploadData.secure_url
     ){
 
-      alert(
-        "فشل رفع الفيديو"
+      throw new Error(
+        "Upload failed"
       );
-
-      publishBtn.disabled =
-        false;
-
-      status.innerText =
-        "";
-
-      return;
     }
 
-    //
-    // جلب بيانات المستخدم
-    //
+    /* بيانات الحساب */
 
     const userData =
-      await getUserData(
-        currentUser.uid
-      );
+    await getUserData(
+      currentUser.uid
+    );
 
-    //
-    // حفظ الفيديو
-    //
+    /* حفظ */
 
     await addDoc(
       collection(
@@ -368,43 +667,62 @@ async()=>{
         "videos"
       ),
       {
+
         uid:
-          currentUser.uid,
+        currentUser.uid,
 
         username:
-          userData.username,
+        userData.username || "",
 
         userImage:
-          userData.image || "",
+        userData.image || "",
+
+        verified:
+        userData.verified || false,
 
         videoUrl:
-          uploadData.secure_url,
+        uploadData.secure_url,
+
+        type:
+        postType,
 
         caption:
-          document
-          .getElementById(
-            "caption"
-          )
-          .value || "",
+        document
+        .getElementById(
+          "caption"
+        )
+        .value || "",
 
         likes:0,
 
+        comments:0,
+
+        shares:0,
+
         createdAt:
-          Date.now()
+        Date.now()
       }
     );
 
-    //
-    // نجاح
-    //
+    progressBar.style.width =
+    "100%";
 
     status.innerText =
-      "تم نشر الفيديو 🎉";
+
+    postType === "video"
+
+    ?
+
+    "تم نشر الفيديو 🎉"
+
+    :
+
+    "تم نشر الصورة 🎉";
 
     setTimeout(()=>{
 
       location.href =
-        "feed.html";
+      "feed.html";
 
     },1500);
 
@@ -413,14 +731,17 @@ async()=>{
     console.error(err);
 
     alert(
-      "حدث خطأ أثناء رفع الفيديو"
+      "حدث خطأ أثناء الرفع"
     );
 
     publishBtn.disabled =
-      false;
+    false;
+
+    progress.style.display =
+    "none";
 
     status.innerText =
-      "";
+    "";
   }
 
 };
@@ -428,4 +749,5 @@ async()=>{
 </script>
 
 </body>
+
 </html>
