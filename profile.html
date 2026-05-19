@@ -1,73 +1,172 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<meta
+name="viewport"
+content="
+width=device-width,
+initial-scale=1.0,
+maximum-scale=1.0,
+user-scalable=no
+">
+
 <title>Hos Hos - Profile</title>
 
 <style>
 
-body{
+*{
   margin:0;
-  font-family:Arial;
-  background:#000;
-  color:white;
-  text-align:center;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial,sans-serif;
 }
 
+body{
+  background:#000;
+  color:white;
+  overflow-x:hidden;
+}
+
+/* الشريط العلوي */
+
 .topbar{
+
+  position:sticky;
+  top:0;
+
+  z-index:99;
+
   display:flex;
   justify-content:space-between;
   align-items:center;
-  padding:15px;
-  font-size:22px;
-  background:#111;
-  position:sticky;
-  top:0;
-  z-index:99;
+
+  padding:18px;
+
+  background:
+  rgba(10,10,10,.88);
+
+  backdrop-filter:blur(12px);
+
+  border-bottom:
+  1px solid rgba(255,255,255,.06);
 }
 
-.profile{
-  padding:20px;
+.topbar-title{
+  font-size:22px;
+  font-weight:bold;
 }
+
+.settings-btn{
+  cursor:pointer;
+  font-size:24px;
+}
+
+/* البروفايل */
+
+.profile{
+  padding:25px 15px 120px;
+  text-align:center;
+}
+
+/* الصورة */
 
 .img-box{
   position:relative;
-  width:120px;
+  width:130px;
   margin:auto;
 }
 
 #img{
-  width:120px;
-  height:120px;
+
+  width:130px;
+  height:130px;
+
   border-radius:50%;
   object-fit:cover;
-  border:3px solid #ff2d55;
+
+  border:4px solid #ff2d55;
+
+  box-shadow:
+  0 0 25px rgba(255,45,85,.35);
 }
 
 .edit-btn{
+
   position:absolute;
-  bottom:0;
-  right:0;
-  background:#ff2d55;
-  width:32px;
-  height:32px;
+
+  bottom:5px;
+  right:5px;
+
+  width:38px;
+  height:38px;
+
   border-radius:50%;
+
+  background:#ff2d55;
+
   display:flex;
-  align-items:center;
   justify-content:center;
+  align-items:center;
+
+  font-size:18px;
+
   cursor:pointer;
+
+  box-shadow:
+  0 0 12px rgba(255,45,85,.6);
 }
 
-#name{
-  margin-top:15px;
-  font-size:26px;
+/* الاسم */
+
+.profile-name{
+
+  margin-top:18px;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  gap:8px;
+
+  font-size:28px;
+  font-weight:bold;
 }
+
+.verified-badge{
+
+  width:22px;
+  height:22px;
+
+  border-radius:50%;
+
+  background:#1d9bf0;
+
+  color:white;
+
+  display:none;
+
+  justify-content:center;
+  align-items:center;
+
+  font-size:13px;
+  font-weight:bold;
+
+  box-shadow:
+  0 0 12px rgba(29,155,240,.8);
+}
+
+/* الإحصائيات */
 
 .stats{
+
+  margin-top:30px;
+
   display:flex;
   justify-content:space-around;
-  margin-top:25px;
 }
 
 .stats div{
@@ -75,151 +174,276 @@ body{
 }
 
 .stats h3{
-  margin:0;
+  font-size:24px;
 }
 
 .stats p{
-  margin:4px 0;
   color:#aaa;
+  margin-top:5px;
   font-size:13px;
 }
 
-#editPanel,
-#settingsPanel{
-  display:none;
-  padding:20px;
-  background:#111;
-  border-radius:20px 20px 0 0;
-  position:fixed;
-  bottom:60px;
-  left:0;
-  right:0;
-  z-index:999;
-}
-
-input,
-select{
-  width:85%;
-  padding:12px;
-  margin:10px auto;
-  display:block;
-  border:none;
-  border-radius:10px;
-}
-
-button{
-  width:85%;
-  padding:12px;
-  border:none;
-  border-radius:10px;
-  background:#ff2d55;
-  color:white;
-  font-size:16px;
-  margin-top:10px;
-}
-
-.bottom-bar{
-  position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  background:#111;
-  height:60px;
-  display:flex;
-  justify-content:space-around;
-  align-items:center;
-  border-top:1px solid #222;
-  z-index:1000;
-}
-
-.bottom-bar button{
-  background:none;
-  color:white;
-  border:none;
-  font-size:20px;
-  width:auto;
-}
-
-/* الفيديوهات */
+/* عنوان الفيديوهات */
 
 .videos-title{
-  margin-top:35px;
-  margin-bottom:15px;
-  font-size:22px;
+
+  margin-top:40px;
+  margin-bottom:20px;
+
+  font-size:24px;
 }
 
+/* الشبكة */
+
 .videos-grid{
+
   display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:4px;
-  padding:10px;
-  padding-bottom:90px;
+
+  grid-template-columns:
+  repeat(3,1fr);
+
+  gap:5px;
 }
 
 .video-box{
+
   position:relative;
-  background:#111;
+
   aspect-ratio:9/16;
+
   overflow:hidden;
-  border-radius:10px;
+
+  border-radius:14px;
+
+  background:#111;
 }
 
 .video-box video{
+
   width:100%;
   height:100%;
+
   object-fit:cover;
 }
+
+/* لا يوجد فيديو */
 
 .no-videos{
   color:#777;
   margin-top:20px;
 }
 
+/* النوافذ */
+
+#editPanel,
+#settingsPanel{
+
+  display:none;
+
+  position:fixed;
+
+  left:0;
+  right:0;
+  bottom:0;
+
+  background:#111;
+
+  border-radius:24px 24px 0 0;
+
+  padding:25px;
+
+  z-index:999;
+}
+
+input,
+select{
+
+  width:100%;
+
+  padding:14px;
+
+  margin-top:12px;
+
+  border:none;
+  outline:none;
+
+  border-radius:14px;
+
+  background:#1c1c1c;
+
+  color:white;
+}
+
+button{
+
+  width:100%;
+
+  padding:14px;
+
+  margin-top:14px;
+
+  border:none;
+
+  border-radius:14px;
+
+  background:#ff2d55;
+
+  color:white;
+
+  font-size:16px;
+  font-weight:bold;
+}
+
+/* الشريط السفلي */
+
+.bottom-bar{
+
+  position:fixed;
+
+  left:12px;
+  right:12px;
+  bottom:12px;
+
+  height:72px;
+
+  border-radius:24px;
+
+  background:
+  rgba(20,20,20,.92);
+
+  backdrop-filter:blur(20px);
+
+  border:
+  1px solid rgba(255,255,255,.06);
+
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+
+  z-index:999;
+}
+
+.bottom-bar button{
+
+  background:none;
+  border:none;
+
+  color:white;
+
+  font-size:26px;
+
+  width:auto;
+
+  margin:0;
+}
+
 </style>
+
 </head>
+
 <body>
 
+<!-- الشريط العلوي -->
+
 <div class="topbar">
+
   <div></div>
-  <div>Profile</div>
-  <div onclick="toggleSettings()">⚙️</div>
+
+  <div class="topbar-title">
+    Profile
+  </div>
+
+  <div
+  class="settings-btn"
+  onclick="toggleSettings()">
+
+    ⚙️
+
+  </div>
+
 </div>
+
+<!-- البروفايل -->
 
 <div class="profile">
 
   <div class="img-box">
-    <img id="img" src="https://i.imgur.com/1X4n1ZL.png">
 
-    <div class="edit-btn"
+    <img
+    id="img"
+    src="https://i.imgur.com/1X4n1ZL.png">
+
+    <div
+    class="edit-btn"
     onclick="toggleEdit()">
+
       ✏️
+
     </div>
+
   </div>
 
-  <h2 id="name">
-    Loading...
+  <!-- الاسم -->
+
+  <h2 class="profile-name">
+
+    <span id="name">
+      Loading...
+    </span>
+
+    <span
+    id="verifiedBadge"
+    class="verified-badge">
+
+      ✓
+
+    </span>
+
   </h2>
+
+  <!-- الإحصائيات -->
 
   <div class="stats">
 
     <div onclick="go('followers.html')">
-      <h3 id="followers">0</h3>
-      <p>متابعين</p>
+
+      <h3 id="followers">
+        0
+      </h3>
+
+      <p>
+        متابعين
+      </p>
+
     </div>
 
     <div onclick="go('following.html')">
-      <h3 id="following">0</h3>
-      <p>متابَعين</p>
+
+      <h3 id="following">
+        0
+      </h3>
+
+      <p>
+        متابَعين
+      </p>
+
     </div>
 
     <div>
-      <h3 id="videos">0</h3>
-      <p>فيديوهات</p>
+
+      <h3 id="videos">
+        0
+      </h3>
+
+      <p>
+        فيديوهات
+      </p>
+
     </div>
 
   </div>
 
-  <!-- فيديوهات -->
+  <!-- الفيديوهات -->
 
   <h2 class="videos-title">
     فيديوهاتي 🎬
@@ -284,7 +508,7 @@ button{
 
 </div>
 
-<!-- الأسفل -->
+<!-- الشريط السفلي -->
 
 <div class="bottom-bar">
 
@@ -300,7 +524,7 @@ button{
     ➕
   </button>
 
-  <button onclick="go('notify.html')">
+  <button onclick="go('notifications.html')">
     🔔
   </button>
 
@@ -332,6 +556,8 @@ import {
 
 let userNow = null;
 
+/* المستخدم */
+
 onAuthStateChanged(
 auth,
 async(user)=>{
@@ -339,7 +565,7 @@ async(user)=>{
   if(!user){
 
     location.href =
-      "login.html";
+    "login.html";
 
     return;
   }
@@ -347,75 +573,91 @@ async(user)=>{
   userNow = user;
 
   const data =
-    await getUserData(
-      user.uid
-    );
+  await getUserData(
+    user.uid
+  );
+
+  /* الاسم */
 
   document.getElementById(
     "name"
   ).innerText =
-    data?.username ||
-    "بدون اسم";
+  data?.username ||
+  "بدون اسم";
+
+  /* توثيق */
+
+  if(data?.verified){
+
+    document.getElementById(
+      "verifiedBadge"
+    ).style.display =
+    "flex";
+
+  }
+
+  /* بيانات */
 
   document.getElementById(
     "newName"
   ).value =
-    data?.username || "";
+  data?.username || "";
 
   document.getElementById(
     "followers"
   ).innerText =
-    data?.followers || 0;
+  data?.followers || 0;
 
   document.getElementById(
     "following"
   ).innerText =
-    data?.following || 0;
+  data?.following || 0;
+
+  /* صورة */
 
   if(data?.image){
 
     document.getElementById(
       "img"
     ).src =
-      data.image +
-      "?t=" +
-      Date.now();
+    data.image +
+    "?t=" +
+    Date.now();
   }
 
-  // جلب الفيديوهات
+  /* فيديوهات */
 
   loadMyVideos(
     user.uid
   );
+
 });
 
-//
-// جلب فيديوهات الحساب
-//
+/* فيديوهات الحساب */
 
 async function loadMyVideos(uid){
 
   const grid =
-    document.getElementById(
-      "videosGrid"
-    );
+  document.getElementById(
+    "videosGrid"
+  );
 
   grid.innerHTML = "";
 
   const snap =
-    await getDocs(
-      collection(
-        db,
-        "videos"
-      )
-    );
+  await getDocs(
+    collection(
+      db,
+      "videos"
+    )
+  );
 
   let count = 0;
 
   snap.forEach(doc=>{
 
     const video =
-      doc.data();
+    doc.data();
 
     if(
       video.uid === uid
@@ -425,17 +667,17 @@ async function loadMyVideos(uid){
 
       grid.innerHTML += `
 
-        <div class="video-box">
+      <div class="video-box">
 
-          <video
-          src="${video.videoUrl}"
-          muted
-          autoplay
-          loop
-          playsinline>
-          </video>
+        <video
+        src="${video.videoUrl}"
+        muted
+        autoplay
+        loop
+        playsinline>
+        </video>
 
-        </div>
+      </div>
 
       `;
     }
@@ -446,49 +688,60 @@ async function loadMyVideos(uid){
     "videos"
   ).innerText = count;
 
-  if(count === 0){
+  if(count===0){
 
     grid.innerHTML = `
-      <div class="no-videos">
-        لا توجد فيديوهات
-      </div>
+
+    <div class="no-videos">
+      لا توجد فيديوهات
+    </div>
+
     `;
   }
+
 }
+
+/* تعديل */
 
 window.toggleEdit = ()=>{
 
   const panel =
-    document.getElementById(
-      "editPanel"
-    );
+  document.getElementById(
+    "editPanel"
+  );
 
   panel.style.display =
-    panel.style.display==="block"
-    ? "none"
-    : "block";
+  panel.style.display==="block"
+  ? "none"
+  : "block";
 
   document.getElementById(
     "settingsPanel"
-  ).style.display="none";
+  ).style.display =
+  "none";
 };
+
+/* الإعدادات */
 
 window.toggleSettings = ()=>{
 
   const panel =
-    document.getElementById(
-      "settingsPanel"
-    );
+  document.getElementById(
+    "settingsPanel"
+  );
 
   panel.style.display =
-    panel.style.display==="block"
-    ? "none"
-    : "block";
+  panel.style.display==="block"
+  ? "none"
+  : "block";
 
   document.getElementById(
     "editPanel"
-  ).style.display="none";
+  ).style.display =
+  "none";
 };
+
+/* حفظ */
 
 document.getElementById(
   "save"
@@ -496,49 +749,54 @@ document.getElementById(
 async ()=>{
 
   const name =
-    document.getElementById(
-      "newName"
-    ).value;
+  document.getElementById(
+    "newName"
+  ).value;
 
   const file =
-    document.getElementById(
-      "file"
-    ).files[0];
+  document.getElementById(
+    "file"
+  ).files[0];
 
   let img = null;
 
   if(file){
 
     img =
-      await uploadProfileImage(
-        file
-      );
+    await uploadProfileImage(
+      file
+    );
   }
 
   const data = {};
 
   if(name)
-    data.username = name;
+  data.username = name;
 
   if(img)
-    data.image = img;
+  data.image = img;
 
   await updateUser(
     userNow.uid,
     data
   );
 
-  alert("تم الحفظ ✔");
+  alert(
+    "تم الحفظ ✔"
+  );
 
   location.reload();
+
 };
+
+/* اللغة */
 
 window.saveLanguage = ()=>{
 
   const lang =
-    document.getElementById(
-      "langSelect"
-    ).value;
+  document.getElementById(
+    "langSelect"
+  ).value;
 
   localStorage.setItem(
     "appLang",
@@ -548,7 +806,10 @@ window.saveLanguage = ()=>{
   alert(
     "تم حفظ اللغة ✔"
   );
+
 };
+
+/* تسجيل خروج */
 
 window.logout =
 async ()=>{
@@ -556,15 +817,20 @@ async ()=>{
   await signOut(auth);
 
   location.href =
-    "login.html";
+  "login.html";
+
 };
+
+/* تنقل */
 
 window.go = (p)=>{
 
   location.href = p;
+
 };
 
 </script>
 
 </body>
+
 </html>
