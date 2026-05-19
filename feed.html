@@ -53,17 +53,26 @@ overflow:hidden;
 background:black;
 }
 
+/* الفيديو والصورة */
+
 .feed video,
 .feed img{
+position:absolute;
+top:0;
+left:0;
 width:100%;
 height:100%;
 object-fit:cover;
 background:black;
+z-index:1;
 }
+
+/* طبقة */
 
 .overlay{
 position:absolute;
 inset:0;
+
 background:
 linear-gradient(
 to top,
@@ -71,7 +80,11 @@ rgba(0,0,0,.9),
 rgba(0,0,0,.1),
 rgba(0,0,0,.4)
 );
+
+z-index:2;
 }
+
+/* الشريط العلوي */
 
 .top-bar{
 position:fixed;
@@ -83,7 +96,9 @@ display:flex;
 justify-content:center;
 align-items:center;
 z-index:999;
-background:linear-gradient(
+
+background:
+linear-gradient(
 to bottom,
 rgba(0,0,0,.7),
 transparent
@@ -95,12 +110,14 @@ font-size:28px;
 font-weight:bold;
 }
 
+/* معلومات */
+
 .video-info{
 position:absolute;
 left:15px;
 bottom:120px;
 width:70%;
-z-index:10;
+z-index:50;
 }
 
 .video-info h3{
@@ -117,6 +134,8 @@ line-height:1.5;
 color:#eee;
 }
 
+/* توثيق */
+
 .verified-badge{
 width:18px;
 height:18px;
@@ -128,6 +147,8 @@ align-items:center;
 font-size:11px;
 }
 
+/* أزرار */
+
 .video-actions{
 position:absolute;
 right:12px;
@@ -136,7 +157,7 @@ display:flex;
 flex-direction:column;
 align-items:center;
 gap:18px;
-z-index:10;
+z-index:50;
 }
 
 .action{
@@ -155,6 +176,7 @@ border-radius:50%;
 background:rgba(255,255,255,.13);
 color:white;
 font-size:26px;
+cursor:pointer;
 }
 
 .profile-pic{
@@ -163,7 +185,10 @@ height:60px;
 border-radius:50%;
 object-fit:cover;
 border:3px solid white;
+cursor:pointer;
 }
+
+/* الأسفل */
 
 .bottom-nav{
 position:fixed;
@@ -185,6 +210,7 @@ background:none;
 border:none;
 color:white;
 font-size:26px;
+cursor:pointer;
 }
 
 .add-btn{
@@ -286,6 +312,7 @@ padding:0 20px;
 border-radius:14px;
 background:#ff2d55;
 color:white;
+cursor:pointer;
 }
 
 </style>
@@ -293,11 +320,17 @@ color:white;
 
 <body>
 
+<!-- الأعلى -->
+
 <div class="top-bar">
+
 <div class="logo-box">
 HOS HOS
 </div>
+
 </div>
+
+<!-- المحتوى -->
 
 <div id="feedContainer">
 
@@ -345,6 +378,8 @@ placeholder="اكتب تعليق...">
 </div>
 
 </div>
+
+<!-- الأسفل -->
 
 <div class="bottom-nav">
 
@@ -400,12 +435,16 @@ document.getElementById(
 "feedContainer"
 );
 
+/* المستخدم */
+
 onAuthStateChanged(
 auth,
 (user)=>{
 currentUser = user;
 }
 );
+
+/* تحميل المنشورات */
 
 async function loadVideos(){
 
@@ -457,13 +496,13 @@ container.innerHTML += `
 ${video.type === "image"
 ? `
 <img
-src="${video.mediaUrl}"
+src="${video.mediaUrl || video.videoUrl}"
 class="postImage">
 `
 : `
 <video
 class="videoPlayer"
-src="${video.mediaUrl}"
+src="${video.mediaUrl || video.videoUrl}"
 loop
 playsinline>
 </video>
@@ -474,7 +513,10 @@ playsinline>
 
 <div class="video-info">
 
-<h3>
+<h3 onclick="
+location.href=
+'user.html?uid=${video.uid}'
+">
 
 @${video.username}
 
@@ -498,6 +540,12 @@ ${video.caption || ""}
 
 <img
 class="profile-pic"
+
+onclick="
+location.href=
+'user.html?uid=${video.uid}'
+"
+
 src="${
 video.userImage ||
 'https://i.imgur.com/1X4n1ZL.png'
@@ -542,6 +590,8 @@ ${commentsCount}
 setupLikes();
 initVideos();
 }
+
+/* تشغيل الفيديو */
 
 function initVideos(){
 
@@ -610,6 +660,8 @@ video.pause();
 
 }
 
+/* لايك */
+
 function setupLikes(){
 
 const buttons =
@@ -652,6 +704,8 @@ current + 1;
 
 }
 
+/* فتح التعليقات */
+
 window.openComments =
 async(id)=>{
 
@@ -666,6 +720,8 @@ document
 loadComments();
 };
 
+/* إغلاق */
+
 window.closeComments =
 ()=>{
 
@@ -675,6 +731,8 @@ document
 )
 .style.bottom="-100%";
 };
+
+/* تحميل التعليقات */
 
 async function loadComments(){
 
@@ -751,6 +809,8 @@ ${c.text}
 
 }
 
+/* إرسال تعليق */
+
 window.sendComment =
 async()=>{
 
@@ -804,7 +864,11 @@ parseInt(count.innerText)+1;
 
 };
 
+/* تحميل */
+
 loadVideos();
+
+/* تنقل */
 
 window.goHome=()=>{
 location.href="feed.html";
