@@ -294,11 +294,9 @@ color:white;
 <body>
 
 <div class="top-bar">
-
 <div class="logo-box">
 HOS HOS
 </div>
-
 </div>
 
 <div id="feedContainer">
@@ -459,13 +457,13 @@ container.innerHTML += `
 ${video.type === "image"
 ? `
 <img
-src="${video.videoUrl}"
+src="${video.mediaUrl}"
 class="postImage">
 `
 : `
 <video
 class="videoPlayer"
-src="${video.videoUrl}"
+src="${video.mediaUrl}"
 loop
 playsinline>
 </video>
@@ -654,8 +652,6 @@ current + 1;
 
 }
 
-/* التعليقات */
-
 window.openComments =
 async(id)=>{
 
@@ -696,6 +692,10 @@ where(
 "videoId",
 "==",
 currentCommentVideo
+),
+orderBy(
+"createdAt",
+"desc"
 )
 );
 
