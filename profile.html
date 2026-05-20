@@ -19,435 +19,515 @@ user-scalable=no
 <style>
 
 *{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:Arial,sans-serif;
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+-webkit-tap-highlight-color:transparent;
 }
 
 body{
-  background:#000;
-  color:white;
-  overflow-x:hidden;
+background:#000;
+color:white;
+overflow-x:hidden;
+padding-bottom:110px;
 }
 
-/* الشريط العلوي */
+/* ===== TOP BAR ===== */
 
 .topbar{
 
-  position:sticky;
-  top:0;
+position:fixed;
+top:0;
+left:0;
+right:0;
 
-  z-index:99;
+height:65px;
 
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+display:flex;
+justify-content:space-between;
+align-items:center;
 
-  padding:18px;
+padding:0 16px;
 
-  background:
-  rgba(10,10,10,.88);
+z-index:999;
 
-  backdrop-filter:blur(12px);
+background:
+linear-gradient(
+to bottom,
+rgba(0,0,0,.95),
+rgba(0,0,0,.3)
+);
 
-  border-bottom:
-  1px solid rgba(255,255,255,.06);
+backdrop-filter:blur(12px);
 }
 
 .topbar-title{
-  font-size:24px;
-  font-weight:bold;
+font-size:22px;
+font-weight:bold;
 }
 
-.settings-btn{
-  cursor:pointer;
-  font-size:28px;
+.top-icon{
+font-size:28px;
+cursor:pointer;
 }
 
-/* البروفايل */
+/* ===== PROFILE ===== */
 
 .profile{
-  padding:25px 15px 120px;
-  text-align:center;
+padding-top:90px;
+text-align:center;
 }
 
-/* الصورة */
+/* ===== IMAGE ===== */
 
 .img-box{
-  position:relative;
-  width:130px;
-  margin:auto;
+position:relative;
+width:120px;
+height:120px;
+margin:auto;
 }
 
 #img{
 
-  width:130px;
-  height:130px;
+width:120px;
+height:120px;
 
-  border-radius:50%;
-  object-fit:cover;
+border-radius:50%;
+object-fit:cover;
 
-  border:4px solid #ff2d55;
+border:3px solid #ff2d55;
 
-  box-shadow:
-  0 0 25px rgba(255,45,85,.35);
+background:#111;
 }
 
 .edit-btn{
 
-  position:absolute;
+position:absolute;
+bottom:0;
+left:0;
 
-  bottom:5px;
-  right:5px;
+width:34px;
+height:34px;
 
-  width:38px;
-  height:38px;
+border-radius:50%;
 
-  border-radius:50%;
+background:#ff2d55;
 
-  background:#ff2d55;
+display:flex;
+justify-content:center;
+align-items:center;
 
-  display:flex;
-  justify-content:center;
-  align-items:center;
+font-size:16px;
 
-  font-size:18px;
-
-  cursor:pointer;
-
-  box-shadow:
-  0 0 12px rgba(255,45,85,.6);
+cursor:pointer;
 }
 
-/* الاسم */
+/* ===== NAME ===== */
 
 .profile-name{
 
-  margin-top:18px;
+margin-top:15px;
 
-  display:flex;
-  justify-content:center;
-  align-items:center;
+display:flex;
+justify-content:center;
+align-items:center;
+gap:7px;
 
-  gap:8px;
-
-  font-size:28px;
-  font-weight:bold;
+font-size:28px;
+font-weight:bold;
 }
 
 .verified-badge{
 
-  width:22px;
-  height:22px;
+width:20px;
+height:20px;
 
-  border-radius:50%;
+border-radius:50%;
 
-  background:#1d9bf0;
+background:#1d9bf0;
 
-  color:white;
+display:none;
+justify-content:center;
+align-items:center;
 
-  display:none;
-
-  justify-content:center;
-  align-items:center;
-
-  font-size:13px;
-  font-weight:bold;
-
-  box-shadow:
-  0 0 12px rgba(29,155,240,.8);
+font-size:12px;
+font-weight:bold;
 }
 
-/* الإحصائيات */
+/* ===== USERNAME ===== */
+
+.username{
+margin-top:5px;
+color:#aaa;
+font-size:15px;
+}
+
+/* ===== BIO ===== */
+
+.bio{
+margin-top:14px;
+padding:0 20px;
+font-size:15px;
+line-height:1.5;
+color:#ddd;
+}
+
+/* ===== STATS ===== */
 
 .stats{
 
-  margin-top:30px;
+margin-top:25px;
 
-  display:flex;
-  justify-content:space-around;
+display:flex;
+justify-content:center;
+gap:40px;
 }
 
-.stats div{
-  cursor:pointer;
+.stat h3{
+font-size:23px;
 }
 
-.stats h3{
-  font-size:24px;
+.stat p{
+margin-top:4px;
+color:#aaa;
+font-size:13px;
 }
 
-.stats p{
-  color:#aaa;
-  margin-top:5px;
-  font-size:13px;
+/* ===== BUTTONS ===== */
+
+.profile-buttons{
+
+margin-top:22px;
+
+display:flex;
+justify-content:center;
+gap:10px;
+
+padding:0 18px;
 }
 
-/* عنوان الفيديوهات */
+.profile-buttons button{
 
-.videos-title{
+flex:1;
+max-width:180px;
 
-  margin-top:40px;
-  margin-bottom:20px;
+height:45px;
 
-  font-size:24px;
+border:none;
+border-radius:12px;
+
+font-size:15px;
+font-weight:bold;
+
+cursor:pointer;
 }
 
-/* الشبكة */
+.edit-profile-btn{
+background:#ff2d55;
+color:white;
+}
+
+.share-btn{
+background:#222;
+color:white;
+}
+
+/* ===== TABS ===== */
+
+.tabs{
+
+margin-top:30px;
+
+display:flex;
+justify-content:center;
+
+border-bottom:
+1px solid rgba(255,255,255,.08);
+}
+
+.tab{
+
+flex:1;
+
+padding:14px 0;
+
+text-align:center;
+
+font-size:22px;
+
+cursor:pointer;
+
+color:#777;
+}
+
+.tab.active{
+color:white;
+border-bottom:2px solid white;
+}
+
+/* ===== VIDEOS GRID ===== */
 
 .videos-grid{
 
-  display:grid;
+display:grid;
 
-  grid-template-columns:
-  repeat(3,1fr);
+grid-template-columns:
+repeat(3,1fr);
 
-  gap:5px;
+gap:2px;
+
+margin-top:2px;
 }
 
 .video-box{
 
-  position:relative;
+position:relative;
 
-  aspect-ratio:9/16;
+aspect-ratio:9/16;
 
-  overflow:hidden;
+background:#111;
 
-  border-radius:14px;
-
-  background:#111;
+overflow:hidden;
 }
 
-.video-box video{
+.video-box video,
+.video-box img{
 
-  width:100%;
-  height:100%;
+width:100%;
+height:100%;
 
-  object-fit:cover;
+object-fit:cover;
 }
 
-/* لا يوجد فيديو */
+.video-views{
+
+position:absolute;
+
+bottom:6px;
+left:6px;
+
+background:rgba(0,0,0,.55);
+
+padding:3px 7px;
+
+border-radius:10px;
+
+font-size:11px;
+}
+
+/* ===== EMPTY ===== */
 
 .no-videos{
-  color:#777;
-  margin-top:20px;
+
+margin-top:60px;
+
+text-align:center;
+
+color:#777;
+
+font-size:18px;
 }
 
-/* الشريط السفلي */
-
-.bottom-bar{
-
-  position:fixed;
-
-  left:12px;
-  right:12px;
-  bottom:12px;
-
-  height:72px;
-
-  border-radius:24px;
-
-  background:
-  rgba(20,20,20,.92);
-
-  backdrop-filter:blur(20px);
-
-  border:
-  1px solid rgba(255,255,255,.06);
-
-  display:flex;
-  justify-content:space-around;
-  align-items:center;
-
-  z-index:999;
-}
-
-.bottom-bar button{
-
-  background:none;
-  border:none;
-
-  color:white;
-
-  font-size:26px;
-
-  width:auto;
-
-  margin:0;
-
-  cursor:pointer;
-}
-
-/* القائمة الجانبية */
-
-#menu{
-
-  position:fixed;
-
-  top:0;
-  right:-100%;
-
-  width:85%;
-  max-width:340px;
-
-  height:100vh;
-
-  background:#fff;
-
-  color:#111;
-
-  z-index:9999;
-
-  transition:.3s;
-
-  overflow-y:auto;
-}
-
-#menu.active{
-  right:0;
-}
-
-/* خلفية */
-
-#overlay{
-
-  position:fixed;
-
-  inset:0;
-
-  background:
-  rgba(0,0,0,.6);
-
-  z-index:9998;
-
-  display:none;
-}
-
-#overlay.active{
-  display:block;
-}
-
-/* عنوان القائمة */
-
-.menu-header{
-
-  padding:22px;
-
-  font-size:26px;
-  font-weight:bold;
-
-  border-bottom:
-  1px solid #eee;
-}
-
-/* الأقسام */
-
-.section-title{
-
-  color:#888;
-
-  font-size:14px;
-
-  margin:
-  20px 18px 10px;
-}
-
-/* العناصر */
-
-.menu-item{
-
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-
-  padding:18px;
-
-  border-bottom:
-  1px solid #f1f1f1;
-
-  cursor:pointer;
-}
-
-.menu-left{
-
-  display:flex;
-  align-items:center;
-  gap:14px;
-
-  font-size:18px;
-}
-
-.menu-icon{
-  font-size:22px;
-}
-
-.arrow{
-  color:#888;
-  font-size:20px;
-}
-
-.logout{
-  color:red;
-  font-weight:bold;
-}
-
-/* نافذة التعديل */
+/* ===== EDIT PANEL ===== */
 
 #editPanel{
 
-  display:none;
+position:fixed;
 
-  position:fixed;
+left:0;
+right:0;
+bottom:-100%;
 
-  left:0;
-  right:0;
-  bottom:0;
+background:#111;
 
-  background:#111;
+border-radius:25px 25px 0 0;
 
-  border-radius:24px 24px 0 0;
+padding:20px;
 
-  padding:25px;
+z-index:9999;
 
-  z-index:99999;
+transition:.3s;
 }
 
-input{
+#editPanel.active{
+bottom:0;
+}
 
-  width:100%;
+.panel-title{
+font-size:22px;
+font-weight:bold;
+margin-bottom:15px;
+}
 
-  padding:14px;
+input,
+textarea{
 
-  margin-top:12px;
+width:100%;
 
-  border:none;
-  outline:none;
+margin-top:12px;
 
-  border-radius:14px;
+padding:14px;
 
-  background:#1c1c1c;
+border:none;
+outline:none;
 
-  color:white;
+border-radius:14px;
+
+background:#1c1c1c;
+
+color:white;
+
+font-size:15px;
+}
+
+textarea{
+height:100px;
+resize:none;
 }
 
 .save-btn{
 
-  width:100%;
+width:100%;
 
-  padding:14px;
+height:50px;
 
-  margin-top:14px;
+margin-top:15px;
 
-  border:none;
+border:none;
 
-  border-radius:14px;
+border-radius:14px;
 
-  background:#ff2d55;
+background:#ff2d55;
 
-  color:white;
+color:white;
 
-  font-size:16px;
-  font-weight:bold;
+font-size:16px;
+font-weight:bold;
+}
+
+/* ===== MENU ===== */
+
+#menu{
+
+position:fixed;
+
+top:0;
+right:-100%;
+
+width:85%;
+max-width:320px;
+
+height:100vh;
+
+background:#111;
+
+z-index:99999;
+
+transition:.3s;
+
+overflow-y:auto;
+}
+
+#menu.active{
+right:0;
+}
+
+.menu-header{
+
+padding:22px;
+
+font-size:24px;
+font-weight:bold;
+
+border-bottom:
+1px solid rgba(255,255,255,.08);
+}
+
+.menu-item{
+
+padding:18px;
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+border-bottom:
+1px solid rgba(255,255,255,.05);
+
+cursor:pointer;
+}
+
+.menu-item span{
+font-size:16px;
+}
+
+/* ===== OVERLAY ===== */
+
+#overlay{
+
+position:fixed;
+inset:0;
+
+background:rgba(0,0,0,.6);
+
+z-index:99998;
+
+display:none;
+}
+
+#overlay.active{
+display:block;
+}
+
+/* ===== BOTTOM BAR ===== */
+
+.bottom-bar{
+
+position:fixed;
+
+left:12px;
+right:12px;
+bottom:12px;
+
+height:68px;
+
+border-radius:22px;
+
+background:
+rgba(20,20,20,.92);
+
+display:flex;
+justify-content:space-around;
+align-items:center;
+
+backdrop-filter:blur(18px);
+
+z-index:999;
+}
+
+.bottom-bar button{
+
+background:none;
+border:none;
+
+color:white;
+
+font-size:27px;
+
+cursor:pointer;
+}
+
+.add-btn{
+
+width:55px;
+height:55px;
+
+border-radius:16px;
+
+background:#ff2d55 !important;
+
+font-size:34px !important;
 }
 
 </style>
@@ -456,548 +536,586 @@ input{
 
 <body>
 
-<!-- Overlay -->
+<!-- OVERLAY -->
 
 <div
 id="overlay"
 onclick="closeMenu()">
 </div>
 
-<!-- القائمة -->
+<!-- MENU -->
 
 <div id="menu">
 
-  <div class="menu-header">
-    الإعدادات والخصوصية
-  </div>
+<div class="menu-header">
+الإعدادات
+</div>
 
-  <div class="section-title">
-    الأدوات الشخصية
-  </div>
+<div class="menu-item">
+<span>🛡️ الخصوصية</span>
+<span>›</span>
+</div>
 
-  <div class="menu-item">
+<div class="menu-item">
+<span>💾 المحفوظات</span>
+<span>›</span>
+</div>
 
-    <div class="menu-left">
-      <div class="menu-icon">🕓</div>
-      <div>مركز النشاطات</div>
-    </div>
+<div class="menu-item">
+<span>🎵 الموسيقى</span>
+<span>›</span>
+</div>
 
-    <div class="arrow">›</div>
+<div class="menu-item">
+<span>❓ المساعدة</span>
+<span>›</span>
+</div>
 
-  </div>
+<div
+class="menu-item"
+onclick="logout()">
 
-  <div class="menu-item">
+<span style="color:red">
+🚪 تسجيل خروج
+</span>
 
-    <div class="menu-left">
-      <div class="menu-icon">⬇️</div>
-      <div>الفيديوهات المحفوظة</div>
-    </div>
-
-    <div class="arrow">›</div>
-
-  </div>
-
-  <div class="menu-item">
-
-    <div class="menu-left">
-      <div class="menu-icon">🔳</div>
-      <div>QR الخاص بك</div>
-    </div>
-
-    <div class="arrow">›</div>
-
-  </div>
-
-  <div class="menu-item">
-
-    <div class="menu-left">
-      <div class="menu-icon">🎵</div>
-      <div>الموسيقى الخاصة بك</div>
-    </div>
-
-    <div class="arrow">›</div>
-
-  </div>
-
-  <div class="section-title">
-    الخصوصية والدعم
-  </div>
-
-  <div class="menu-item">
-
-    <div class="menu-left">
-      <div class="menu-icon">🛡️</div>
-      <div>مركز الخصوصية</div>
-    </div>
-
-    <div class="arrow">›</div>
-
-  </div>
-
-  <div class="menu-item">
-
-    <div class="menu-left">
-      <div class="menu-icon">📜</div>
-      <div>الشروط والسياسات</div>
-    </div>
-
-    <div class="arrow">›</div>
-
-  </div>
-
-  <div class="menu-item">
-
-    <div class="menu-left">
-      <div class="menu-icon">❓</div>
-      <div>مركز المساعدة</div>
-    </div>
-
-    <div class="arrow">›</div>
-
-  </div>
-
-  <div class="section-title">
-    الحساب
-  </div>
-
-  <div class="menu-item">
-
-    <div class="menu-left">
-      <div class="menu-icon">🔄</div>
-      <div>تبديل الحساب</div>
-    </div>
-
-    <div class="arrow">›</div>
-
-  </div>
-
-  <div
-  class="menu-item logout"
-  onclick="logout()">
-
-    <div class="menu-left">
-      <div class="menu-icon">🚪</div>
-      <div>تسجيل خروج</div>
-    </div>
-
-    <div class="arrow">›</div>
-
-  </div>
+<span>›</span>
 
 </div>
 
-<!-- الشريط العلوي -->
+</div>
+
+<!-- TOPBAR -->
 
 <div class="topbar">
 
-  <div
-  class="settings-btn"
-  onclick="openMenu()">
+<div
+class="top-icon"
+onclick="openMenu()">
 
-    ☰
-
-  </div>
-
-  <div class="topbar-title">
-    Profile
-  </div>
-
-  <div></div>
+☰
 
 </div>
 
-<!-- البروفايل -->
+<div class="topbar-title">
+الملف الشخصي
+</div>
+
+<div class="top-icon">
+🔖
+</div>
+
+</div>
+
+<!-- PROFILE -->
 
 <div class="profile">
 
-  <div class="img-box">
+<div class="img-box">
 
-    <img
-    id="img"
-    src="https://i.imgur.com/1X4n1ZL.png">
+<img
+id="img"
+src="https://i.imgur.com/1X4n1ZL.png">
 
-    <div
-    class="edit-btn"
-    onclick="toggleEdit()">
+<div
+class="edit-btn"
+onclick="toggleEdit()">
 
-      ✏️
-
-    </div>
-
-  </div>
-
-  <h2 class="profile-name">
-
-    <span id="name">
-      Loading...
-    </span>
-
-    <span
-    id="verifiedBadge"
-    class="verified-badge">
-
-      ✓
-
-    </span>
-
-  </h2>
-
-  <div class="stats">
-
-    <div>
-      <h3 id="followers">0</h3>
-      <p>متابعين</p>
-    </div>
-
-    <div>
-      <h3 id="following">0</h3>
-      <p>متابَعين</p>
-    </div>
-
-    <div>
-      <h3 id="videos">0</h3>
-      <p>فيديوهات</p>
-    </div>
-
-  </div>
-
-  <h2 class="videos-title">
-    فيديوهاتي 🎬
-  </h2>
-
-  <div
-  class="videos-grid"
-  id="videosGrid">
-  </div>
+✏️
 
 </div>
 
-<!-- تعديل -->
+</div>
+
+<div class="profile-name">
+
+<span id="name">
+Loading...
+</span>
+
+<div
+id="verifiedBadge"
+class="verified-badge">
+
+✓
+
+</div>
+
+</div>
+
+<div
+class="username"
+id="usernameText">
+
+@user
+
+</div>
+
+<div
+class="bio"
+id="bio">
+
+مرحباً بكم في حسابي ✨
+
+</div>
+
+<div class="stats">
+
+<div class="stat">
+<h3 id="followers">0</h3>
+<p>متابعين</p>
+</div>
+
+<div class="stat">
+<h3 id="following">0</h3>
+<p>يتابع</p>
+</div>
+
+<div class="stat">
+<h3 id="videos">0</h3>
+<p>فيديو</p>
+</div>
+
+</div>
+
+<div class="profile-buttons">
+
+<button
+class="edit-profile-btn"
+onclick="toggleEdit()">
+
+تعديل الملف
+
+</button>
+
+<button
+class="share-btn"
+onclick="shareProfile()">
+
+مشاركة
+
+</button>
+
+</div>
+
+<div class="tabs">
+
+<div class="tab active">
+🎬
+</div>
+
+<div class="tab">
+❤️
+</div>
+
+<div class="tab">
+🔒
+</div>
+
+</div>
+
+<div
+class="videos-grid"
+id="videosGrid">
+</div>
+
+</div>
+
+<!-- EDIT PANEL -->
 
 <div id="editPanel">
 
-  <input
-  id="newName"
-  placeholder="اسم المستخدم">
+<div class="panel-title">
+تعديل الحساب
+</div>
 
-  <input
-  id="file"
-  type="file">
+<input
+id="newName"
+placeholder="اسم المستخدم">
 
-  <button
-  class="save-btn"
-  id="save">
+<textarea
+id="newBio"
+placeholder="اكتب نبذة...">
+</textarea>
 
-    حفظ
+<input
+id="file"
+type="file">
 
-  </button>
+<button
+class="save-btn"
+id="save">
+
+حفظ التعديلات
+
+</button>
 
 </div>
 
-<!-- الشريط السفلي -->
+<!-- BOTTOM BAR -->
 
 <div class="bottom-bar">
 
-  <button onclick="go('feed.html')">
-    🏠
-  </button>
+<button onclick="go('feed.html')">
+🏠
+</button>
 
-  <button onclick="go('search.html')">
-    🔍
-  </button>
+<button onclick="go('search.html')">
+🔍
+</button>
 
-  <button onclick="go('upload.html')">
-    ➕
-  </button>
+<button
+class="add-btn"
+onclick="go('upload.html')">
 
-  <button onclick="go('notifications.html')">
-    🔔
-  </button>
++
 
-  <button>
-    👤
-  </button>
+</button>
+
+<button onclick="go('notifications.html')">
+🔔
+</button>
+
+<button>
+👤
+</button>
 
 </div>
 
 <script type="module">
 
 import {
-  auth,
-  db,
-  getUserData,
-  updateUser,
-  uploadProfileImage
+auth,
+db,
+getUserData,
+updateUser,
+uploadProfileImage
 } from "./firebase.js";
 
 import {
-  onAuthStateChanged,
-  signOut
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+onAuthStateChanged,
+signOut
+}
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 import {
-  collection,
-  getDocs
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+collection,
+getDocs
+}
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 let userNow = null;
+
+/* ===== USER ===== */
 
 onAuthStateChanged(
 auth,
 async(user)=>{
 
-  if(!user){
+if(!user){
 
-    location.href =
-    "login.html";
+location.href =
+"login.html";
 
-    return;
-  }
+return;
+}
 
-  userNow = user;
+userNow = user;
 
-  const data =
-  await getUserData(
-    user.uid
-  );
+const data =
+await getUserData(
+user.uid
+);
 
-  document.getElementById(
-    "name"
-  ).innerText =
-  data?.username ||
-  "بدون اسم";
+document.getElementById(
+"name"
+).innerText =
+data.username || "بدون اسم";
 
-  if(data?.verified){
+document.getElementById(
+"usernameText"
+).innerText =
+"@" + (
+data.username || "user"
+);
 
-    document.getElementById(
-      "verifiedBadge"
-    ).style.display =
-    "flex";
-  }
+document.getElementById(
+"bio"
+).innerText =
+data.bio ||
+"مرحباً بكم في حسابي ✨";
 
-  document.getElementById(
-    "newName"
-  ).value =
-  data?.username || "";
+document.getElementById(
+"followers"
+).innerText =
+data.followers || 0;
 
-  document.getElementById(
-    "followers"
-  ).innerText =
-  data?.followers || 0;
+document.getElementById(
+"following"
+).innerText =
+data.following || 0;
 
-  document.getElementById(
-    "following"
-  ).innerText =
-  data?.following || 0;
+if(data.image){
 
-  if(data?.image){
-
-    document.getElementById(
-      "img"
-    ).src =
-    data.image +
-    "?t=" +
-    Date.now();
-  }
-
-  loadMyVideos(
-    user.uid
-  );
-
-});
-
-/* الفيديوهات */
-
-async function loadMyVideos(uid){
-
-  const grid =
-  document.getElementById(
-    "videosGrid"
-  );
-
-  grid.innerHTML = "";
-
-  const snap =
-  await getDocs(
-    collection(
-      db,
-      "videos"
-    )
-  );
-
-  let count = 0;
-
-  snap.forEach(doc=>{
-
-    const video =
-    doc.data();
-
-    if(video.uid===uid){
-
-      count++;
-
-      grid.innerHTML += `
-
-      <div class="video-box">
-
-        <video
-        src="${video.videoUrl}"
-        muted
-        autoplay
-        loop
-        playsinline>
-        </video>
-
-      </div>
-
-      `;
-    }
-
-  });
-
-  document.getElementById(
-    "videos"
-  ).innerText = count;
-
-  if(count===0){
-
-    grid.innerHTML = `
-    <div class="no-videos">
-      لا توجد فيديوهات
-    </div>
-    `;
-  }
+document.getElementById(
+"img"
+).src =
+data.image + "?t=" + Date.now();
 
 }
 
-/* القائمة */
+if(data.verified){
+
+document.getElementById(
+"verifiedBadge"
+).style.display =
+"flex";
+
+}
+
+document.getElementById(
+"newName"
+).value =
+data.username || "";
+
+document.getElementById(
+"newBio"
+).value =
+data.bio || "";
+
+loadVideos(
+user.uid
+);
+
+});
+
+/* ===== VIDEOS ===== */
+
+async function loadVideos(uid){
+
+const grid =
+document.getElementById(
+"videosGrid"
+);
+
+grid.innerHTML = "";
+
+const snap =
+await getDocs(
+collection(
+db,
+"videos"
+)
+);
+
+let count = 0;
+
+snap.forEach(doc=>{
+
+const video =
+doc.data();
+
+if(video.uid===uid){
+
+count++;
+
+grid.innerHTML += `
+
+<div class="video-box">
+
+${video.type==="image"
+? `
+<img
+src="${video.videoUrl}">
+`
+: `
+<video
+src="${video.videoUrl}"
+muted
+autoplay
+loop
+playsinline>
+</video>
+`
+}
+
+<div class="video-views">
+👁 ${video.likes || 0}
+</div>
+
+</div>
+
+`;
+
+}
+
+});
+
+document.getElementById(
+"videos"
+).innerText =
+count;
+
+if(count===0){
+
+grid.innerHTML = `
+<div class="no-videos">
+لا توجد فيديوهات
+</div>
+`;
+
+}
+
+}
+
+/* ===== EDIT ===== */
+
+window.toggleEdit = ()=>{
+
+document
+.getElementById(
+"editPanel"
+)
+.classList.toggle(
+"active"
+);
+
+};
+
+/* ===== SAVE ===== */
+
+document.getElementById(
+"save"
+).onclick =
+async()=>{
+
+const name =
+document.getElementById(
+"newName"
+).value;
+
+const bio =
+document.getElementById(
+"newBio"
+).value;
+
+const file =
+document.getElementById(
+"file"
+).files[0];
+
+let img = null;
+
+if(file){
+
+img =
+await uploadProfileImage(
+file
+);
+
+}
+
+const data = {};
+
+if(name)
+data.username = name;
+
+if(bio)
+data.bio = bio;
+
+if(img)
+data.image = img;
+
+await updateUser(
+userNow.uid,
+data
+);
+
+alert(
+"تم حفظ التعديلات ✔"
+);
+
+location.reload();
+
+};
+
+/* ===== MENU ===== */
 
 window.openMenu = ()=>{
 
-  document
-  .getElementById(
-    "menu"
-  )
-  .classList.add(
-    "active"
-  );
+document
+.getElementById(
+"menu"
+)
+.classList.add(
+"active"
+);
 
-  document
-  .getElementById(
-    "overlay"
-  )
-  .classList.add(
-    "active"
-  );
+document
+.getElementById(
+"overlay"
+)
+.classList.add(
+"active"
+);
 
 };
 
 window.closeMenu = ()=>{
 
-  document
-  .getElementById(
-    "menu"
-  )
-  .classList.remove(
-    "active"
-  );
+document
+.getElementById(
+"menu"
+)
+.classList.remove(
+"active"
+);
 
-  document
-  .getElementById(
-    "overlay"
-  )
-  .classList.remove(
-    "active"
-  );
-
-};
-
-/* تعديل */
-
-window.toggleEdit = ()=>{
-
-  const panel =
-  document.getElementById(
-    "editPanel"
-  );
-
-  panel.style.display =
-  panel.style.display==="block"
-  ? "none"
-  : "block";
+document
+.getElementById(
+"overlay"
+)
+.classList.remove(
+"active"
+);
 
 };
 
-/* حفظ */
+/* ===== SHARE ===== */
 
-document.getElementById(
-  "save"
-).onclick =
-async()=>{
+window.shareProfile = ()=>{
 
-  const name =
-  document.getElementById(
-    "newName"
-  ).value;
-
-  const file =
-  document.getElementById(
-    "file"
-  ).files[0];
-
-  let img = null;
-
-  if(file){
-
-    img =
-    await uploadProfileImage(
-      file
-    );
-  }
-
-  const data = {};
-
-  if(name)
-  data.username = name;
-
-  if(img)
-  data.image = img;
-
-  await updateUser(
-    userNow.uid,
-    data
-  );
-
-  alert(
-    "تم الحفظ ✔"
-  );
-
-  location.reload();
+navigator.share({
+title:"Hos Hos",
+text:"شاهد حسابي على Hos Hos ✨",
+url:location.href
+});
 
 };
 
-/* خروج */
+/* ===== LOGOUT ===== */
 
 window.logout =
 async()=>{
 
-  await signOut(auth);
+await signOut(auth);
 
-  location.href =
-  "login.html";
+location.href =
+"login.html";
 
 };
 
-/* تنقل */
+/* ===== NAVIGATION ===== */
 
-window.go = (p)=>{
+window.go = (page)=>{
 
-  location.href = p;
+location.href = page;
 
 };
 
 </script>
 
 </body>
-
 </html>
