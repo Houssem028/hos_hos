@@ -48,6 +48,94 @@ export const auth = getAuth(app);
 
 export const db = getFirestore(app);
 
+/* ================= AUTH ================= */
+
+/* LOGIN */
+
+export async function login(email,password){
+
+return await signInWithEmailAndPassword(
+auth,
+email,
+password
+);
+
+}
+
+/* SIGNUP */
+
+export async function signup(
+email,
+password,
+userData={}
+){
+
+const userCredential =
+await createUserWithEmailAndPassword(
+auth,
+email,
+password
+);
+
+const user =
+userCredential.user;
+
+await setDoc(
+doc(db,"users",user.uid),
+{
+
+uid:user.uid,
+
+username:
+userData.username || "مستخدم",
+
+email:user.email,
+
+image:
+userData.image || "",
+
+bio:
+userData.bio || "",
+
+verified:false,
+
+followers:0,
+
+following:0,
+
+followersList:[],
+
+followingList:[],
+
+createdAt:
+Date.now()
+
+}
+);
+
+return user;
+
+}
+
+/* LOGOUT */
+
+export async function logout(){
+
+await signOut(auth);
+
+}
+
+/* AUTH STATE */
+
+export function authState(callback){
+
+return onAuthStateChanged(
+auth,
+callback
+);
+
+}
+
 /* ================= USERS ================= */
 
 export async function getUserData(uid){
@@ -214,9 +302,7 @@ followers:increment(1)
 
 }
 
-/* ================= COMMENTS SYSTEM ================= */
-
-/* ADD COMMENT */
+/* ================= COMMENTS ================= */
 
 export async function addComment(
 videoId,
@@ -259,8 +345,6 @@ Date.now()
 }
 );
 
-/* UPDATE COMMENTS COUNT */
-
 if(!parentId){
 
 await updateDoc(
@@ -275,7 +359,7 @@ increment(1)
 
 }
 
-/* LIVE COMMENTS */
+/* ================= LIVE COMMENTS ================= */
 
 export function listenComments(
 videoId,
@@ -290,6 +374,9 @@ where(
 "==",
 videoId
 ),
+orderBy(
+"createdAt",
+"desc"
 )
 );
 
@@ -315,7 +402,7 @@ callback(comments);
 
 }
 
-/* LIKE COMMENT */
+/* ================= LIKE COMMENT ================= */
 
 export async function likeComment(
 commentId,
@@ -448,7 +535,7 @@ return videos;
 
 }
 
-/* ================= MESSAGES ================= */
+/* ================= SEND MESSAGE ================= */
 
 export async function sendMessage(
 fromUid,
@@ -460,8 +547,6 @@ const roomId =
 [fromUid,toUid]
 .sort()
 .join("_");
-
-/* CREATE CHAT */
 
 await setDoc(
 doc(db,"chats",roomId),
@@ -492,8 +577,6 @@ data.type==="text"
 merge:true
 }
 );
-
-/* MESSAGE */
 
 await addDoc(
 
@@ -628,82 +711,4 @@ return chats.sort(
 b.updatedAt - a.updatedAt
 );
 
-  }
-/* ================= AUTH ================= */
-
-/* SIGNUP */
-
-export async function signup(
-email,
-password,
-username
-){
-
-const userCredential =
-await createUserWithEmailAndPassword(
-auth,
-email,
-password
-);
-
-const user =
-userCredential.user;
-
-await setDoc(
-doc(db,"users",user.uid),
-{
-uid:user.uid,
-
-username,
-
-image:"",
-
-verified:false,
-
-followers:0,
-
-following:0,
-
-followersList:[],
-
-followingList:[],
-
-createdAt:Date.now()
 }
-);
-
-return user;
-
-}
-
-/* LOGIN */
-
-export async function login(
-email,
-password
-){
-
-const userCredential =
-await signInWithEmailAndPassword(
-auth,
-email,
-password
-);
-
-return userCredential.user;
-
-}
-
-/* LOGOUT */
-
-export async function logout(){
-
-await signOut(auth);
-
-}
-
-/* AUTH STATE */
-
-export {
-onAuthStateChanged
-};
