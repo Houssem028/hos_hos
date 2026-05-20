@@ -27,10 +27,7 @@ viewport-fit=cover
   padding:0;
   box-sizing:border-box;
   font-family:Arial,sans-serif;
-
-  -webkit-tap-highlight-color:
-  transparent;
-
+  -webkit-tap-highlight-color:transparent;
   user-select:none;
 }
 
@@ -39,9 +36,6 @@ body{
   width:100%;
   height:100%;
   overflow:hidden;
-}
-
-body{
   background:#000;
 }
 
@@ -63,32 +57,43 @@ body{
   position:relative;
   scroll-snap-align:start;
   overflow:hidden;
+  background:black;
 }
 
-.feed video{
+/* فيديو + صورة */
+
+.feed video,
+.feed img{
+
+  position:absolute;
+  inset:0;
+
   width:100%;
   height:100%;
+
   object-fit:cover;
+  background:black;
 }
 
-/* طبقة سوداء */
+/* طبقة */
 
 .overlay{
+
   position:absolute;
   inset:0;
 
   background:
   linear-gradient(
     to top,
-    rgba(0,0,0,.9),
+    rgba(0,0,0,.95),
     rgba(0,0,0,.1),
-    rgba(0,0,0,.4)
+    rgba(0,0,0,.5)
   );
 
-  pointer-events:none;
+  z-index:1;
 }
 
-/* الشريط العلوي */
+/* الأعلى */
 
 .top-bar{
 
@@ -98,7 +103,7 @@ body{
   left:0;
   right:0;
 
-  height:78px;
+  height:75px;
 
   display:flex;
   justify-content:center;
@@ -109,116 +114,62 @@ body{
   background:
   linear-gradient(
     to bottom,
-    rgba(0,0,0,.75),
+    rgba(0,0,0,.7),
     transparent
   );
-
-  backdrop-filter:blur(15px);
 }
-
-/* اللوجو */
 
 .logo-box{
 
-  display:flex;
-  align-items:center;
-  gap:10px;
-
   color:white;
 
-  font-size:28px;
+  font-size:30px;
   font-weight:bold;
 
   letter-spacing:2px;
 }
 
-.top-logo{
-
-  width:42px;
-  height:42px;
-
-  border-radius:14px;
-
-  object-fit:cover;
-
-  box-shadow:
-  0 4px 15px rgba(0,0,0,.4);
-}
-
-/* زر البحث */
-
-.top-left{
-
-  position:absolute;
-  left:15px;
-}
-
-.search-btn{
-
-  width:46px;
-  height:46px;
-
-  border:none;
-  border-radius:50%;
-
-  background:
-  rgba(255,255,255,.12);
-
-  color:white;
-
-  font-size:22px;
-
-  backdrop-filter:blur(10px);
-
-  cursor:pointer;
-}
-
-/* معلومات الفيديو */
+/* معلومات */
 
 .video-info{
 
   position:absolute;
 
-  left:15px;
-  bottom:120px;
-
-  z-index:5;
-
-  color:white;
+  left:14px;
+  bottom:110px;
 
   width:70%;
+
+  z-index:10;
+
+  color:white;
 }
 
 .video-info h3{
 
-  font-size:22px;
+  font-size:20px;
 
-  margin-bottom:10px;
-
-  cursor:pointer;
+  margin-bottom:8px;
 
   display:flex;
   align-items:center;
   gap:6px;
+
+  cursor:pointer;
 }
 
 .video-info p{
 
   font-size:15px;
 
-  color:#eee;
-
   line-height:1.5;
+
+  color:#eee;
 }
 
-/* شارة التوثيق */
+/* توثيق */
 
 .verified-badge{
-
-  display:inline-flex;
-
-  justify-content:center;
-  align-items:center;
 
   width:18px;
   height:18px;
@@ -227,33 +178,29 @@ body{
 
   background:#1d9bf0;
 
-  color:white;
+  display:flex;
+  justify-content:center;
+  align-items:center;
 
   font-size:11px;
-  font-weight:bold;
-
-  transform:translateY(-1px);
-
-  box-shadow:
-  0 0 10px rgba(29,155,240,.7);
 }
 
-/* أزرار الجانب */
+/* أزرار TikTok */
 
 .video-actions{
 
   position:absolute;
 
-  right:12px;
-  bottom:125px;
+  right:10px;
+  bottom:100px;
 
   display:flex;
   flex-direction:column;
   align-items:center;
 
-  gap:18px;
+  gap:16px;
 
-  z-index:5;
+  z-index:20;
 }
 
 .action{
@@ -264,64 +211,56 @@ body{
 
   color:white;
 
-  font-size:13px;
+  font-size:12px;
+  font-weight:bold;
 }
 
 .action button{
 
-  width:60px;
-  height:60px;
-
+  background:none;
   border:none;
-  border-radius:50%;
-
-  background:
-  rgba(255,255,255,.12);
 
   color:white;
 
-  font-size:28px;
+  font-size:38px;
 
   cursor:pointer;
-
-  backdrop-filter:blur(10px);
 }
+
+/* صورة الحساب */
 
 .profile-pic{
 
-  width:62px;
-  height:62px;
+  width:56px;
+  height:56px;
 
   border-radius:50%;
 
   object-fit:cover;
 
-  border:3px solid white;
+  border:2px solid white;
+
+  background:#222;
 
   cursor:pointer;
 }
 
-/* شريط التنقل السفلي */
+/* الأسفل */
 
 .bottom-nav{
 
   position:fixed;
 
-  bottom:12px;
-  left:12px;
-  right:12px;
+  bottom:10px;
+  left:10px;
+  right:10px;
 
-  height:70px;
+  height:65px;
 
-  border-radius:24px;
+  border-radius:18px;
 
   background:
-  rgba(20,20,20,.88);
-
-  backdrop-filter:blur(20px);
-
-  border:
-  1px solid rgba(255,255,255,.08);
+  rgba(15,15,15,.92);
 
   display:flex;
   justify-content:space-around;
@@ -329,11 +268,8 @@ body{
 
   z-index:999;
 
-  box-shadow:
-  0 5px 25px rgba(0,0,0,.45);
+  backdrop-filter:blur(20px);
 }
-
-/* أزرار التنقل */
 
 .bottom-nav button{
 
@@ -342,40 +278,23 @@ body{
 
   color:white;
 
-  font-size:27px;
-
-  transition:.2s;
+  font-size:28px;
 
   cursor:pointer;
 }
 
-.bottom-nav button:active{
-  transform:scale(.9);
-}
-
-/* زر الإضافة */
-
 .add-btn{
-
-  background:
-  linear-gradient(
-    135deg,
-    #ff2d55,
-    #ff0055
-  ) !important;
-
-  color:white !important;
 
   width:58px;
   height:58px;
 
-  border-radius:18px;
+  border-radius:16px;
+
+  background:#ff0050 !important;
 
   font-size:34px !important;
-  font-weight:bold;
 
-  box-shadow:
-  0 5px 18px rgba(255,0,85,.4);
+  color:white;
 }
 
 /* تحميل */
@@ -394,7 +313,21 @@ body{
 /* لايك */
 
 .liked{
-  color:#ff2d55 !important;
+  color:#ff0050 !important;
+}
+
+/* تأثيرات */
+
+.profile-pic:active{
+  transform:scale(.95);
+}
+
+.action button:active{
+  transform:scale(.9);
+}
+
+video{
+  background:black;
 }
 
 </style>
@@ -403,32 +336,12 @@ body{
 
 <body>
 
-<!-- الشريط العلوي -->
+<!-- الأعلى -->
 
 <div class="top-bar">
 
-  <div class="top-left">
-
-    <button
-    class="search-btn"
-    onclick="goSearch()">
-
-      🔍
-
-    </button>
-
-  </div>
-
   <div class="logo-box">
-
-    <img
-    src="icon-192.png"
-    class="top-logo">
-
-    <span>
-      HOS HOS
-    </span>
-
+    HOS HOS
   </div>
 
 </div>
@@ -443,7 +356,7 @@ body{
 
 </div>
 
-<!-- الشريط السفلي -->
+<!-- الأسفل -->
 
 <div class="bottom-nav">
 
@@ -485,7 +398,8 @@ import {
   doc,
   updateDoc,
   increment
-} from
+}
+from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const container =
@@ -511,9 +425,9 @@ async function loadVideos(){
   if(snap.empty){
 
     container.innerHTML = `
-      <div class="loading">
-        لا توجد فيديوهات
-      </div>
+    <div class="loading">
+      لا يوجد محتوى
+    </div>
     `;
 
     return;
@@ -531,12 +445,22 @@ async function loadVideos(){
 
     <section class="feed">
 
+      ${video.type === "image"
+      ? `
+      <img
+      src="${video.videoUrl}"
+      class="postImage">
+      `
+      : `
       <video
       class="videoPlayer"
       src="${video.videoUrl}"
       loop
-      playsinline>
+      playsinline
+      webkit-playsinline>
       </video>
+      `
+      }
 
       <div class="overlay"></div>
 
@@ -565,6 +489,8 @@ async function loadVideos(){
 
       <div class="video-actions">
 
+        <!-- صورة الحساب -->
+
         <div class="action">
 
           <img
@@ -582,6 +508,8 @@ async function loadVideos(){
 
         </div>
 
+        <!-- لايك -->
+
         <div class="action">
 
           <button
@@ -596,6 +524,8 @@ async function loadVideos(){
 
         </div>
 
+        <!-- تعليق -->
+
         <div class="action">
 
           <button onclick="
@@ -609,6 +539,22 @@ async function loadVideos(){
           </span>
 
         </div>
+
+        <!-- حفظ -->
+
+        <div class="action">
+
+          <button>
+            🔖
+          </button>
+
+          <span>
+            حفظ
+          </span>
+
+        </div>
+
+        <!-- مشاركة -->
 
         <div class="action">
 
@@ -636,7 +582,7 @@ async function loadVideos(){
   initTikTokVideos();
 }
 
-/* نظام فيديوهات مثل TikTok */
+/* تشغيل الفيديو */
 
 function initTikTokVideos(){
 
@@ -667,7 +613,7 @@ function initTikTokVideos(){
 
         });
 
-        video.play();
+        video.play().catch(()=>{});
 
       }else{
 
@@ -680,14 +626,12 @@ function initTikTokVideos(){
   },
 
   {
-    threshold:0.75
+    threshold:0.7
   });
 
   videos.forEach(video=>{
 
     observer.observe(video);
-
-    /* تشغيل وإيقاف */
 
     video.addEventListener(
     "click",
@@ -695,7 +639,7 @@ function initTikTokVideos(){
 
       if(video.paused){
 
-        video.play();
+        video.play().catch(()=>{});
 
       }else{
 
@@ -709,7 +653,7 @@ function initTikTokVideos(){
 
 }
 
-/* اللايكات */
+/* لايك */
 
 function setupLikes(){
 
@@ -782,68 +726,32 @@ window.shareVideo =
 
 loadVideos();
 
-/* التنقل */
+/* تنقل */
 
-window.goHome = ()=>{
+window.goHome=()=>{
 
-  location.href =
-  "feed.html";
-
+  location.href="feed.html";
 };
 
-window.goMessages = ()=>{
+window.goMessages=()=>{
 
-  location.href =
-  "inbox.html";
-
+  location.href="inbox.html";
 };
 
-window.uploadVideo = ()=>{
+window.uploadVideo=()=>{
 
-  location.href =
-  "upload.html";
-
+  location.href="upload.html";
 };
 
-window.goNotifications = ()=>{
+window.goNotifications=()=>{
 
-  location.href =
-  "notifications.html";
-
+  location.href="notifications.html";
 };
 
-window.goProfile = ()=>{
+window.goProfile=()=>{
 
-  location.href =
-  "profile.html";
-
+  location.href="profile.html";
 };
-
-window.goSearch = ()=>{
-
-  location.href =
-  "search.html";
-
-};
-
-/* Service Worker */
-
-if(
-  "serviceWorker"
-  in navigator
-){
-
-  window.addEventListener(
-  "load",
-  ()=>{
-
-    navigator
-    .serviceWorker
-    .register("/sw.js");
-
-  });
-
-}
 
 </script>
 
