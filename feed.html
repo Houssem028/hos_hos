@@ -466,33 +466,14 @@ videoDoc.id;
 container.innerHTML += `    
 
 <section class="feed">    
-<section class="feed">
 
-  ${video.type === "image"
+  <video    
+  class="videoPlayer"    
+  src="${video.videoUrl}"    
+  loop    
+  playsinline>    
+  </video>    
 
-  ? `
-
-  <img
-  class="post-image"
-  src="${video.videoUrl}"
-  style="
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  ">
-
-  `
-
-  : `
-
-  <video
-  class="videoPlayer"
-  src="${video.videoUrl}"
-  loop
-  playsinline>
-  </video>
-
-  `}
   <div class="overlay"></div>    
 
   <div class="video-info">    
@@ -714,73 +695,12 @@ async()=>{
 
 /* تعليقات */
 
-function openComments(id){
+window.openComments =
+(id)=>{
 
-  // حذف أي نافذة قديمة
-  let old = document.querySelector(".comments-box");
-  if(old) old.remove();
-
-  const box = document.createElement("div");
-  box.className = "comments-box";
-
-  box.innerHTML = `
-    <div class="comments-content">
-
-      <div class="comments-header">
-        <span>التعليقات</span>
-        <button id="closeComments">✕</button>
-      </div>
-
-      <div class="comments-list">
-        <div class="comment-item">لا توجد تعليقات</div>
-      </div>
-
-      <div class="comment-input-box">
-        <input id="commentInput" placeholder="اكتب تعليق...">
-        <button id="sendComment">إرسال</button>
-      </div>
-
-    </div>
-  `;
-
-  document.body.appendChild(box);
-
-  // إغلاق عند الضغط خارج الصندوق
-  box.onclick = (e)=>{
-    if(e.target === box) box.remove();
-  };
-
-  // زر الإغلاق
-  document.getElementById("closeComments").onclick = ()=>{
-    box.remove();
-  };
-
-  // إرسال تعليق (محلي)
-  document.getElementById("sendComment").onclick = ()=>{
-    const input = document.getElementById("commentInput");
-    const text = input.value.trim();
-
-    if(!text) return;
-
-    const list = document.querySelector(".comments-list");
-
-    if(list.innerText.includes("لا توجد تعليقات")){
-      list.innerHTML = "";
-    }
-
-    list.innerHTML += `
-      <div class="comment-item">
-        <b>أنت:</b> ${text}
-      </div>
-    `;
-
-    input.value = "";
-  };
-
-}
-
-window.openComments = openComments;
-
+alert(
+"التعليقات قريباً 💬"
+);
 
 };
 
