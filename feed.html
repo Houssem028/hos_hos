@@ -18,316 +18,321 @@ viewport-fit=cover
 <title>Hos Hos</title>
 
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#000000">
+
+<meta
+name="theme-color"
+content="#000000">
 
 <style>
 
 *{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:Arial,sans-serif;
-  -webkit-tap-highlight-color:transparent;
-  user-select:none;
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+-webkit-tap-highlight-color:transparent;
+user-select:none;
 }
 
 html,
 body{
-  width:100%;
-  height:100%;
-  overflow:hidden;
-  background:#000;
+width:100%;
+height:100%;
+overflow:hidden;
+background:#000;
 }
 
 /* الفيديوهات */
 
 #feedContainer{
-  height:100vh;
-  overflow-y:scroll;
-  scroll-snap-type:y mandatory;
+height:100vh;
+overflow-y:scroll;
+scroll-snap-type:y mandatory;
 }
 
 #feedContainer::-webkit-scrollbar{
-  display:none;
+display:none;
 }
 
 .feed{
-  width:100%;
-  height:100vh;
-  position:relative;
-  scroll-snap-align:start;
-  overflow:hidden;
-  background:black;
+width:100%;
+height:100vh;
+position:relative;
+scroll-snap-align:start;
+overflow:hidden;
+background:black;
 }
 
-/* فيديو + صورة */
+/* فيديو وصورة */
 
 .feed video,
 .feed img{
 
-  position:absolute;
-  inset:0;
+position:absolute;
+inset:0;
 
-  width:100%;
-  height:100%;
+width:100%;
+height:100%;
 
-  object-fit:cover;
-  background:black;
+object-fit:cover;
+background:black;
 }
 
 /* طبقة */
 
 .overlay{
 
-  position:absolute;
-  inset:0;
+position:absolute;
+inset:0;
 
-  background:
-  linear-gradient(
-    to top,
-    rgba(0,0,0,.95),
-    rgba(0,0,0,.1),
-    rgba(0,0,0,.5)
-  );
+background:
+linear-gradient(
+to top,
+rgba(0,0,0,.95),
+rgba(0,0,0,.1),
+rgba(0,0,0,.5)
+);
 
-  z-index:1;
+z-index:1;
+pointer-events:none;
 }
 
 /* الأعلى */
 
 .top-bar{
 
-  position:fixed;
+position:fixed;
 
-  top:0;
-  left:0;
-  right:0;
+top:0;
+left:0;
+right:0;
 
-  height:75px;
+height:75px;
 
-  display:flex;
-  justify-content:center;
-  align-items:center;
+display:flex;
+justify-content:center;
+align-items:center;
 
-  z-index:999;
+z-index:999;
 
-  background:
-  linear-gradient(
-    to bottom,
-    rgba(0,0,0,.7),
-    transparent
-  );
+background:
+linear-gradient(
+to bottom,
+rgba(0,0,0,.7),
+transparent
+);
 }
 
 .logo-box{
 
-  color:white;
+color:white;
 
-  font-size:30px;
-  font-weight:bold;
+font-size:30px;
+font-weight:bold;
 
-  letter-spacing:2px;
+letter-spacing:2px;
 }
 
-/* معلومات */
+/* معلومات الفيديو */
 
 .video-info{
 
-  position:absolute;
+position:absolute;
 
-  left:14px;
-  bottom:110px;
+left:14px;
+bottom:115px;
 
-  width:70%;
+width:70%;
 
-  z-index:10;
+z-index:50;
 
-  color:white;
+color:white;
 }
 
 .video-info h3{
 
-  font-size:20px;
+font-size:20px;
 
-  margin-bottom:8px;
+margin-bottom:8px;
 
-  display:flex;
-  align-items:center;
-  gap:6px;
+display:flex;
+align-items:center;
+gap:6px;
 
-  cursor:pointer;
+cursor:pointer;
 }
 
 .video-info p{
 
-  font-size:15px;
+font-size:15px;
 
-  line-height:1.5;
+line-height:1.5;
 
-  color:#eee;
+color:#eee;
 }
 
 /* توثيق */
 
 .verified-badge{
 
-  width:18px;
-  height:18px;
+width:18px;
+height:18px;
 
-  border-radius:50%;
+border-radius:50%;
 
-  background:#1d9bf0;
+background:#1d9bf0;
 
-  display:flex;
-  justify-content:center;
-  align-items:center;
+display:flex;
+justify-content:center;
+align-items:center;
 
-  font-size:11px;
+font-size:11px;
 }
 
-/* أزرار TikTok */
+/* أزرار الجانب */
 
 .video-actions{
 
-  position:absolute;
+position:absolute;
 
-  right:10px;
-  bottom:100px;
+right:12px;
 
-  display:flex;
-  flex-direction:column;
-  align-items:center;
+bottom:110px;
 
-  gap:16px;
+z-index:99;
 
-  z-index:20;
+display:flex;
+flex-direction:column;
+align-items:center;
+
+gap:18px;
 }
 
 .action{
 
-  display:flex;
-  flex-direction:column;
-  align-items:center;
+display:flex;
+flex-direction:column;
+align-items:center;
 
-  color:white;
+color:white;
 
-  font-size:12px;
-  font-weight:bold;
+font-size:12px;
+font-weight:bold;
 }
 
 .action button{
 
-  background:none;
-  border:none;
+background:none;
+border:none;
 
-  color:white;
+color:white;
 
-  font-size:38px;
+font-size:36px;
 
-  cursor:pointer;
+cursor:pointer;
 }
 
 /* صورة الحساب */
 
 .profile-pic{
 
-  width:56px;
-  height:56px;
+width:58px;
+height:58px;
 
-  border-radius:50%;
+border-radius:50%;
 
-  object-fit:cover;
+object-fit:cover;
 
-  border:2px solid white;
+border:2px solid white;
 
-  background:#222;
+background:#222;
 
-  cursor:pointer;
+cursor:pointer;
 }
 
 /* الأسفل */
 
 .bottom-nav{
 
-  position:fixed;
+position:fixed;
 
-  bottom:10px;
-  left:10px;
-  right:10px;
+bottom:10px;
+left:10px;
+right:10px;
 
-  height:65px;
+height:65px;
 
-  border-radius:18px;
+border-radius:18px;
 
-  background:
-  rgba(15,15,15,.92);
+background:
+rgba(15,15,15,.92);
 
-  display:flex;
-  justify-content:space-around;
-  align-items:center;
+display:flex;
+justify-content:space-around;
+align-items:center;
 
-  z-index:999;
+z-index:999;
 
-  backdrop-filter:blur(20px);
+backdrop-filter:blur(20px);
 }
 
 .bottom-nav button{
 
-  background:none;
-  border:none;
+background:none;
+border:none;
 
-  color:white;
+color:white;
 
-  font-size:28px;
+font-size:28px;
 
-  cursor:pointer;
+cursor:pointer;
 }
 
 .add-btn{
 
-  width:58px;
-  height:58px;
+width:58px;
+height:58px;
 
-  border-radius:16px;
+border-radius:16px;
 
-  background:#ff0050 !important;
+background:#ff0050 !important;
 
-  font-size:34px !important;
+font-size:34px !important;
 
-  color:white;
+color:white;
 }
 
 /* تحميل */
 
 .loading{
 
-  color:white;
+color:white;
 
-  text-align:center;
+text-align:center;
 
-  margin-top:40vh;
+margin-top:40vh;
 
-  font-size:22px;
+font-size:22px;
 }
 
 /* لايك */
 
 .liked{
-  color:#ff0050 !important;
+color:#ff0050 !important;
 }
 
 /* تأثيرات */
 
 .profile-pic:active{
-  transform:scale(.95);
+transform:scale(.95);
 }
 
 .action button:active{
-  transform:scale(.9);
+transform:scale(.9);
 }
 
 video{
-  background:black;
+background:black;
 }
 
 </style>
@@ -340,9 +345,9 @@ video{
 
 <div class="top-bar">
 
-  <div class="logo-box">
-    HOS HOS
-  </div>
+<div class="logo-box">
+HOS HOS
+</div>
 
 </div>
 
@@ -350,9 +355,9 @@ video{
 
 <div id="feedContainer">
 
-  <div class="loading">
-    جاري تحميل الفيديوهات...
-  </div>
+<div class="loading">
+جاري تحميل الفيديوهات...
+</div>
 
 </div>
 
@@ -360,296 +365,384 @@ video{
 
 <div class="bottom-nav">
 
-  <button onclick="goHome()">
-    🏠
-  </button>
+<button onclick="goHome()">
+🏠
+</button>
 
-  <button onclick="goMessages()">
-    💬
-  </button>
+<button onclick="goMessages()">
+💬
+</button>
 
-  <button
-  class="add-btn"
-  onclick="uploadVideo()">
-    +
-  </button>
+<button
+class="add-btn"
+onclick="uploadVideo()">
++
+</button>
 
-  <button onclick="goNotifications()">
-    🔔
-  </button>
+<button onclick="goNotifications()">
+🔔
+</button>
 
-  <button onclick="goProfile()">
-    👤
-  </button>
+<button onclick="goProfile()">
+👤
+</button>
 
 </div>
 
 <script type="module">
 
 import {
-  db
+db,
+auth
 } from "./firebase.js";
 
 import {
-  collection,
-  getDocs,
-  query,
-  orderBy,
-  doc,
-  updateDoc,
-  increment
+
+collection,
+getDocs,
+query,
+orderBy,
+doc,
+updateDoc,
+increment
+
 }
+
 from
+
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+import {
+
+onAuthStateChanged
+
+}
+
+from
+
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const container =
 document.getElementById(
-  "feedContainer"
+"feedContainer"
 );
+
+let currentUser = null;
+
+/* المستخدم */
+
+onAuthStateChanged(
+auth,
+(user)=>{
+
+if(!user){
+
+location.href =
+"login.html";
+
+return;
+}
+
+currentUser = user;
+
+});
 
 /* تحميل الفيديوهات */
 
 async function loadVideos(){
 
-  container.innerHTML = "";
+container.innerHTML = "";
 
-  const q =
-  query(
-    collection(db,"videos"),
-    orderBy("createdAt","desc")
-  );
+const q =
 
-  const snap =
-  await getDocs(q);
+query(
+collection(db,"videos"),
+orderBy("createdAt","desc")
+);
 
-  if(snap.empty){
+const snap =
+await getDocs(q);
 
-    container.innerHTML = `
-    <div class="loading">
-      لا يوجد محتوى
-    </div>
-    `;
+if(snap.empty){
 
-    return;
-  }
+container.innerHTML = `
 
-  snap.forEach(videoDoc=>{
+<div class="loading">
+لا يوجد محتوى
+</div>
 
-    const video =
-    videoDoc.data();
+`;
 
-    const videoId =
-    videoDoc.id;
+return;
+}
 
-    container.innerHTML += `
+snap.forEach(videoDoc=>{
 
-    <section class="feed">
+const video =
+videoDoc.data();
 
-      ${video.type === "image"
-      ? `
-      <img
-      src="${video.videoUrl}"
-      class="postImage">
-      `
-      : `
-      <video
-      class="videoPlayer"
-      src="${video.videoUrl}"
-      loop
-      playsinline
-      webkit-playsinline>
-      </video>
-      `
-      }
+const videoId =
+videoDoc.id;
 
-      <div class="overlay"></div>
+/* إصلاح البيانات */
 
-      <div class="video-info">
+video.username =
+video.username || "مستخدم";
 
-        <h3 onclick="
-        location.href=
-        'user.html?uid=${video.uid}'
-        ">
+video.userImage =
+video.userImage ||
+"https://i.imgur.com/1X4n1ZL.png";
 
-          @${video.username}
+video.caption =
+video.caption || "";
 
-          ${video.verified ? `
-          <span class="verified-badge">
-            ✓
-          </span>
-          ` : ""}
+video.likes =
+video.likes || 0;
 
-        </h3>
+video.comments =
+video.comments || 0;
 
-        <p>
-          ${video.caption || ""}
-        </p>
+video.shares =
+video.shares || 0;
 
-      </div>
+container.innerHTML += `
 
-      <div class="video-actions">
+<section class="feed">
 
-        <!-- صورة الحساب -->
+${video.type === "image"
 
-        <div class="action">
+? `
 
-          <img
-          class="profile-pic"
+<img
+src="${video.videoUrl}"
+class="postImage"
 
-          onclick="
-          location.href=
-          'user.html?uid=${video.uid}'
-          "
+onerror="
+this.src=
+'https://i.imgur.com/1X4n1ZL.png'
+">
 
-          src="${
-            video.userImage ||
-            'https://i.imgur.com/1X4n1ZL.png'
-          }">
+`
 
-        </div>
+: `
 
-        <!-- لايك -->
+<video
+class="videoPlayer"
+src="${video.videoUrl}"
+loop
+playsinline
+webkit-playsinline>
+</video>
 
-        <div class="action">
+`
 
-          <button
-          class="likeBtn"
-          data-id="${videoId}">
-            ❤️
-          </button>
+}
 
-          <span id="likes-${videoId}">
-            ${video.likes || 0}
-          </span>
+<div class="overlay"></div>
 
-        </div>
+<div class="video-info">
 
-        <!-- تعليق -->
+<h3 onclick="
+location.href=
+'user.html?uid=${video.uid}'
+">
 
-        <div class="action">
+@${video.username}
 
-          <button onclick="
-          openComments('${videoId}')
-          ">
-            💬
-          </button>
+${video.verified
 
-          <span>
-            تعليق
-          </span>
+? `
 
-        </div>
+<span class="verified-badge">
+✓
+</span>
 
-        <!-- حفظ -->
+`
 
-        <div class="action">
+: ""}
 
-          <button>
-            🔖
-          </button>
+</h3>
 
-          <span>
-            حفظ
-          </span>
+<p>
+${video.caption}
+</p>
 
-        </div>
+</div>
 
-        <!-- مشاركة -->
+<div class="video-actions">
 
-        <div class="action">
+<!-- صورة الحساب -->
 
-          <button onclick="
-          shareVideo('${video.videoUrl}')
-          ">
-            ↗️
-          </button>
+<div class="action">
 
-          <span>
-            مشاركة
-          </span>
+<img
+class="profile-pic"
 
-        </div>
+onclick="
+location.href=
+'user.html?uid=${video.uid}'
+"
 
-      </div>
+src="${video.userImage}"
 
-    </section>
+onerror="
+this.src=
+'https://i.imgur.com/1X4n1ZL.png'
+">
 
-    `;
-  });
+</div>
 
-  setupLikes();
+<!-- لايك -->
 
-  initTikTokVideos();
+<div class="action">
+
+<button
+class="likeBtn"
+data-id="${videoId}">
+❤️
+</button>
+
+<span id="likes-${videoId}">
+${video.likes}
+</span>
+
+</div>
+
+<!-- تعليق -->
+
+<div class="action">
+
+<button onclick="
+location.href=
+'comments.html?id=${videoId}'
+">
+💬
+</button>
+
+<span>
+${video.comments}
+</span>
+
+</div>
+
+<!-- حفظ -->
+
+<div class="action">
+
+<button onclick="
+saveVideo('${videoId}')
+">
+🔖
+</button>
+
+<span>
+حفظ
+</span>
+
+</div>
+
+<!-- مشاركة -->
+
+<div class="action">
+
+<button onclick="
+shareVideo('${video.videoUrl}')
+">
+↗️
+</button>
+
+<span>
+${video.shares}
+</span>
+
+</div>
+
+</div>
+
+</section>
+
+`;
+
+});
+
+setupLikes();
+
+initTikTokVideos();
+
 }
 
 /* تشغيل الفيديو */
 
 function initTikTokVideos(){
 
-  const videos =
-  document.querySelectorAll(
-    ".videoPlayer"
-  );
+const videos =
 
-  const observer =
-  new IntersectionObserver(
+document.querySelectorAll(
+".videoPlayer"
+);
 
-  (entries)=>{
+const observer =
 
-    entries.forEach(entry=>{
+new IntersectionObserver(
 
-      const video =
-      entry.target;
+(entries)=>{
 
-      if(entry.isIntersecting){
+entries.forEach(entry=>{
 
-        videos.forEach(v=>{
+const video =
+entry.target;
 
-          if(v !== video){
+if(entry.isIntersecting){
 
-            v.pause();
+videos.forEach(v=>{
 
-          }
+if(v !== video){
 
-        });
+v.pause();
 
-        video.play().catch(()=>{});
+}
 
-      }else{
+});
 
-        video.pause();
+video.play().catch(()=>{});
 
-      }
+}else{
 
-    });
+video.pause();
 
-  },
+}
 
-  {
-    threshold:0.7
-  });
+});
 
-  videos.forEach(video=>{
+},
 
-    observer.observe(video);
+{
+threshold:0.7
+}
+);
 
-    video.addEventListener(
-    "click",
-    ()=>{
+videos.forEach(video=>{
 
-      if(video.paused){
+observer.observe(video);
 
-        video.play().catch(()=>{});
+video.addEventListener(
+"click",
+()=>{
 
-      }else{
+if(video.paused){
 
-        video.pause();
+video.play().catch(()=>{});
 
-      }
+}else{
 
-    });
+video.pause();
 
-  });
+}
+
+}
+);
+
+});
 
 }
 
@@ -657,57 +750,61 @@ function initTikTokVideos(){
 
 function setupLikes(){
 
-  const buttons =
-  document.querySelectorAll(
-    ".likeBtn"
-  );
+const buttons =
 
-  buttons.forEach(btn=>{
+document.querySelectorAll(
+".likeBtn"
+);
 
-    btn.onclick =
-    async()=>{
+buttons.forEach(btn=>{
 
-      const id =
-      btn.dataset.id;
+btn.onclick =
+async()=>{
 
-      const likesText =
-      document.getElementById(
-        "likes-"+id
-      );
+const id =
+btn.dataset.id;
 
-      let current =
-      parseInt(
-        likesText.innerText
-      );
+const likesText =
 
-      await updateDoc(
-        doc(db,"videos",id),
-        {
-          likes:
-          increment(1)
-        }
-      );
+document.getElementById(
+"likes-"+id
+);
 
-      likesText.innerText =
-      current + 1;
+let current =
 
-      btn.classList.add(
-        "liked"
-      );
-    };
+parseInt(
+likesText.innerText
+);
 
-  });
+await updateDoc(
+
+doc(db,"videos",id),
+
+{
+likes:
+increment(1)
+}
+
+);
+
+likesText.innerText =
+current + 1;
+
+btn.classList.add(
+"liked"
+);
+
+};
+
+});
 
 }
 
-/* تعليقات */
+/* حفظ */
 
-window.openComments =
-(id)=>{
+window.saveVideo = ()=>{
 
-  alert(
-    "التعليقات قريباً 💬"
-  );
+alert("تم الحفظ 🔖");
 
 };
 
@@ -716,9 +813,19 @@ window.openComments =
 window.shareVideo =
 (url)=>{
 
-  navigator.share({
-    url:url
-  });
+if(navigator.share){
+
+navigator.share({
+url:url
+});
+
+}else{
+
+navigator.clipboard.writeText(url);
+
+alert("تم نسخ الرابط");
+
+}
 
 };
 
@@ -730,30 +837,41 @@ loadVideos();
 
 window.goHome=()=>{
 
-  location.href="feed.html";
+location.href =
+"feed.html";
+
 };
 
 window.goMessages=()=>{
 
-  location.href="inbox.html";
+location.href =
+"inbox.html";
+
 };
 
 window.uploadVideo=()=>{
 
-  location.href="upload.html";
+location.href =
+"upload.html";
+
 };
 
 window.goNotifications=()=>{
 
-  location.href="notifications.html";
+location.href =
+"notifications.html";
+
 };
 
 window.goProfile=()=>{
 
-  location.href="profile.html";
+location.href =
+"profile.html";
+
 };
 
 </script>
 
 </body>
+
 </html>
