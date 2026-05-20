@@ -437,3 +437,76 @@ if(
 
 </body>
 </html>
+.comments-box{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  z-index:99999;
+  display:flex;
+  align-items:flex-end;
+}
+
+.comments-content{
+  width:100%;
+  height:65vh;
+  background:#111;
+  border-radius:25px 25px 0 0;
+  padding:15px;
+  animation:up .25s ease;
+}
+
+@keyframes up{
+  from{transform:translateY(100%)}
+  to{transform:translateY(0)}
+}
+
+.comments-header{
+  display:flex;
+  justify-content:space-between;
+  color:white;
+  font-size:18px;
+  margin-bottom:10px;
+}
+
+.comments-header button{
+  background:none;
+  border:none;
+  color:white;
+  font-size:22px;
+}
+
+.comments-list{
+  height:calc(100% - 120px);
+  overflow-y:auto;
+  color:white;
+}
+
+.comment-item{
+  background:#222;
+  padding:10px;
+  margin-bottom:8px;
+  border-radius:10px;
+}
+
+.comment-input-box{
+  display:flex;
+  gap:10px;
+  margin-top:10px;
+}
+
+.comment-input-box input{
+  flex:1;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  background:#222;
+  color:white;
+}
+
+.comment-input-box button{
+  padding:0 16px;
+  border:none;
+  border-radius:10px;
+  background:#ff0050;
+  color:white;
+}
