@@ -290,9 +290,6 @@ where(
 "==",
 videoId
 ),
-orderBy(
-"createdAt",
-"desc"
 )
 );
 
