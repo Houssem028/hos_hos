@@ -1,796 +1,977 @@
-<!DOCTYPE html>  <html lang="ar" dir="rtl">  <head>  <meta charset="UTF-8">  <meta  
-name="viewport"  
-content="  
-width=device-width,  
-initial-scale=1.0,  
-maximum-scale=1.0,  
-user-scalable=no,  
-viewport-fit=cover  
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="
+width=device-width,
+initial-scale=1.0,
+maximum-scale=1.0,
+user-scalable=no,
+viewport-fit=cover
 ">
 
-<title>Hos Hos</title>  <link rel="manifest" href="manifest.json">  
-<meta name="theme-color" content="#000000">  <style>  
-  
-*{  
-  margin:0;  
-  padding:0;  
-  box-sizing:border-box;  
-  font-family:Arial,sans-serif;  
-  
-  -webkit-tap-highlight-color:  
-  transparent;  
-  
-  user-select:none;  
-}  
-  
-html,  
-body{  
-  width:100%;  
-  height:100%;  
-  overflow:hidden;  
-}  
-  
-body{  
-  background:#000;  
-}  
-  
-/* الفيديوهات */  
-  
-#feedContainer{  
-  height:100vh;  
-  overflow-y:scroll;  
-  scroll-snap-type:y mandatory;  
-}  
-  
-#feedContainer::-webkit-scrollbar{  
-  display:none;  
-}  
-  
-.feed{  
-  width:100%;  
-  height:100vh;  
-  position:relative;  
-  scroll-snap-align:start;  
-  overflow:hidden;  
-}  
-  
-.feed video{  
-  width:100%;  
-  height:100%;  
-  object-fit:cover;  
-}  
-  
-/* طبقة سوداء */  
-  
-.overlay{  
-  position:absolute;  
-  inset:0;  
-  
-  background:  
-  linear-gradient(  
-    to top,  
-    rgba(0,0,0,.9),  
-    rgba(0,0,0,.1),  
-    rgba(0,0,0,.4)  
-  );  
-  
-  pointer-events:none;  
-}  
-  
-/* الشريط العلوي */  
-  
-.top-bar{  
-  
-  position:fixed;  
-  
-  top:0;  
-  left:0;  
-  right:0;  
-  
-  height:78px;  
-  
-  display:flex;  
-  justify-content:center;  
-  align-items:center;  
-  
-  z-index:999;  
-  
-  background:  
-  linear-gradient(  
-    to bottom,  
-    rgba(0,0,0,.75),  
-    transparent  
-  );  
-  
-  backdrop-filter:blur(15px);  
-}  
-  
-/* اللوجو */  
-  
-.logo-box{  
-  
-  display:flex;  
-  align-items:center;  
-  gap:10px;  
-  
-  color:white;  
-  
-  font-size:28px;  
-  font-weight:bold;  
-  
-  letter-spacing:2px;  
-}  
-  
-.top-logo{  
-  
-  width:42px;  
-  height:42px;  
-  
-  border-radius:14px;  
-  
-  object-fit:cover;  
-  
-  box-shadow:  
-  0 4px 15px rgba(0,0,0,.4);  
-}  
-  
-/* زر البحث */  
-  
-.top-left{  
-  
-  position:absolute;  
-  left:15px;  
-}  
-  
-.search-btn{  
-  
-  width:46px;  
-  height:46px;  
-  
-  border:none;  
-  border-radius:50%;  
-  
-  background:  
-  rgba(255,255,255,.12);  
-  
-  color:white;  
-  
-  font-size:22px;  
-  
-  backdrop-filter:blur(10px);  
-  
-  cursor:pointer;  
-}  
-  
-/* معلومات الفيديو */  
-  
-.video-info{  
-  
-  position:absolute;  
-  
-  left:15px;  
-  bottom:120px;  
-  
-  z-index:5;  
-  
-  color:white;  
-  
-  width:70%;  
-}  
-  
-.video-info h3{  
-  
-  font-size:22px;  
-  
-  margin-bottom:10px;  
-  
-  cursor:pointer;  
-  
-  display:flex;  
-  align-items:center;  
-  gap:6px;  
-}  
-  
-.video-info p{  
-  
-  font-size:15px;  
-  
-  color:#eee;  
-  
-  line-height:1.5;  
-}  
-  
-/* شارة التوثيق */  
-  
-.verified-badge{  
-  
-  display:inline-flex;  
-  
-  justify-content:center;  
-  align-items:center;  
-  
-  width:18px;  
-  height:18px;  
-  
-  border-radius:50%;  
-  
-  background:#1d9bf0;  
-  
-  color:white;  
-  
-  font-size:11px;  
-  font-weight:bold;  
-  
-  transform:translateY(-1px);  
-  
-  box-shadow:  
-  0 0 10px rgba(29,155,240,.7);  
-}  
-  
-/* أزرار الجانب */  
-  
-.video-actions{  
-  
-  position:absolute;  
-  
-  right:12px;  
-  bottom:125px;  
-  
-  display:flex;  
-  flex-direction:column;  
-  align-items:center;  
-  
-  gap:18px;  
-  
-  z-index:5;  
-}  
-  
-.action{  
-  
-  display:flex;  
-  flex-direction:column;  
-  align-items:center;  
-  
-  color:white;  
-  
-  font-size:13px;  
-}  
-  
-.action button{  
-  
-  width:60px;  
-  height:60px;  
-  
-  border:none;  
-  border-radius:50%;  
-  
-  background:  
-  rgba(255,255,255,.12);  
-  
-  color:white;  
-  
-  font-size:28px;  
-  
-  cursor:pointer;  
-  
-  backdrop-filter:blur(10px);  
-}  
-  
-.profile-pic{  
-  
-  width:62px;  
-  height:62px;  
-  
-  border-radius:50%;  
-  
-  object-fit:cover;  
-  
-  border:3px solid white;  
-  
-  cursor:pointer;  
-}  
-  
-/* شريط التنقل السفلي */  
-  
-.bottom-nav{  
-  
-  position:fixed;  
-  
-  bottom:12px;  
-  left:12px;  
-  right:12px;  
-  
-  height:70px;  
-  
-  border-radius:24px;  
-  
-  background:  
-  rgba(20,20,20,.88);  
-  
-  backdrop-filter:blur(20px);  
-  
-  border:  
-  1px solid rgba(255,255,255,.08);  
-  
-  display:flex;  
-  justify-content:space-around;  
-  align-items:center;  
-  
-  z-index:999;  
-  
-  box-shadow:  
-  0 5px 25px rgba(0,0,0,.45);  
-}  
-  
-/* أزرار التنقل */  
-  
-.bottom-nav button{  
-  
-  background:none;  
-  border:none;  
-  
-  color:white;  
-  
-  font-size:27px;  
-  
-  transition:.2s;  
-  
-  cursor:pointer;  
-}  
-  
-.bottom-nav button:active{  
-  transform:scale(.9);  
-}  
-  
-/* زر الإضافة */  
-  
-.add-btn{  
-  
-  background:  
-  linear-gradient(  
-    135deg,  
-    #ff2d55,  
-    #ff0055  
-  ) !important;  
-  
-  color:white !important;  
-  
-  width:58px;  
-  height:58px;  
-  
-  border-radius:18px;  
-  
-  font-size:34px !important;  
-  font-weight:bold;  
-  
-  box-shadow:  
-  0 5px 18px rgba(255,0,85,.4);  
-}  
-  
-/* تحميل */  
-  
-.loading{  
-  
-  color:white;  
-  
-  text-align:center;  
-  
-  margin-top:40vh;  
-  
-  font-size:22px;  
-}  
-  
-/* لايك */  
-  
-.liked{  
-  color:#ff2d55 !important;  
-}  
-  
-</style>  </head>  <body>  <!-- الشريط العلوي -->  <div class="top-bar">    <div class="top-left">  <button  
-class="search-btn"  
-onclick="goSearch()">  
+<title>Hos Hos</title>
 
-  🔍  
+<link rel="manifest" href="manifest.json">
 
-</button>
+<meta name="theme-color" content="#000000">
 
-  </div>    <div class="logo-box">  <img  
-src="icon-192.png"  
-class="top-logo">  
+<style>
 
-<span>  
-  HOS HOS  
-</span>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial,sans-serif;
 
-  </div>  </div>  <!-- الفيديوهات -->  <div id="feedContainer">    <div class="loading">  
-    جاري تحميل الفيديوهات...  
-  </div>  </div>  <!-- الشريط السفلي -->  <div class="bottom-nav">    <button onclick="goHome()">  
-    🏠  
-  </button>    <button onclick="goMessages()">  
-    💬  
-  </button>  <button  
-class="add-btn"  
-onclick="uploadVideo()">
-+
-</button>
+  -webkit-tap-highlight-color:
+  transparent;
 
-  <button onclick="goNotifications()">  
-    🔔  
-  </button>    <button onclick="goProfile()">  
-    👤  
-  </button>  </div>  <script type="module">  
-  
-import {  
-  db  
-} from "./firebase.js";  
-  
-import {  
-  collection,  
-  getDocs,  
-  query,  
-  orderBy,  
-  doc,  
-  updateDoc,  
-  increment  
-} from  
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";  
-  
-const container =  
-document.getElementById(  
-  "feedContainer"  
-);  
-  
-/* تحميل الفيديوهات */  
-  
-async function loadVideos(){  
-  
-  container.innerHTML = "";  
-  
-  const q =  
-  query(  
-    collection(db,"videos"),  
-    orderBy("createdAt","desc")  
-  );  
-  
-  const snap =  
-  await getDocs(q);  
-  
-  if(snap.empty){  
-  
-    container.innerHTML = `  
-      <div class="loading">  
-        لا توجد فيديوهات  
-      </div>  
-    `;  
-  
-    return;  
-  }  
-  
-  snap.forEach(videoDoc=>{  
-  
-    const video =  
-    videoDoc.data();  
-  
-    const videoId =  
-    videoDoc.id;  
-  
-    container.innerHTML += `  
-  
-    <section class="feed">  
-  
-      <video  
-      class="videoPlayer"  
-      src="${video.videoUrl}"  
-      loop  
-      playsinline>  
-      </video>  
-  
-      <div class="overlay"></div>  
-  
-      <div class="video-info">  
-  
-        <h3 onclick="  
-        location.href=  
-        'user.html?uid=${video.uid}'  
-        ">  
-  
-          @${video.username}  
-  
-          ${video.verified ? `  
-          <span class="verified-badge">  
-            ✓  
-          </span>  
-          ` : ""}  
-  
-        </h3>  
-  
-        <p>  
-          ${video.caption || ""}  
-        </p>  
-  
-      </div>  
-  
-      <div class="video-actions">  
-  
-        <div class="action">  
-  
-          <img  
-          class="profile-pic"  
-  
-          onclick="  
-          location.href=  
-          'user.html?uid=${video.uid}'  
-          "  
-  
-          src="${  
-            video.userImage ||  
-            'https://i.imgur.com/1X4n1ZL.png'  
-          }">  
-  
-        </div>  
-  
-        <div class="action">  
-  
-          <button  
-          class="likeBtn"  
-          data-id="${videoId}">  
-            ❤️  
-          </button>  
-  
-          <span id="likes-${videoId}">  
-            ${video.likes || 0}  
-          </span>  
-  
-        </div>  
-  
-        <div class="action">  
-  
-          <button onclick="  
-          openComments('${videoId}')  
-          ">  
-            💬  
-          </button>  
-  
-          <span>  
-            تعليق  
-          </span>  
-  
-        </div>  
-  
-        <div class="action">  
-  
-          <button onclick="  
-          shareVideo('${video.videoUrl}')  
-          ">  
-            ↗️  
-          </button>  
-  
-          <span>  
-            مشاركة  
-          </span>  
-  
-        </div>  
-  
-      </div>  
-  
-    </section>  
-  
-    `;  
-  });  
-  
-  setupLikes();  
-  
-  initTikTokVideos();  
-}  
-  
-/* نظام فيديوهات مثل TikTok */  
-  
-function initTikTokVideos(){  
-  
-  const videos =  
-  document.querySelectorAll(  
-    ".videoPlayer"  
-  );  
-  
-  const observer =  
-  new IntersectionObserver(  
-  
-  (entries)=>{  
-  
-    entries.forEach(entry=>{  
-  
-      const video =  
-      entry.target;  
-  
-      if(entry.isIntersecting){  
-  
-        videos.forEach(v=>{  
-  
-          if(v !== video){  
-  
-            v.pause();  
-  
-          }  
-  
-        });  
-  
-        video.play();  
-  
-      }else{  
-  
-        video.pause();  
-  
-      }  
-  
-    });  
-  
-  },  
-  
-  {  
-    threshold:0.75  
-  });  
-  
-  videos.forEach(video=>{  
-  
-    observer.observe(video);  
-  
-    /* تشغيل وإيقاف */  
-  
-    video.addEventListener(  
-    "click",  
-    ()=>{  
-  
-      if(video.paused){  
-  
-        video.play();  
-  
-      }else{  
-  
-        video.pause();  
-  
-      }  
-  
-    });  
-  
-  });  
-  
-}  
-  
-/* اللايكات */  
-  
-function setupLikes(){  
-  
-  const buttons =  
-  document.querySelectorAll(  
-    ".likeBtn"  
-  );  
-  
-  buttons.forEach(btn=>{  
-  
-    btn.onclick =  
-    async()=>{  
-  
-      const id =  
-      btn.dataset.id;  
-  
-      const likesText =  
-      document.getElementById(  
-        "likes-"+id  
-      );  
-  
-      let current =  
-      parseInt(  
-        likesText.innerText  
-      );  
-  
-      await updateDoc(  
-        doc(db,"videos",id),  
-        {  
-          likes:  
-          increment(1)  
-        }  
-      );  
-  
-      likesText.innerText =  
-      current + 1;  
-  
-      btn.classList.add(  
-        "liked"  
-      );  
-    };  
-  
-  });  
-  
-}  
-  
-/* تعليقات */  
-  
-window.openComments =  
-(id)=>{  
-  
-  alert(  
-    "التعليقات قريباً 💬"  
-  );  
-  
-};  
-  
-/* مشاركة */  
-  
-window.shareVideo =  
-(url)=>{  
-  
-  navigator.share({  
-    url:url  
-  });  
-  
-};  
-  
-/* تحميل */  
-  
-loadVideos();  
-  
-/* التنقل */  
-  
-window.goHome = ()=>{  
-  
-  location.href =  
-  "feed.html";  
-  
-};  
-  
-window.goMessages = ()=>{  
-  
-  location.href =  
-  "inbox.html";  
-  
-};  
-  
-window.uploadVideo = ()=>{  
-  
-  location.href =  
-  "upload.html";  
-  
-};  
-  
-window.goNotifications = ()=>{  
-  
-  location.href =  
-  "notifications.html";  
-  
-};  
-  
-window.goProfile = ()=>{  
-  
-  location.href =  
-  "profile.html";  
-  
-};  
-  
-window.goSearch = ()=>{  
-  
-  location.href =  
-  "search.html";  
-  
-};  
-  
-/* Service Worker */  
-  
-if(  
-  "serviceWorker"  
-  in navigator  
-){  
-  
-  window.addEventListener(  
-  "load",  
-  ()=>{  
-  
-    navigator  
-    .serviceWorker  
-    .register("/sw.js");  
-  
-  });  
-  
-}  
-  
-</script>  </body>  
-</html>  
+  user-select:none;
+}
+
+html,
+body{
+  width:100%;
+  height:100%;
+  overflow:hidden;
+}
+
+body{
+  background:#000;
+}
+
+/* الفيديوهات */
+
+#feedContainer{
+  height:100vh;
+  overflow-y:scroll;
+  scroll-snap-type:y mandatory;
+}
+
+#feedContainer::-webkit-scrollbar{
+  display:none;
+}
+
+.feed{
+  width:100%;
+  height:100vh;
+  position:relative;
+  scroll-snap-align:start;
+  overflow:hidden;
+}
+
+.feed video,
+.feed img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+/* طبقة سوداء */
+
+.overlay{
+  position:absolute;
+  inset:0;
+
+  background:
+  linear-gradient(
+    to top,
+    rgba(0,0,0,.9),
+    rgba(0,0,0,.1),
+    rgba(0,0,0,.4)
+  );
+
+  pointer-events:none;
+}
+
+/* الشريط العلوي */
+
+.top-bar{
+
+  position:fixed;
+
+  top:0;
+  left:0;
+  right:0;
+
+  height:78px;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  z-index:999;
+
+  background:
+  linear-gradient(
+    to bottom,
+    rgba(0,0,0,.75),
+    transparent
+  );
+
+  backdrop-filter:blur(15px);
+}
+
+/* اللوجو */
+
+.logo-box{
+
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+  color:white;
+
+  font-size:28px;
+  font-weight:bold;
+
+  letter-spacing:2px;
+}
+
+.top-logo{
+
+  width:42px;
+  height:42px;
+
+  border-radius:14px;
+
+  object-fit:cover;
+
+  box-shadow:
+  0 4px 15px rgba(0,0,0,.4);
+}
+
+/* زر البحث */
+
+.top-left{
+
+  position:absolute;
+  left:15px;
+}
+
+.search-btn{
+
+  width:46px;
+  height:46px;
+
+  border:none;
+  border-radius:50%;
+
+  background:
+  rgba(255,255,255,.12);
+
+  color:white;
+
+  font-size:22px;
+
+  backdrop-filter:blur(10px);
+
+  cursor:pointer;
+}
+
+/* معلومات الفيديو */
+
+.video-info{
+
+  position:absolute;
+
+  left:15px;
+  bottom:120px;
+
+  z-index:5;
+
+  color:white;
+
+  width:70%;
+}
+
+.video-info h3{
+
+  font-size:22px;
+
+  margin-bottom:10px;
+
+  cursor:pointer;
+
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+.video-info p{
+
+  font-size:15px;
+
+  color:#eee;
+
+  line-height:1.5;
+}
+
+/* شارة التوثيق */
+
+.verified-badge{
+
+  display:inline-flex;
+
+  justify-content:center;
+  align-items:center;
+
+  width:18px;
+  height:18px;
+
+  border-radius:50%;
+
+  background:#1d9bf0;
+
+  color:white;
+
+  font-size:11px;
+  font-weight:bold;
+
+  transform:translateY(-1px);
+
+  box-shadow:
+  0 0 10px rgba(29,155,240,.7);
+}
+
+/* أزرار الجانب */
+
+.video-actions{
+
+  position:absolute;
+
+  right:12px;
+  bottom:125px;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+
+  gap:18px;
+
+  z-index:5;
+}
+
+.action{
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+
+  color:white;
+
+  font-size:13px;
+}
+
+.action button{
+
+  width:60px;
+  height:60px;
+
+  border:none;
+  border-radius:50%;
+
+  background:
+  rgba(255,255,255,.12);
+
+  color:white;
+
+  font-size:28px;
+
+  cursor:pointer;
+
+  backdrop-filter:blur(10px);
+}
+
+.profile-pic{
+
+  width:62px;
+  height:62px;
+
+  border-radius:50%;
+
+  object-fit:cover;
+
+  border:3px solid white;
+
+  cursor:pointer;
+}
+
+/* شريط التنقل السفلي */
+
+.bottom-nav{
+
+  position:fixed;
+
+  bottom:12px;
+  left:12px;
+  right:12px;
+
+  height:70px;
+
+  border-radius:24px;
+
+  background:
+  rgba(20,20,20,.88);
+
+  backdrop-filter:blur(20px);
+
+  border:
+  1px solid rgba(255,255,255,.08);
+
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+
+  z-index:999;
+
+  box-shadow:
+  0 5px 25px rgba(0,0,0,.45);
+}
+
+/* أزرار التنقل */
+
+.bottom-nav button{
+
+  background:none;
+  border:none;
+
+  color:white;
+
+  font-size:27px;
+
+  transition:.2s;
+
+  cursor:pointer;
+}
+
+.bottom-nav button:active{
+  transform:scale(.9);
+}
+
+/* زر الإضافة */
+
+.add-btn{
+
+  background:
+  linear-gradient(
+    135deg,
+    #ff2d55,
+    #ff0055
+  ) !important;
+
+  color:white !important;
+
+  width:58px;
+  height:58px;
+
+  border-radius:18px;
+
+  font-size:34px !important;
+  font-weight:bold;
+
+  box-shadow:
+  0 5px 18px rgba(255,0,85,.4);
+}
+
+/* تحميل */
+
+.loading{
+
+  color:white;
+
+  text-align:center;
+
+  margin-top:40vh;
+
+  font-size:22px;
+}
+
+/* لايك */
+
+.liked{
+  color:#ff2d55 !important;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="top-bar">
+
+  <div class="top-left">
+
+    <button
+    class="search-btn"
+    onclick="goSearch()">
+
+      🔍
+
+    </button>
+
+  </div>
+
+  <div class="logo-box">
+
+    <img
+    src="icon-192.png"
+    class="top-logo">
+
+    <span>
+      HOS HOS
+    </span>
+
+  </div>
+
+</div>
+
+<div id="feedContainer">
+
+  <div class="loading">
+    جاري تحميل الفيديوهات...
+  </div>
+
+</div>
+
+<div class="bottom-nav">
+
+  <button onclick="goHome()">
+    🏠
+  </button>
+
+  <button onclick="goMessages()">
+    💬
+  </button>
+
+  <button
+  class="add-btn"
+  onclick="uploadVideo()">
+    +
+  </button>
+
+  <button onclick="goNotifications()">
+    🔔
+  </button>
+
+  <button onclick="goProfile()">
+    👤
+  </button>
+
+</div>
+
+<script type="module">
+
+import {
+  db
+} from "./firebase.js";
+
+import {
+  collection,
+  getDocs,
+  query,
+  orderBy,
+  doc,
+  updateDoc,
+  increment
+} from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const container =
+document.getElementById(
+  "feedContainer"
+);
+
+/* تحميل الفيديوهات */
+
+async function loadVideos(){
+
+  container.innerHTML = "";
+
+  const q =
+  query(
+    collection(db,"videos"),
+    orderBy("createdAt","desc")
+  );
+
+  const snap =
+  await getDocs(q);
+
+  if(snap.empty){
+
+    container.innerHTML = `
+      <div class="loading">
+        لا توجد فيديوهات
+      </div>
+    `;
+
+    return;
+  }
+
+  snap.forEach(videoDoc=>{
+
+    const video =
+    videoDoc.data();
+
+    const videoId =
+    videoDoc.id;
+
+    container.innerHTML += `
+
+    <section class="feed">
+
+      ${video.type === "image"
+
+      ? `
+
+      <img
+      src="${video.videoUrl}">
+
+      `
+
+      : `
+
+      <video
+      class="videoPlayer"
+      src="${video.videoUrl}"
+      loop
+      playsinline>
+      </video>
+
+      `
+      }
+
+      <div class="overlay"></div>
+
+      <div class="video-info">
+
+        <h3 onclick="
+        location.href=
+        'user.html?uid=${video.uid}'
+        ">
+
+          @${video.username}
+
+          ${video.verified ? `
+          <span class="verified-badge">
+            ✓
+          </span>
+          ` : ""}
+
+        </h3>
+
+        <p>
+          ${video.caption || ""}
+        </p>
+
+      </div>
+
+      <div class="video-actions">
+
+        <div class="action">
+
+          <img
+          class="profile-pic"
+
+          onclick="
+          location.href=
+          'user.html?uid=${video.uid}'
+          "
+
+          src="${
+            video.userImage ||
+            'https://i.imgur.com/1X4n1ZL.png'
+          }">
+
+        </div>
+
+        <div class="action">
+
+          <button
+          class="likeBtn"
+          data-id="${videoId}">
+            ❤️
+          </button>
+
+          <span id="likes-${videoId}">
+            ${video.likes || 0}
+          </span>
+
+        </div>
+
+        <div class="action">
+
+          <button onclick="
+          openComments('${videoId}')
+          ">
+            💬
+          </button>
+
+          <span>
+            تعليق
+          </span>
+
+        </div>
+
+        <div class="action">
+
+          <button onclick="
+          shareVideo('${video.videoUrl}')
+          ">
+            ↗️
+          </button>
+
+          <span>
+            مشاركة
+          </span>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    `;
+  });
+
+  setupLikes();
+
+  initTikTokVideos();
+}
+
+/* تشغيل الفيديو */
+
+function initTikTokVideos(){
+
+  const videos =
+  document.querySelectorAll(
+    ".videoPlayer"
+  );
+
+  const observer =
+  new IntersectionObserver(
+
+  (entries)=>{
+
+    entries.forEach(entry=>{
+
+      const video =
+      entry.target;
+
+      if(entry.isIntersecting){
+
+        videos.forEach(v=>{
+
+          if(v !== video){
+
+            v.pause();
+
+          }
+
+        });
+
+        video.play().catch(()=>{});
+
+      }else{
+
+        video.pause();
+
+      }
+
+    });
+
+  },
+
+  {
+    threshold:0.75
+  });
+
+  videos.forEach(video=>{
+
+    observer.observe(video);
+
+    video.addEventListener(
+    "click",
+    ()=>{
+
+      if(video.paused){
+
+        video.play();
+
+      }else{
+
+        video.pause();
+
+      }
+
+    });
+
+  });
+
+}
+
+/* اللايكات */
+
+function setupLikes(){
+
+  const buttons =
+  document.querySelectorAll(
+    ".likeBtn"
+  );
+
+  buttons.forEach(btn=>{
+
+    btn.onclick =
+    async()=>{
+
+      const id =
+      btn.dataset.id;
+
+      const likesText =
+      document.getElementById(
+        "likes-"+id
+      );
+
+      let current =
+      parseInt(
+        likesText.innerText
+      );
+
+      await updateDoc(
+        doc(db,"videos",id),
+        {
+          likes:
+          increment(1)
+        }
+      );
+
+      likesText.innerText =
+      current + 1;
+
+      btn.classList.add(
+        "liked"
+      );
+    };
+
+  });
+
+}
+
+/* التعليقات */
+
+window.openComments = (id)=>{
+
+  const old =
+  document.getElementById(
+    "commentsBox"
+  );
+
+  if(old) old.remove();
+
+  const box =
+  document.createElement("div");
+
+  box.id = "commentsBox";
+
+  box.style = `
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  z-index:99999;
+  display:flex;
+  justify-content:center;
+  align-items:flex-end;
+  `;
+
+  box.innerHTML = `
+
+  <div
+
+  style="
+  width:100%;
+  max-height:70vh;
+  background:#111;
+  border-radius:25px 25px 0 0;
+  padding:20px;
+  ">
+
+    <div
+    style="
+    width:60px;
+    height:6px;
+    background:#444;
+    border-radius:20px;
+    margin:auto;
+    margin-bottom:20px;
+    ">
+    </div>
+
+    <h2
+    style="
+    text-align:center;
+    margin-bottom:20px;
+    ">
+      التعليقات 💬
+    </h2>
+
+    <input
+    id="commentInput"
+
+    placeholder="اكتب تعليق..."
+
+    style="
+    width:100%;
+    padding:15px;
+    border:none;
+    outline:none;
+    border-radius:15px;
+    background:#222;
+    color:white;
+    ">
+
+    <button
+
+    onclick="sendComment()"
+
+    style="
+    width:100%;
+    margin-top:15px;
+    padding:15px;
+    border:none;
+    border-radius:15px;
+    background:#ff2d55;
+    color:white;
+    font-size:17px;
+    ">
+
+      إرسال
+
+    </button>
+
+  </div>
+
+  `;
+
+  document.body.appendChild(box);
+
+  box.onclick = (e)=>{
+
+    if(
+      e.target.id ===
+      "commentsBox"
+    ){
+
+      box.remove();
+
+    }
+
+  };
+
+};
+
+window.sendComment = ()=>{
+
+  const text =
+  document.getElementById(
+    "commentInput"
+  ).value;
+
+  if(!text) return;
+
+  alert("تم إرسال التعليق ✅");
+
+  document
+  .getElementById(
+    "commentsBox"
+  )
+  .remove();
+
+};
+
+/* مشاركة */
+
+window.shareVideo =
+(url)=>{
+
+  navigator.share({
+    url:url
+  });
+
+};
+
+loadVideos();
+
+/* التنقل */
+
+window.goHome = ()=>{
+
+  location.href =
+  "feed.html";
+
+};
+
+window.goMessages = ()=>{
+
+  location.href =
+  "inbox.html";
+
+};
+
+window.uploadVideo = ()=>{
+
+  location.href =
+  "upload.html";
+
+};
+
+window.goNotifications = ()=>{
+
+  location.href =
+  "notifications.html";
+
+};
+
+window.goProfile = ()=>{
+
+  location.href =
+  "profile.html";
+
+};
+
+window.goSearch = ()=>{
+
+  location.href =
+  "search.html";
+
+};
+
+/* Service Worker */
+
+if(
+  "serviceWorker"
+  in navigator
+){
+
+  window.addEventListener(
+  "load",
+  ()=>{
+
+    navigator
+    .serviceWorker
+    .register("/sw.js");
+
+  });
+
+}
+
+</script>
+
+</body>
+</html>
