@@ -27,704 +27,246 @@ import {
 /* ================= CONFIG ================= */
 
 const firebaseConfig = {
-
   apiKey: "AIzaSyBfHLGUVuqrzxc42BkO4ZAzbIxJSt7jZFw",
-
   authDomain: "hos-hos.firebaseapp.com",
-
   projectId: "hos-hos",
-
   storageBucket: "hos-hos.appspot.com",
-
   messagingSenderId: "817137342563",
-
   appId: "1:817137342563:web:d714d48c46796cc4c34056"
-
 };
 
 const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
-
 export const db = getFirestore(app);
 
 /* ================= AUTH ================= */
 
-/* LOGIN */
-
-export async function login(email,password){
-
-  return await signInWithEmailAndPassword(
-    auth,
-    email,
-    password
-  );
-
+export async function login(email, password) {
+  return signInWithEmailAndPassword(auth, email, password);
 }
 
-/* SIGNUP */
+export async function signup(email, password, userData = {}) {
+  const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+  const user = userCredential.user;
 
-export async function signup(
-  email,
-  password,
-  userData={}
-){
-
-  const userCredential =
-  await createUserWithEmailAndPassword(
-    auth,
-    email,
-    password
-  );
-
-  const user =
-  userCredential.user;
-
-  await setDoc(
-    doc(db,"users",user.uid),
-    {
-
-      uid:user.uid,
-
-      username:
-      userData.username || "مستخدم",
-
-      email:user.email,
-
-      image:
-      userData.image || "",
-
-      bio:
-      userData.bio || "",
-
-      verified:false,
-
-      followers:0,
-
-      following:0,
-
-      followersList:[],
-
-      followingList:[],
-
-      createdAt:
-      Date.now()
-
-    }
-  );
+  await setDoc(doc(db, "users", user.uid), {
+    uid: user.uid,
+    username: userData.username || "مستخدم",
+    email: user.email,
+    image: userData.image || "",
+    bio: userData.bio || "",
+    verified: false,
+    followers: 0,
+    following: 0,
+    followersList: [],
+    followingList: [],
+    createdAt: Date.now()
+  });
 
   return user;
-
 }
 
-/* LOGOUT */
-
-export async function logout(){
-
-  await signOut(auth);
-
+export async function logout() {
+  return signOut(auth);
 }
 
-/* AUTH STATE */
-
-export function authState(callback){
-
-  return onAuthStateChanged(
-    auth,
-    callback
-  );
-
+export function authState(cb) {
+  return onAuthStateChanged(auth, cb);
 }
 
-/* ================= USERS ================= */
+/* ================= USERS / PROFILE ================= */
 
-export async function getUserData(uid){
+export async function getUserData(uid) {
+  const snap = await getDoc(doc(db, "users", uid));
 
-  const snap =
-  await getDoc(
-    doc(db,"users",uid)
-  );
-
-  if(snap.exists()){
-
-    return snap.data();
-
-  }
+  if (snap.exists()) return snap.data();
 
   return {
-
-    username:"مستخدم",
-
-    image:"",
-
-    verified:false,
-
-    followers:0,
-
-    following:0
-
+    username: "مستخدم",
+    image: "",
+    bio: "",
+    verified: false,
+    followers: 0,
+    following: 0
   };
-
 }
 
-/* ================= UPDATE USER ================= */
-
-export async function updateUser(uid,data){
-
-  await updateDoc(
-    doc(db,"users",uid),
-    data
-  );
-
-}
-
-/* ================= UPLOAD PROFILE IMAGE ================= */
-
-export async function uploadProfileImage(file){
-
-  const formData =
-  new FormData();
-
-  formData.append(
-    "file",
-    file
-  );
-
-  formData.append(
-    "upload_preset",
-    "hoshos_upload"
-  );
-
-  const res =
-  await fetch(
-    "https://api.cloudinary.com/v1_1/dgtazde5z/image/upload",
-    {
-      method:"POST",
-      body:formData
-    }
-  );
-
-  const data =
-  await res.json();
-
-  return data.secure_url;
-
+/* 🔥 PROFILE UPDATE */
+export async function updateUser(uid, data) {
+  return updateDoc(doc(db, "users", uid), data);
 }
 
 /* ================= FOLLOW ================= */
 
-export async function toggleFollow(
-  myUid,
-  targetUid
-){
+export async function toggleFollow(myUid, targetUid) {
+  const myRef = doc(db, "users", myUid);
+  const targetRef = doc(db, "users", targetUid);
 
-  const myRef =
-  doc(db,"users",myUid);
+  const mySnap = await getDoc(myRef);
+  const targetSnap = await getDoc(targetRef);
 
-  const targetRef =
-  doc(db,"users",targetUid);
+  if (!mySnap.exists() || !targetSnap.exists()) return;
 
-  const mySnap =
-  await getDoc(myRef);
+  const myData = mySnap.data();
+  const targetData = targetSnap.data();
 
-  const targetSnap =
-  await getDoc(targetRef);
+  let myList = myData.followingList || [];
+  let targetList = targetData.followersList || [];
 
-  if(
-    !mySnap.exists()
-    ||
-    !targetSnap.exists()
-  ) return;
+  const isFollowing = myList.includes(targetUid);
 
-  const myData =
-  mySnap.data();
+  if (isFollowing) {
+    myList = myList.filter(i => i !== targetUid);
+    targetList = targetList.filter(i => i !== myUid);
 
-  const targetData =
-  targetSnap.data();
+    await updateDoc(myRef, {
+      followingList: myList,
+      following: increment(-1)
+    });
 
-  let myList =
-  myData.followingList || [];
+    await updateDoc(targetRef, {
+      followersList: targetList,
+      followers: increment(-1)
+    });
 
-  let targetList =
-  targetData.followersList || [];
-
-  const isFollowing =
-  myList.includes(targetUid);
-
-  if(isFollowing){
-
-    myList =
-    myList.filter(
-      i=>i!==targetUid
-    );
-
-    targetList =
-    targetList.filter(
-      i=>i!==myUid
-    );
-
-    await updateDoc(
-      myRef,
-      {
-        followingList:myList,
-        following:increment(-1)
-      }
-    );
-
-    await updateDoc(
-      targetRef,
-      {
-        followersList:targetList,
-        followers:increment(-1)
-      }
-    );
-
-  }else{
-
+  } else {
     myList.push(targetUid);
-
     targetList.push(myUid);
 
-    await updateDoc(
-      myRef,
-      {
-        followingList:myList,
-        following:increment(1)
-      }
-    );
+    await updateDoc(myRef, {
+      followingList: myList,
+      following: increment(1)
+    });
 
-    await updateDoc(
-      targetRef,
-      {
-        followersList:targetList,
-        followers:increment(1)
-      }
-    );
-
+    await updateDoc(targetRef, {
+      followersList: targetList,
+      followers: increment(1)
+    });
   }
-
 }
 
 /* ================= COMMENTS ================= */
 
-/* ADD COMMENT */
+export async function addComment(videoId, uid, text, parentId = null) {
+  const user = await getUserData(uid);
 
-export async function addComment(
-  videoId,
-  uid,
-  text,
-  parentId=null
-){
-
-  const user =
-  await getUserData(uid);
-
-  await addDoc(
-    collection(db,"comments"),
-    {
-
-      videoId,
-
-      parentId,
-
-      uid,
-
-      username:
-      user.username || "مستخدم",
-
-      userImage:
-      user.image || "",
-
-      verified:
-      user.verified || false,
-
-      text,
-
-      likes:0,
-
-      likedBy:[],
-
-      createdAt:
-      Date.now()
-
-    }
-  );
-
-  /* UPDATE COMMENTS COUNT */
-
-  if(!parentId){
-
-    await updateDoc(
-      doc(db,"videos",videoId),
-      {
-        comments:
-        increment(1)
-      }
-    );
-
-  }
-
-}
-
-/* ================= LIVE COMMENTS ================= */
-
-export function listenComments(
-  videoId,
-  callback
-){
-
-  const q =
-  query(
-    collection(db,"comments"),
-    where(
-      "videoId",
-      "==",
-      videoId
-    )
-  );
-
-  return onSnapshot(
-    q,
-    (snap)=>{
-
-      const comments = [];
-
-      snap.forEach(doc=>{
-
-        comments.push({
-          id:doc.id,
-          ...doc.data()
-        });
-
-      });
-
-      comments.sort(
-        (a,b)=>
-        b.createdAt - a.createdAt
-      );
-
-      callback(comments);
-
-    },
-    (error)=>{
-
-      console.log(
-        "COMMENTS ERROR:",
-        error
-      );
-
-    }
-  );
-
-}
-
-/* ================= LIKE COMMENT ================= */
-
-export async function likeComment(
-  commentId,
-  currentUid
-){
-
-  const ref =
-  doc(
-    db,
-    "comments",
-    commentId
-  );
-
-  const snap =
-  await getDoc(ref);
-
-  if(!snap.exists())
-  return;
-
-  const data =
-  snap.data();
-
-  let likedBy =
-  data.likedBy || [];
-
-  if(
-    likedBy.includes(
-      currentUid
-    )
-  ){
-    return;
-  }
-
-  likedBy.push(currentUid);
-
-  await updateDoc(
-    ref,
-    {
-      likes:
-      increment(1),
-
-      likedBy
-    }
-  );
-
-}
-
-/* ================= LIKE VIDEO ================= */
-
-export async function likeVideo(videoId){
-
-  await updateDoc(
-    doc(db,"videos",videoId),
-    {
-      likes:
-      increment(1)
-    }
-  );
-
-}
-
-/* ================= SHARE VIDEO ================= */
-
-export async function shareVideoCount(videoId){
-
-  await updateDoc(
-    doc(db,"videos",videoId),
-    {
-      shares:
-      increment(1)
-    }
-  );
-
-}
-
-/* ================= GET VIDEOS ================= */
-
-export async function getVideos(){
-
-  const q =
-  query(
-    collection(db,"videos"),
-    orderBy("createdAt","desc")
-  );
-
-  const snap =
-  await getDocs(q);
-
-  const videos = [];
-
-  snap.forEach(doc=>{
-
-    videos.push({
-      id:doc.id,
-      ...doc.data()
-    });
-
+  await addDoc(collection(db, "comments"), {
+    videoId,
+    parentId,
+    uid,
+    username: user.username,
+    userImage: user.image || "",
+    verified: user.verified || false,
+    text,
+    likes: 0,
+    likedBy: [],
+    createdAt: Date.now()
   });
 
-  return videos;
-
+  if (!parentId) {
+    await updateDoc(doc(db, "videos", videoId), {
+      comments: increment(1)
+    });
+  }
 }
 
-/* ================= GET USER VIDEOS ================= */
+/* ================= COMMENTS LIVE (FIXED) ================= */
 
-export async function getUserVideos(uid){
-
-  const q =
-  query(
-    collection(db,"videos"),
-    where("uid","==",uid),
-    orderBy("createdAt","desc")
+export function listenComments(videoId, callback) {
+  const q = query(
+    collection(db, "comments"),
+    where("videoId", "==", videoId),
+    orderBy("createdAt", "asc")
   );
 
-  const snap =
-  await getDocs(q);
+  return onSnapshot(q, (snap) => {
+    const comments = [];
 
-  const videos = [];
-
-  snap.forEach(doc=>{
-
-    videos.push({
-      id:doc.id,
-      ...doc.data()
+    snap.forEach(d => {
+      comments.push({ id: d.id, ...d.data() });
     });
 
+    callback(comments);
   });
-
-  return videos;
-
 }
 
-/* ================= SEND MESSAGE ================= */
+/* ================= MESSAGES (FIXED + STABLE) ================= */
 
-export async function sendMessage(
-  fromUid,
-  toUid,
-  data
-){
+export async function sendMessage(fromUid, toUid, data) {
+  const roomId = [fromUid, toUid].sort().join("_");
 
-  const roomId =
-  [fromUid,toUid]
-  .sort()
-  .join("_");
+  const text =
+    data.type === "text"
+      ? data.text
+      : data.type === "image"
+      ? "🖼️ صورة"
+      : data.type === "voice"
+      ? "🎤 فويس"
+      : "📩 رسالة";
 
   await setDoc(
-    doc(db,"chats",roomId),
+    doc(db, "chats", roomId),
     {
-      users:[fromUid,toUid],
-
-      updatedAt:
-      Date.now(),
-
-      lastMessage:
-
-      data.type==="text"
-
-      ? data.text
-
-      : data.type==="image"
-
-      ? "🖼️ صورة"
-
-      : data.type==="voice"
-
-      ? "🎤 فويس"
-
-      : "📩 رسالة"
-
+      users: [fromUid, toUid],
+      updatedAt: Date.now(),
+      lastMessage: text
     },
-    {
-      merge:true
-    }
+    { merge: true }
   );
 
-  await addDoc(
-
-    collection(
-      db,
-      "chats",
-      roomId,
-      "messages"
-    ),
-
-    {
-      ...data,
-
-      from:fromUid,
-
-      to:toUid,
-
-      createdAt:
-      Date.now()
-    }
-
-  );
-
+  await addDoc(collection(db, "chats", roomId, "messages"), {
+    ...data,
+    from: fromUid,
+    to: toUid,
+    createdAt: Date.now()
+  });
 }
 
-/* ================= LIVE MESSAGES ================= */
+/* 🔥 LIVE MESSAGES FIXED */
+export function listenMessages(myUid, otherUid, cb) {
+  const roomId = [myUid, otherUid].sort().join("_");
 
-export function listenMessages(
-  myUid,
-  otherUid,
-  cb
-){
-
-  const roomId =
-  [myUid,otherUid]
-  .sort()
-  .join("_");
-
-  const q =
-  query(
-    collection(
-      db,
-      "chats",
-      roomId,
-      "messages"
-    ),
-    orderBy(
-      "createdAt",
-      "asc"
-    )
+  const q = query(
+    collection(db, "chats", roomId, "messages"),
+    orderBy("createdAt", "asc")
   );
 
-  return onSnapshot(
-    q,
-    (snap)=>{
+  return onSnapshot(q, (snap) => {
+    const msgs = [];
 
-      const msgs = [];
+    snap.forEach(d => {
+      msgs.push({ id: d.id, ...d.data() });
+    });
 
-      snap.forEach(d=>{
-
-        msgs.push({
-          id:d.id,
-          ...d.data()
-        });
-
-      });
-
-      cb(msgs);
-
-    }
-  );
-
+    cb(msgs);
+  });
 }
 
 /* ================= CHATS LIST ================= */
 
-export async function getChatsList(uid){
-
-  const snap =
-  await getDocs(
-    collection(db,"chats")
-  );
+export async function getChatsList(uid) {
+  const snap = await getDocs(collection(db, "chats"));
 
   const chats = [];
 
-  for(const d of snap.docs){
+  for (const d of snap.docs) {
+    const data = d.data();
 
-    const data =
-    d.data();
-
-    if(
-      data.users?.includes(uid)
-    ){
-
-      const otherUid =
-      data.users.find(
-        u=>u !== uid
-      );
-
-      const otherUser =
-      await getUserData(
-        otherUid
-      );
+    if (data.users?.includes(uid)) {
+      const otherUid = data.users.find(u => u !== uid);
+      const otherUser = await getUserData(otherUid);
 
       chats.push({
-
-        uid:otherUid,
-
-        username:
-        otherUser.username || "مستخدم",
-
-        image:
-        otherUser.image || "",
-
-        verified:
-        otherUser.verified || false,
-
-        lastMessage:
-        data.lastMessage || "",
-
-        updatedAt:
-        data.updatedAt || 0
-
+        uid: otherUid,
+        username: otherUser.username,
+        image: otherUser.image,
+        verified: otherUser.verified,
+        lastMessage: data.lastMessage,
+        updatedAt: data.updatedAt || 0
       });
-
     }
-
   }
 
-  return chats.sort(
-    (a,b)=>
-    b.updatedAt - a.updatedAt
-  );
-
-    }
+  return chats.sort((a, b) => b.updatedAt - a.updatedAt);
+}
