@@ -216,9 +216,14 @@ followers:increment(1)
 
 /* ================= COMMENTS SYSTEM ================= */
 
-/* إضافة تعليق */
+/* ADD COMMENT */
 
-export async function addComment(videoId,uid,text,parentId=null){
+export async function addComment(
+videoId,
+uid,
+text,
+parentId=null
+){
 
 const user =
 await getUserData(uid);
@@ -226,6 +231,7 @@ await getUserData(uid);
 await addDoc(
 collection(db,"comments"),
 {
+
 videoId,
 
 parentId,
@@ -249,10 +255,11 @@ likedBy:[],
 
 createdAt:
 Date.now()
+
 }
 );
 
-/* زيادة عداد التعليقات */
+/* UPDATE COMMENTS COUNT */
 
 if(!parentId){
 
@@ -268,18 +275,30 @@ increment(1)
 
 }
 
-/* جلب التعليقات مباشر */
+/* LIVE COMMENTS */
 
-export function listenComments(videoId,callback){
+export function listenComments(
+videoId,
+callback
+){
 
 const q =
 query(
 collection(db,"comments"),
-where("videoId","==",videoId),
-orderBy("createdAt","desc")
+where(
+"videoId",
+"==",
+videoId
+),
+orderBy(
+"createdAt",
+"desc"
+)
 );
 
-return onSnapshot(q,(snap)=>{
+return onSnapshot(
+q,
+(snap)=>{
 
 const comments = [];
 
@@ -294,16 +313,24 @@ id:doc.id,
 
 callback(comments);
 
-});
+}
+);
 
 }
 
-/* لايك تعليق */
+/* LIKE COMMENT */
 
-export async function likeComment(commentId,currentUid){
+export async function likeComment(
+commentId,
+currentUid
+){
 
 const ref =
-doc(db,"comments",commentId);
+doc(
+db,
+"comments",
+commentId
+);
 
 const snap =
 await getDoc(ref);
@@ -318,17 +345,24 @@ let likedBy =
 data.likedBy || [];
 
 if(
-likedBy.includes(currentUid)
+likedBy.includes(
+currentUid
+)
 ){
 return;
 }
 
 likedBy.push(currentUid);
 
-await updateDoc(ref,{
-likes:increment(1),
+await updateDoc(
+ref,
+{
+likes:
+increment(1),
+
 likedBy
-});
+}
+);
 
 }
 
@@ -419,33 +453,38 @@ return videos;
 
 /* ================= MESSAGES ================= */
 
-export async function sendMessage(fromUid,toUid,data){
+export async function sendMessage(
+fromUid,
+toUid,
+data
+){
 
 const roomId =
 [fromUid,toUid]
 .sort()
 .join("_");
 
-/* إنشاء الشات */
+/* CREATE CHAT */
 
 await setDoc(
 doc(db,"chats",roomId),
 {
 users:[fromUid,toUid],
 
-updatedAt:Date.now(),
+updatedAt:
+Date.now(),
 
 lastMessage:
 
-data.type === "text"
+data.type==="text"
 
 ? data.text
 
-: data.type === "image"
+: data.type==="image"
 
 ? "🖼️ صورة"
 
-: data.type === "voice"
+: data.type==="voice"
 
 ? "🎤 فويس"
 
@@ -457,7 +496,7 @@ merge:true
 }
 );
 
-/* الرسالة */
+/* MESSAGE */
 
 await addDoc(
 
@@ -475,16 +514,21 @@ from:fromUid,
 
 to:toUid,
 
-createdAt:Date.now()
+createdAt:
+Date.now()
 }
 
 );
 
 }
 
-/* ================= LISTEN MESSAGES ================= */
+/* ================= LIVE MESSAGES ================= */
 
-export function listenMessages(myUid,otherUid,cb){
+export function listenMessages(
+myUid,
+otherUid,
+cb
+){
 
 const roomId =
 [myUid,otherUid]
@@ -499,10 +543,15 @@ db,
 roomId,
 "messages"
 ),
-orderBy("createdAt","asc")
+orderBy(
+"createdAt",
+"asc"
+)
 );
 
-return onSnapshot(q,snap=>{
+return onSnapshot(
+q,
+(snap)=>{
 
 const msgs = [];
 
@@ -517,7 +566,8 @@ id:d.id,
 
 cb(msgs);
 
-});
+}
+);
 
 }
 
@@ -547,7 +597,9 @@ u=>u !== uid
 );
 
 const otherUser =
-await getUserData(otherUid);
+await getUserData(
+otherUid
+);
 
 chats.push({
 
