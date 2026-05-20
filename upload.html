@@ -23,53 +23,101 @@ margin:0;
 padding:0;
 box-sizing:border-box;
 font-family:Arial,sans-serif;
+-webkit-tap-highlight-color:transparent;
 }
 
 body{
+
 background:#000;
 color:white;
+
 min-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
-padding:20px;
+
+padding:
+20px 15px 120px;
 }
 
-.page-box{
+/* TOP */
 
-width:100%;
-max-width:520px;
+.topbar{
+
+position:fixed;
+
+top:0;
+left:0;
+right:0;
+
+height:65px;
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+padding:0 15px;
+
+background:
+rgba(0,0,0,.92);
+
+backdrop-filter:blur(15px);
+
+z-index:999;
+}
+
+.topbar h1{
+font-size:23px;
+}
+
+.back-btn{
+
+width:42px;
+height:42px;
+
+border:none;
+border-radius:50%;
+
+background:#1a1a1a;
+
+color:white;
+
+font-size:22px;
+
+cursor:pointer;
+}
+
+/* PAGE */
+
+.page{
+
+margin-top:85px;
+}
+
+/* UPLOAD BOX */
+
+.upload-box{
 
 background:
 linear-gradient(
 180deg,
 #111,
-#0a0a0a
+#0b0b0b
 );
-
-padding:25px;
-
-border-radius:30px;
 
 border:
 1px solid rgba(255,255,255,.06);
 
-box-shadow:
-0 0 40px rgba(0,0,0,.5);
+border-radius:28px;
+
+padding:18px;
 }
 
-h1{
-text-align:center;
-margin-bottom:25px;
-font-size:30px;
-}
+/* SELECT */
 
-.upload-area{
+.select-area{
 
 border:
 2px dashed rgba(255,255,255,.15);
 
-border-radius:22px;
+border-radius:24px;
 
 padding:45px 20px;
 
@@ -78,57 +126,57 @@ text-align:center;
 cursor:pointer;
 
 transition:.25s;
-
-background:
-rgba(255,255,255,.03);
 }
 
-.upload-area:hover{
-
+.select-area:hover{
 border-color:#ff2d55;
-
-transform:scale(1.01);
 }
 
-.upload-area h2{
-font-size:26px;
+.select-area h2{
+font-size:55px;
 }
 
-.upload-area p{
+.select-area p{
+
+margin-top:15px;
+
+line-height:1.7;
 
 color:#aaa;
 
-margin-top:10px;
-
-line-height:1.6;
+font-size:15px;
 }
 
 input[type="file"]{
 display:none;
 }
 
+/* PREVIEW */
+
 .preview-box{
 
-margin-top:22px;
-
-position:relative;
+margin-top:18px;
 
 display:none;
+
+position:relative;
 }
 
-video,
-img{
+.preview-box video,
+.preview-box img{
 
 width:100%;
 
-border-radius:22px;
+max-height:520px;
 
-max-height:500px;
+border-radius:22px;
 
 object-fit:cover;
 
-background:#000;
+background:#111;
 }
+
+/* TYPE */
 
 .media-type{
 
@@ -138,9 +186,7 @@ top:12px;
 right:12px;
 
 background:
-rgba(0,0,0,.65);
-
-backdrop-filter:blur(10px);
+rgba(0,0,0,.6);
 
 padding:8px 14px;
 
@@ -148,45 +194,77 @@ border-radius:30px;
 
 font-size:13px;
 
-border:
-1px solid rgba(255,255,255,.08);
+backdrop-filter:blur(10px);
 }
+
+/* TEXTAREA */
 
 textarea{
 
 width:100%;
 
-margin-top:20px;
+margin-top:18px;
 
-padding:18px;
+background:#1a1a1a;
 
 border:none;
 outline:none;
 
-border-radius:18px;
+border-radius:20px;
 
-resize:none;
-
-background:#1a1a1a;
+padding:18px;
 
 color:white;
 
 font-size:15px;
 
-min-height:120px;
+resize:none;
+
+height:120px;
 }
 
 textarea::placeholder{
 color:#777;
 }
 
-.upload-btn{
+/* OPTIONS */
+
+.options{
+
+margin-top:18px;
+
+display:flex;
+flex-direction:column;
+
+gap:12px;
+}
+
+.option{
+
+background:#161616;
+
+padding:15px;
+
+border-radius:18px;
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.option span:first-child{
+color:#ddd;
+}
+
+/* BUTTON */
+
+.publish-btn{
 
 width:100%;
 
-margin-top:20px;
+height:58px;
 
-padding:18px;
+margin-top:20px;
 
 border:none;
 
@@ -201,35 +279,20 @@ linear-gradient(
 
 color:white;
 
-font-size:19px;
+font-size:18px;
 font-weight:bold;
 
 cursor:pointer;
 
-transition:.2s;
-
 box-shadow:
-0 10px 25px rgba(255,0,80,.35);
+0 10px 25px rgba(255,0,80,.3);
 }
 
-.upload-btn:active{
-transform:scale(.98);
-}
-
-.upload-btn:disabled{
+.publish-btn:disabled{
 opacity:.5;
 }
 
-.status{
-
-text-align:center;
-
-margin-top:18px;
-
-color:#aaa;
-
-font-size:15px;
-}
+/* PROGRESS */
 
 .progress{
 
@@ -251,7 +314,6 @@ display:none;
 .progress-bar{
 
 height:100%;
-
 width:0%;
 
 background:
@@ -261,7 +323,68 @@ linear-gradient(
 #ff2d55
 );
 
-transition:.2s;
+transition:.3s;
+}
+
+/* STATUS */
+
+.status{
+
+margin-top:15px;
+
+text-align:center;
+
+color:#aaa;
+}
+
+/* BOTTOM */
+
+.bottom-bar{
+
+position:fixed;
+
+left:12px;
+right:12px;
+bottom:12px;
+
+height:68px;
+
+border-radius:22px;
+
+background:
+rgba(20,20,20,.92);
+
+display:flex;
+justify-content:space-around;
+align-items:center;
+
+backdrop-filter:blur(18px);
+
+z-index:999;
+}
+
+.bottom-bar button{
+
+background:none;
+border:none;
+
+color:white;
+
+font-size:27px;
+
+cursor:pointer;
+}
+
+.add-btn{
+
+width:55px;
+height:55px;
+
+border-radius:16px;
+
+background:#ff2d55 !important;
+
+font-size:34px !important;
 }
 
 </style>
@@ -270,13 +393,33 @@ transition:.2s;
 
 <body>
 
-<div class="page-box">
+<!-- TOPBAR -->
+
+<div class="topbar">
+
+<button
+class="back-btn"
+onclick="history.back()">
+
+←
+
+</button>
 
 <h1>
-➕ إنشاء منشور
+إنشاء منشور
 </h1>
 
-<label class="upload-area">
+<div style="width:42px"></div>
+
+</div>
+
+<!-- PAGE -->
+
+<div class="page">
+
+<div class="upload-box">
+
+<label class="select-area">
 
 <input
 type="file"
@@ -284,22 +427,22 @@ id="mediaUpload"
 accept="video/*,image/*">
 
 <h2>
-🎬🖼️
+🎬
 </h2>
 
 <p>
 
-اضغط هنا لاختيار
-فيديو أو صورة
+اضغط لاختيار فيديو أو صورة
 
 <br><br>
 
-يدعم:
 MP4 / JPG / PNG
 
 </p>
 
 </label>
+
+<!-- PREVIEW -->
 
 <div
 class="preview-box"
@@ -323,19 +466,46 @@ style="display:none;">
 
 </div>
 
+<!-- CAPTION -->
+
 <textarea
 id="caption"
 placeholder="
 اكتب وصف المنشور...
 "></textarea>
 
+<!-- OPTIONS -->
+
+<div class="options">
+
+<div class="option">
+<span>💬 السماح بالتعليقات</span>
+<span>✔</span>
+</div>
+
+<div class="option">
+<span>❤️ السماح بالإعجابات</span>
+<span>✔</span>
+</div>
+
+<div class="option">
+<span>🌍 عام</span>
+<span>›</span>
+</div>
+
+</div>
+
+<!-- BUTTON -->
+
 <button
-class="upload-btn"
+class="publish-btn"
 id="publishBtn">
 
 نشر الآن 🚀
 
 </button>
+
+<!-- PROGRESS -->
 
 <div
 class="progress"
@@ -348,10 +518,40 @@ id="progressBar">
 
 </div>
 
+<!-- STATUS -->
+
 <div
 class="status"
 id="status">
 </div>
+
+</div>
+
+</div>
+
+<!-- BOTTOM -->
+
+<div class="bottom-bar">
+
+<button onclick="go('feed.html')">
+🏠
+</button>
+
+<button onclick="go('search.html')">
+🔍
+</button>
+
+<button class="add-btn">
++
+</button>
+
+<button onclick="go('notifications.html')">
+🔔
+</button>
+
+<button onclick="go('profile.html')">
+👤
+</button>
 
 </div>
 
@@ -375,6 +575,8 @@ onAuthStateChanged
 }
 from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+/* ELEMENTS */
 
 const input =
 document.getElementById(
@@ -422,12 +624,10 @@ document.getElementById(
 );
 
 let currentUser = null;
-
 let selectedFile = null;
-
 let postType = "video";
 
-/* المستخدم */
+/* USER */
 
 onAuthStateChanged(
 auth,
@@ -445,7 +645,7 @@ currentUser = user;
 
 });
 
-/* اختيار ملف */
+/* SELECT FILE */
 
 input.addEventListener(
 "change",
@@ -457,20 +657,7 @@ this.files[0];
 if(!file)
 return;
 
-if(
-file.size >
-150000000
-){
-
-alert(
-"الملف كبير جداً"
-);
-
-return;
-}
-
-selectedFile =
-file;
+selectedFile = file;
 
 const url =
 URL.createObjectURL(
@@ -480,7 +667,7 @@ file
 previewBox.style.display =
 "block";
 
-/* فيديو */
+/* VIDEO */
 
 if(
 file.type.startsWith(
@@ -488,14 +675,12 @@ file.type.startsWith(
 )
 ){
 
-postType =
-"video";
+postType = "video";
 
 mediaType.innerText =
 "🎬 فيديو";
 
-previewVideo.src =
-url;
+previewVideo.src = url;
 
 previewVideo.style.display =
 "block";
@@ -505,22 +690,16 @@ previewImage.style.display =
 
 }
 
-/* صورة */
+/* IMAGE */
 
-else if(
-file.type.startsWith(
-"image"
-)
-){
+else{
 
-postType =
-"image";
+postType = "image";
 
 mediaType.innerText =
 "🖼️ صورة";
 
-previewImage.src =
-url;
+previewImage.src = url;
 
 previewImage.style.display =
 "block";
@@ -532,7 +711,7 @@ previewVideo.style.display =
 
 });
 
-/* النشر */
+/* UPLOAD */
 
 publishBtn.onclick =
 async()=>{
@@ -545,9 +724,6 @@ alert(
 
 return;
 }
-
-if(!currentUser)
-return;
 
 try{
 
@@ -563,115 +739,14 @@ status.innerText =
 progressBar.style.width =
 "20%";
 
-/* ضغط الصور */
-
-let fileToUpload =
-selectedFile;
-
-if(postType === "image"){
-
-const canvas =
-document.createElement(
-"canvas"
-);
-
-const ctx =
-canvas.getContext("2d");
-
-const img =
-new Image();
-
-img.src =
-URL.createObjectURL(
-selectedFile
-);
-
-await new Promise(resolve=>{
-
-img.onload = ()=>{
-
-let width =
-img.width;
-
-let height =
-img.height;
-
-const maxSize =
-1400;
-
-if(width > height){
-
-if(width > maxSize){
-
-height *=
-maxSize / width;
-
-width =
-maxSize;
-}
-
-}else{
-
-if(height > maxSize){
-
-width *=
-maxSize / height;
-
-height =
-maxSize;
-}
-}
-
-canvas.width =
-width;
-
-canvas.height =
-height;
-
-ctx.drawImage(
-img,
-0,
-0,
-width,
-height
-);
-
-canvas.toBlob(
-
-blob=>{
-
-fileToUpload =
-new File(
-[blob],
-selectedFile.name,
-{
-type:"image/jpeg"
-}
-);
-
-resolve();
-
-},
-
-"image/jpeg",
-0.90
-
-);
-
-};
-
-});
-
-}
-
-/* رفع */
+/* CLOUDINARY */
 
 const formData =
 new FormData();
 
 formData.append(
 "file",
-fileToUpload
+selectedFile
 );
 
 formData.append(
@@ -679,25 +754,9 @@ formData.append(
 "hoshos_upload"
 );
 
-if(postType === "video"){
-
-formData.append(
-"resource_type",
-"video"
-);
-
-}else{
-
-formData.append(
-"resource_type",
-"image"
-);
-
-}
-
 const uploadUrl =
 
-postType === "video"
+postType==="video"
 
 ?
 
@@ -732,16 +791,17 @@ if(
 throw new Error(
 "Upload failed"
 );
+
 }
 
-/* بيانات الحساب */
+/* USER DATA */
 
 const userData =
 await getUserData(
 currentUser.uid
 );
 
-/* حفظ */
+/* SAVE */
 
 await addDoc(
 collection(
@@ -763,19 +823,6 @@ verified:
 userData.verified || false,
 
 videoUrl:
-
-postType === "image"
-
-?
-
-uploadData.secure_url
-.replace(
-"/upload/",
-"/upload/f_auto,q_auto/"
-)
-
-:
-
 uploadData.secure_url,
 
 type:
@@ -789,13 +836,12 @@ document
 .value || "",
 
 likes:0,
-
 comments:0,
-
 shares:0,
 
 createdAt:
 Date.now()
+
 }
 );
 
@@ -803,23 +849,14 @@ progressBar.style.width =
 "100%";
 
 status.innerText =
-
-postType === "video"
-
-?
-
-"تم نشر الفيديو 🎉"
-
-:
-
-"تم نشر الصورة 🎉";
+"تم النشر بنجاح 🎉";
 
 setTimeout(()=>{
 
 location.href =
 "feed.html";
 
-},1500);
+},1200);
 
 }catch(err){
 
@@ -837,12 +874,20 @@ progress.style.display =
 
 status.innerText =
 "";
+
 }
+
+};
+
+/* NAVIGATION */
+
+window.go = (page)=>{
+
+location.href = page;
 
 };
 
 </script>
 
 </body>
-
 </html>
