@@ -194,6 +194,18 @@ color:#aaa;
 font-size:13px;
 }
 
+/* ===== CLICKABLE STATS ===== */
+
+.clickable-stat{
+cursor:pointer;
+transition:.2s;
+}
+
+.clickable-stat:active{
+transform:scale(.95);
+opacity:.7;
+}
+
 /* ===== BUTTONS ===== */
 
 .profile-buttons{
@@ -536,14 +548,10 @@ font-size:34px !important;
 
 <body>
 
-<!-- OVERLAY -->
-
 <div
 id="overlay"
 onclick="closeMenu()">
 </div>
-
-<!-- MENU -->
 
 <div id="menu">
 
@@ -585,8 +593,6 @@ onclick="logout()">
 
 </div>
 
-<!-- TOPBAR -->
-
 <div class="topbar">
 
 <div
@@ -606,8 +612,6 @@ onclick="openMenu()">
 </div>
 
 </div>
-
-<!-- PROFILE -->
 
 <div class="profile">
 
@@ -661,19 +665,29 @@ id="bio">
 
 <div class="stats">
 
-<div class="stat">
+<div
+class="stat clickable-stat"
+onclick="openFollowers()">
+
 <h3 id="followers">0</h3>
 <p>متابعين</p>
+
 </div>
 
-<div class="stat">
+<div
+class="stat clickable-stat"
+onclick="openFollowing()">
+
 <h3 id="following">0</h3>
 <p>يتابع</p>
+
 </div>
 
 <div class="stat">
+
 <h3 id="videos">0</h3>
 <p>فيديو</p>
+
 </div>
 
 </div>
@@ -721,8 +735,6 @@ id="videosGrid">
 
 </div>
 
-<!-- EDIT PANEL -->
-
 <div id="editPanel">
 
 <div class="panel-title">
@@ -751,8 +763,6 @@ id="save">
 </button>
 
 </div>
-
-<!-- BOTTOM BAR -->
 
 <div class="bottom-bar">
 
@@ -1104,6 +1114,28 @@ await signOut(auth);
 
 location.href =
 "login.html";
+
+};
+
+/* ===== FOLLOWERS ===== */
+
+window.openFollowers = ()=>{
+
+if(!userNow) return;
+
+location.href =
+"followers.html?uid=" + userNow.uid;
+
+};
+
+/* ===== FOLLOWING ===== */
+
+window.openFollowing = ()=>{
+
+if(!userNow) return;
+
+location.href =
+"following.html?uid=" + userNow.uid;
 
 };
 
