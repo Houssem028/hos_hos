@@ -1,156 +1,491 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Comments</title>
+
+<meta
+name="viewport"
+content="
+width=device-width,
+initial-scale=1.0
+">
+
+<title>
+Comments
+</title>
 
 <style>
 
-body{
-  margin:0;
-  background:#000;
-  color:white;
-  font-family:Arial,sans-serif;
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
 }
+
+body{
+background:#000;
+color:white;
+height:100vh;
+overflow:hidden;
+}
+
+/* PANEL */
 
 .comments-panel{
-  width:100%;
-  height:100vh;
-  display:flex;
-  flex-direction:column;
-  background:#111;
+
+width:100%;
+height:100vh;
+
+display:flex;
+flex-direction:column;
+
+background:#111;
 }
+
+/* HEADER */
 
 .comments-header{
-  padding:18px;
-  text-align:center;
-  font-size:22px;
-  font-weight:bold;
-  border-bottom:1px solid #222;
+
+padding:18px;
+
+text-align:center;
+
+font-size:22px;
+font-weight:bold;
+
+border-bottom:
+1px solid #222;
 }
+
+/* LIST */
 
 .comments-list{
-  flex:1;
-  overflow-y:auto;
-  padding:15px;
+
+flex:1;
+
+overflow-y:auto;
+
+padding:15px;
 }
 
+.comments-list::-webkit-scrollbar{
+display:none;
+}
+
+/* COMMENT */
+
 .comment{
-  background:#1a1a1a;
-  padding:14px;
-  border-radius:16px;
-  margin-bottom:14px;
+
+display:flex;
+
+gap:12px;
+
+margin-bottom:18px;
+}
+
+.comment img{
+
+width:48px;
+height:48px;
+
+border-radius:50%;
+
+object-fit:cover;
+}
+
+.comment-body{
+flex:1;
+}
+
+.comment-top{
+
+display:flex;
+align-items:center;
+gap:6px;
+
+margin-bottom:5px;
 }
 
 .comment-name{
-  color:#ff2d55;
-  font-weight:bold;
-  margin-bottom:6px;
+
+font-weight:bold;
+
+color:#fff;
 }
 
+.verified{
+
+width:18px;
+height:18px;
+
+border-radius:50%;
+
+background:#1d9bf0;
+
+display:flex;
+justify-content:center;
+align-items:center;
+
+font-size:11px;
+}
+
+.comment-text{
+
+font-size:15px;
+
+line-height:1.5;
+
+color:#eee;
+}
+
+.comment-actions{
+
+display:flex;
+gap:15px;
+
+margin-top:8px;
+
+font-size:13px;
+
+color:#888;
+}
+
+.comment-like{
+cursor:pointer;
+}
+
+.comment-like.liked{
+color:#ff2d55;
+}
+
+/* INPUT */
+
 .comment-input{
-  display:flex;
-  gap:10px;
-  padding:15px;
-  border-top:1px solid #222;
+
+display:flex;
+
+gap:10px;
+
+padding:15px;
+
+border-top:
+1px solid #222;
 }
 
 .comment-input input{
-  flex:1;
-  border:none;
-  border-radius:14px;
-  padding:14px;
-  background:#1a1a1a;
-  color:white;
-  outline:none;
+
+flex:1;
+
+border:none;
+outline:none;
+
+border-radius:16px;
+
+padding:14px;
+
+background:#1a1a1a;
+
+color:white;
+
+font-size:15px;
 }
 
 .comment-input button{
-  border:none;
-  border-radius:14px;
-  padding:0 18px;
-  background:#ff2d55;
-  color:white;
-  font-size:15px;
-  cursor:pointer;
+
+border:none;
+
+border-radius:16px;
+
+padding:0 22px;
+
+background:#ff2d55;
+
+color:white;
+
+font-size:15px;
+font-weight:bold;
+
+cursor:pointer;
+}
+
+/* EMPTY */
+
+.empty{
+
+text-align:center;
+
+margin-top:40px;
+
+color:#777;
 }
 
 </style>
+
 </head>
 
 <body>
 
 <div class="comments-panel">
 
-  <div class="comments-header">
-    التعليقات 💬
-  </div>
+<div class="comments-header">
 
-  <div class="comments-list" id="commentsList">
-
-    <div class="comment">
-      <div class="comment-name">
-        HOS HOS
-      </div>
-      <div>
-        أول تعليق 🔥
-      </div>
-    </div>
-
-  </div>
-
-  <div class="comment-input">
-
-    <input
-    id="commentText"
-    placeholder="اكتب تعليق...">
-
-    <button onclick="sendComment()">
-      إرسال
-    </button>
-
-  </div>
+التعليقات 💬
 
 </div>
 
-<script>
+<div
+class="comments-list"
+id="commentsList">
 
-function sendComment(){
+<div class="empty">
 
-  const input =
-  document.getElementById(
-    "commentText"
-  );
+جاري التحميل...
 
-  if(!input.value)
-    return;
+</div>
 
-  const list =
-  document.getElementById(
-    "commentsList"
-  );
+</div>
 
-  list.innerHTML += `
+<div class="comment-input">
 
-    <div class="comment">
+<input
+id="commentText"
+placeholder="اكتب تعليق...">
 
-      <div class="comment-name">
-        مستخدم
-      </div>
+<button
+id="sendBtn">
 
-      <div>
-        ${input.value}
-      </div>
+إرسال
 
-    </div>
+</button>
 
-  `;
+</div>
 
-  input.value = "";
+</div>
+
+<script type="module">
+
+import {
+auth,
+addComment,
+listenComments,
+likeComment
 }
+from "./firebase.js";
+
+import {
+onAuthStateChanged
+}
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+/* VIDEO ID */
+
+const params =
+new URLSearchParams(
+location.search
+);
+
+const videoId =
+params.get("videoId");
+
+/* ELEMENTS */
+
+const commentsList =
+document.getElementById(
+"commentsList"
+);
+
+const commentText =
+document.getElementById(
+"commentText"
+);
+
+const sendBtn =
+document.getElementById(
+"sendBtn"
+);
+
+let currentUser = null;
+
+/* USER */
+
+onAuthStateChanged(
+auth,
+(user)=>{
+
+currentUser = user;
+
+}
+);
+
+/* LOAD COMMENTS */
+
+listenComments(
+videoId,
+(comments)=>{
+
+commentsList.innerHTML = "";
+
+if(comments.length===0){
+
+commentsList.innerHTML = `
+
+<div class="empty">
+
+لا توجد تعليقات
+
+</div>
+
+`;
+
+return;
+
+}
+
+comments.forEach(comment=>{
+
+commentsList.innerHTML += `
+
+<div class="comment">
+
+<img
+src="${
+comment.userImage ||
+'https://i.imgur.com/1X4n1ZL.png'
+}">
+
+<div class="comment-body">
+
+<div class="comment-top">
+
+<div class="comment-name">
+
+@${comment.username}
+
+</div>
+
+${comment.verified
+
+? `
+
+<div class="verified">
+
+✓
+
+</div>
+
+`
+
+: ""
+
+}
+
+</div>
+
+<div class="comment-text">
+
+${comment.text}
+
+</div>
+
+<div class="comment-actions">
+
+<div
+class="
+comment-like
+${
+comment.likedBy?.includes(
+currentUser?.uid
+)
+
+? 'liked'
+
+: ''
+
+}
+"
+
+onclick="
+likeThisComment(
+'${comment.id}'
+)
+">
+
+❤️
+${comment.likes || 0}
+
+</div>
+
+<div>
+
+رد
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+}
+);
+
+/* SEND COMMENT */
+
+sendBtn.onclick =
+async()=>{
+
+const text =
+commentText.value.trim();
+
+if(!text)
+return;
+
+if(!currentUser){
+
+alert(
+"سجل دخول أولاً"
+);
+
+return;
+
+}
+
+await addComment(
+videoId,
+currentUser.uid,
+text
+);
+
+commentText.value = "";
+
+};
+
+/* LIKE COMMENT */
+
+window.likeThisComment =
+async(commentId)=>{
+
+if(!currentUser)
+return;
+
+await likeComment(
+commentId,
+currentUser.uid
+);
+
+};
 
 </script>
 
 </body>
+
 </html>
