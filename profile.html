@@ -1,975 +1,1121 @@
-<!DOCTYPE html>  <html lang="ar" dir="rtl">  <head>  <meta charset="UTF-8">  <meta  
-name="viewport"  
-content="  
-width=device-width,  
-initial-scale=1.0,  
-maximum-scale=1.0,  
-user-scalable=no  
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="
+width=device-width,
+initial-scale=1.0,
+maximum-scale=1.0,
+user-scalable=no
 ">
 
-<title>Hos Hos - Profile</title>  <style>  
-  
-*{  
-margin:0;  
-padding:0;  
-box-sizing:border-box;  
-font-family:Arial,sans-serif;  
--webkit-tap-highlight-color:transparent;  
-}  
-  
-body{  
-background:#000;  
-color:white;  
-overflow-x:hidden;  
-padding-bottom:110px;  
-}  
-  
-/* ===== TOP BAR ===== */  
-  
-.topbar{  
-  
-position:fixed;  
-top:0;  
-left:0;  
-right:0;  
-  
-height:65px;  
-  
-display:flex;  
-justify-content:space-between;  
-align-items:center;  
-  
-padding:0 16px;  
-  
-z-index:999;  
-  
-background:  
-linear-gradient(  
-to bottom,  
-rgba(0,0,0,.95),  
-rgba(0,0,0,.3)  
-);  
-  
-backdrop-filter:blur(12px);  
-}  
-  
-.topbar-title{  
-font-size:22px;  
-font-weight:bold;  
-}  
-  
-.top-icon{  
-font-size:28px;  
-cursor:pointer;  
-}  
-  
-/* ===== PROFILE ===== */  
-  
-.profile{  
-padding-top:90px;  
-text-align:center;  
-}  
-  
-/* ===== IMAGE ===== */  
-  
-.img-box{  
-position:relative;  
-width:120px;  
-height:120px;  
-margin:auto;  
-}  
-  
-#img{  
-  
-width:120px;  
-height:120px;  
-  
-border-radius:50%;  
-object-fit:cover;  
-  
-border:3px solid #ff2d55;  
-  
-background:#111;  
-}  
-  
-.edit-btn{  
-  
-position:absolute;  
-bottom:0;  
-left:0;  
-  
-width:34px;  
-height:34px;  
-  
-border-radius:50%;  
-  
-background:#ff2d55;  
-  
-display:flex;  
-justify-content:center;  
-align-items:center;  
-  
-font-size:16px;  
-  
-cursor:pointer;  
-}  
-  
-/* ===== NAME ===== */  
-  
-.profile-name{  
-  
-margin-top:15px;  
-  
-display:flex;  
-justify-content:center;  
-align-items:center;  
-gap:7px;  
-  
-font-size:28px;  
-font-weight:bold;  
-}  
-  
-.verified-badge{  
-  
-width:20px;  
-height:20px;  
-  
-border-radius:50%;  
-  
-background:#1d9bf0;  
-  
-display:none;  
-justify-content:center;  
-align-items:center;  
-  
-font-size:12px;  
-font-weight:bold;  
-}  
-  
-/* ===== USERNAME ===== */  
-  
-.username{  
-margin-top:5px;  
-color:#aaa;  
-font-size:15px;  
-}  
-  
-/* ===== BIO ===== */  
-  
-.bio{  
-margin-top:14px;  
-padding:0 20px;  
-font-size:15px;  
-line-height:1.5;  
-color:#ddd;  
-}  
-  
-/* ===== STATS ===== */  
-  
-.stats{  
-  
-margin-top:25px;  
-  
-display:flex;  
-justify-content:center;  
-gap:40px;  
-}  
-  
-.stat h3{  
-font-size:23px;  
-}  
-  
-.stat p{  
-margin-top:4px;  
-color:#aaa;  
-font-size:13px;  
-}  
-  
-/* ===== BUTTONS ===== */  
-  
-.profile-buttons{  
-  
-margin-top:22px;  
-  
-display:flex;  
-justify-content:center;  
-gap:10px;  
-  
-padding:0 18px;  
-}  
-  
-.profile-buttons button{  
-  
-flex:1;  
-max-width:180px;  
-  
-height:45px;  
-  
-border:none;  
-border-radius:12px;  
-  
-font-size:15px;  
-font-weight:bold;  
-  
-cursor:pointer;  
-}  
-  
-.edit-profile-btn{  
-background:#ff2d55;  
-color:white;  
-}  
-  
-.share-btn{  
-background:#222;  
-color:white;  
-}  
-  
-/* ===== TABS ===== */  
-  
-.tabs{  
-  
-margin-top:30px;  
-  
-display:flex;  
-justify-content:center;  
-  
-border-bottom:  
-1px solid rgba(255,255,255,.08);  
-}  
-  
-.tab{  
-  
-flex:1;  
-  
-padding:14px 0;  
-  
-text-align:center;  
-  
-font-size:22px;  
-  
-cursor:pointer;  
-  
-color:#777;  
-}  
-  
-.tab.active{  
-color:white;  
-border-bottom:2px solid white;  
-}  
-  
-/* ===== VIDEOS GRID ===== */  
-  
-.videos-grid{  
-  
-display:grid;  
-  
-grid-template-columns:  
-repeat(3,1fr);  
-  
-gap:2px;  
-  
-margin-top:2px;  
-}  
-  
-.video-box{  
-  
-position:relative;  
-  
-aspect-ratio:9/16;  
-  
-background:#111;  
-  
-overflow:hidden;  
-}  
-  
-.video-box video,  
-.video-box img{  
-  
-width:100%;  
-height:100%;  
-  
-object-fit:cover;  
-}  
-  
-.video-views{  
-  
-position:absolute;  
-  
-bottom:6px;  
-left:6px;  
-  
-background:rgba(0,0,0,.55);  
-  
-padding:3px 7px;  
-  
-border-radius:10px;  
-  
-font-size:11px;  
-}  
-  
-/* ===== EMPTY ===== */  
-  
-.no-videos{  
-  
-margin-top:60px;  
-  
-text-align:center;  
-  
-color:#777;  
-  
-font-size:18px;  
-}  
-  
-/* ===== EDIT PANEL ===== */  
-  
-#editPanel{  
-  
-position:fixed;  
-  
-left:0;  
-right:0;  
-bottom:-100%;  
-  
-background:#111;  
-  
-border-radius:25px 25px 0 0;  
-  
-padding:20px;  
-  
-z-index:9999;  
-  
-transition:.3s;  
-}  
-  
-#editPanel.active{  
-bottom:0;  
-}  
-  
-.panel-title{  
-font-size:22px;  
-font-weight:bold;  
-margin-bottom:15px;  
-}  
-  
-input,  
-textarea{  
-  
-width:100%;  
-  
-margin-top:12px;  
-  
-padding:14px;  
-  
-border:none;  
-outline:none;  
-  
-border-radius:14px;  
-  
-background:#1c1c1c;  
-  
-color:white;  
-  
-font-size:15px;  
-}  
-  
-textarea{  
-height:100px;  
-resize:none;  
-}  
-  
-.save-btn{  
-  
-width:100%;  
-  
-height:50px;  
-  
-margin-top:15px;  
-  
-border:none;  
-  
-border-radius:14px;  
-  
-background:#ff2d55;  
-  
-color:white;  
-  
-font-size:16px;  
-font-weight:bold;  
-}  
-  
-/* ===== MENU ===== */  
-  
-#menu{  
-  
-position:fixed;  
-  
-top:0;  
-right:-100%;  
-  
-width:85%;  
-max-width:320px;  
-  
-height:100vh;  
-  
-background:#111;  
-  
-z-index:99999;  
-  
-transition:.3s;  
-  
-overflow-y:auto;  
-}  
-  
-#menu.active{  
-right:0;  
-}  
-  
-.menu-header{  
-  
-padding:22px;  
-  
-font-size:24px;  
-font-weight:bold;  
-  
-border-bottom:  
-1px solid rgba(255,255,255,.08);  
-}  
-  
-.menu-item{  
-  
-padding:18px;  
-  
-display:flex;  
-justify-content:space-between;  
-align-items:center;  
-  
-border-bottom:  
-1px solid rgba(255,255,255,.05);  
-  
-cursor:pointer;  
-}  
-  
-.menu-item span{  
-font-size:16px;  
-}  
-  
-/* ===== OVERLAY ===== */  
-  
-#overlay{  
-  
-position:fixed;  
-inset:0;  
-  
-background:rgba(0,0,0,.6);  
-  
-z-index:99998;  
-  
-display:none;  
-}  
-  
-#overlay.active{  
-display:block;  
-}  
-  
-/* ===== BOTTOM BAR ===== */  
-  
-.bottom-bar{  
-  
-position:fixed;  
-  
-left:12px;  
-right:12px;  
-bottom:12px;  
-  
-height:68px;  
-  
-border-radius:22px;  
-  
-background:  
-rgba(20,20,20,.92);  
-  
-display:flex;  
-justify-content:space-around;  
-align-items:center;  
-  
-backdrop-filter:blur(18px);  
-  
-z-index:999;  
-}  
-  
-.bottom-bar button{  
-  
-background:none;  
-border:none;  
-  
-color:white;  
-  
-font-size:27px;  
-  
-cursor:pointer;  
-}  
-  
-.add-btn{  
-  
-width:55px;  
-height:55px;  
-  
-border-radius:16px;  
-  
-background:#ff2d55 !important;  
-  
-font-size:34px !important;  
-}  
-  
-</style>  </head>  <body>  <!-- OVERLAY -->  <div  
-id="overlay"  
-onclick="closeMenu()">  
-</div>  <!-- MENU -->  <div id="menu">  <div class="menu-header">  
-الإعدادات  
-</div>  <div class="menu-item">  
-<span>🛡️ الخصوصية</span>  
-<span>›</span>  
-</div>  <div class="menu-item">  
-<span>💾 المحفوظات</span>  
-<span>›</span>  
-</div>  <div class="menu-item">  
-<span>🎵 الموسيقى</span>  
-<span>›</span>  
-</div>  <div class="menu-item">  
-<span>❓ المساعدة</span>  
-<span>›</span>  
-</div>  <div  
-class="menu-item"  
-onclick="logout()">  <span style="color:red">  
-🚪 تسجيل خروج  
-</span>  <span>›</span>
+<title>Hos Hos - Profile</title>
 
-</div>  </div>  <!-- TOPBAR -->  <div class="topbar">  <div  
-class="top-icon"  
-onclick="openMenu()">  ☰
+<style>
 
-</div>  <div class="topbar-title">  
-الملف الشخصي  
-</div>  <div class="top-icon">  
-🔖  
-</div>  </div>  <!-- PROFILE -->  <div class="profile">  <div class="img-box">  <img  
-id="img"  
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+-webkit-tap-highlight-color:transparent;
+}
+
+body{
+background:#000;
+color:white;
+overflow-x:hidden;
+padding-bottom:110px;
+}
+
+/* ===== TOP BAR ===== */
+
+.topbar{
+
+position:fixed;
+top:0;
+left:0;
+right:0;
+
+height:65px;
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+padding:0 16px;
+
+z-index:999;
+
+background:
+linear-gradient(
+to bottom,
+rgba(0,0,0,.95),
+rgba(0,0,0,.3)
+);
+
+backdrop-filter:blur(12px);
+}
+
+.topbar-title{
+font-size:22px;
+font-weight:bold;
+}
+
+.top-icon{
+font-size:28px;
+cursor:pointer;
+}
+
+/* ===== PROFILE ===== */
+
+.profile{
+padding-top:90px;
+text-align:center;
+}
+
+/* ===== IMAGE ===== */
+
+.img-box{
+position:relative;
+width:120px;
+height:120px;
+margin:auto;
+}
+
+#img{
+
+width:120px;
+height:120px;
+
+border-radius:50%;
+object-fit:cover;
+
+border:3px solid #ff2d55;
+
+background:#111;
+}
+
+.edit-btn{
+
+position:absolute;
+bottom:0;
+left:0;
+
+width:34px;
+height:34px;
+
+border-radius:50%;
+
+background:#ff2d55;
+
+display:flex;
+justify-content:center;
+align-items:center;
+
+font-size:16px;
+
+cursor:pointer;
+}
+
+/* ===== NAME ===== */
+
+.profile-name{
+
+margin-top:15px;
+
+display:flex;
+justify-content:center;
+align-items:center;
+gap:7px;
+
+font-size:28px;
+font-weight:bold;
+}
+
+.verified-badge{
+
+width:20px;
+height:20px;
+
+border-radius:50%;
+
+background:#1d9bf0;
+
+display:none;
+justify-content:center;
+align-items:center;
+
+font-size:12px;
+font-weight:bold;
+}
+
+/* ===== USERNAME ===== */
+
+.username{
+margin-top:5px;
+color:#aaa;
+font-size:15px;
+}
+
+/* ===== BIO ===== */
+
+.bio{
+margin-top:14px;
+padding:0 20px;
+font-size:15px;
+line-height:1.5;
+color:#ddd;
+}
+
+/* ===== STATS ===== */
+
+.stats{
+
+margin-top:25px;
+
+display:flex;
+justify-content:center;
+gap:40px;
+}
+
+.stat h3{
+font-size:23px;
+}
+
+.stat p{
+margin-top:4px;
+color:#aaa;
+font-size:13px;
+}
+
+/* ===== BUTTONS ===== */
+
+.profile-buttons{
+
+margin-top:22px;
+
+display:flex;
+justify-content:center;
+gap:10px;
+
+padding:0 18px;
+}
+
+.profile-buttons button{
+
+flex:1;
+max-width:180px;
+
+height:45px;
+
+border:none;
+border-radius:12px;
+
+font-size:15px;
+font-weight:bold;
+
+cursor:pointer;
+}
+
+.edit-profile-btn{
+background:#ff2d55;
+color:white;
+}
+
+.share-btn{
+background:#222;
+color:white;
+}
+
+/* ===== TABS ===== */
+
+.tabs{
+
+margin-top:30px;
+
+display:flex;
+justify-content:center;
+
+border-bottom:
+1px solid rgba(255,255,255,.08);
+}
+
+.tab{
+
+flex:1;
+
+padding:14px 0;
+
+text-align:center;
+
+font-size:22px;
+
+cursor:pointer;
+
+color:#777;
+}
+
+.tab.active{
+color:white;
+border-bottom:2px solid white;
+}
+
+/* ===== VIDEOS GRID ===== */
+
+.videos-grid{
+
+display:grid;
+
+grid-template-columns:
+repeat(3,1fr);
+
+gap:2px;
+
+margin-top:2px;
+}
+
+.video-box{
+
+position:relative;
+
+aspect-ratio:9/16;
+
+background:#111;
+
+overflow:hidden;
+}
+
+.video-box video,
+.video-box img{
+
+width:100%;
+height:100%;
+
+object-fit:cover;
+}
+
+.video-views{
+
+position:absolute;
+
+bottom:6px;
+left:6px;
+
+background:rgba(0,0,0,.55);
+
+padding:3px 7px;
+
+border-radius:10px;
+
+font-size:11px;
+}
+
+/* ===== EMPTY ===== */
+
+.no-videos{
+
+margin-top:60px;
+
+text-align:center;
+
+color:#777;
+
+font-size:18px;
+}
+
+/* ===== EDIT PANEL ===== */
+
+#editPanel{
+
+position:fixed;
+
+left:0;
+right:0;
+bottom:-100%;
+
+background:#111;
+
+border-radius:25px 25px 0 0;
+
+padding:20px;
+
+z-index:9999;
+
+transition:.3s;
+}
+
+#editPanel.active{
+bottom:0;
+}
+
+.panel-title{
+font-size:22px;
+font-weight:bold;
+margin-bottom:15px;
+}
+
+input,
+textarea{
+
+width:100%;
+
+margin-top:12px;
+
+padding:14px;
+
+border:none;
+outline:none;
+
+border-radius:14px;
+
+background:#1c1c1c;
+
+color:white;
+
+font-size:15px;
+}
+
+textarea{
+height:100px;
+resize:none;
+}
+
+.save-btn{
+
+width:100%;
+
+height:50px;
+
+margin-top:15px;
+
+border:none;
+
+border-radius:14px;
+
+background:#ff2d55;
+
+color:white;
+
+font-size:16px;
+font-weight:bold;
+}
+
+/* ===== MENU ===== */
+
+#menu{
+
+position:fixed;
+
+top:0;
+right:-100%;
+
+width:85%;
+max-width:320px;
+
+height:100vh;
+
+background:#111;
+
+z-index:99999;
+
+transition:.3s;
+
+overflow-y:auto;
+}
+
+#menu.active{
+right:0;
+}
+
+.menu-header{
+
+padding:22px;
+
+font-size:24px;
+font-weight:bold;
+
+border-bottom:
+1px solid rgba(255,255,255,.08);
+}
+
+.menu-item{
+
+padding:18px;
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+border-bottom:
+1px solid rgba(255,255,255,.05);
+
+cursor:pointer;
+}
+
+.menu-item span{
+font-size:16px;
+}
+
+/* ===== OVERLAY ===== */
+
+#overlay{
+
+position:fixed;
+inset:0;
+
+background:rgba(0,0,0,.6);
+
+z-index:99998;
+
+display:none;
+}
+
+#overlay.active{
+display:block;
+}
+
+/* ===== BOTTOM BAR ===== */
+
+.bottom-bar{
+
+position:fixed;
+
+left:12px;
+right:12px;
+bottom:12px;
+
+height:68px;
+
+border-radius:22px;
+
+background:
+rgba(20,20,20,.92);
+
+display:flex;
+justify-content:space-around;
+align-items:center;
+
+backdrop-filter:blur(18px);
+
+z-index:999;
+}
+
+.bottom-bar button{
+
+background:none;
+border:none;
+
+color:white;
+
+font-size:27px;
+
+cursor:pointer;
+}
+
+.add-btn{
+
+width:55px;
+height:55px;
+
+border-radius:16px;
+
+background:#ff2d55 !important;
+
+font-size:34px !important;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- OVERLAY -->
+
+<div
+id="overlay"
+onclick="closeMenu()">
+</div>
+
+<!-- MENU -->
+
+<div id="menu">
+
+<div class="menu-header">
+الإعدادات
+</div>
+
+<div class="menu-item">
+<span>🛡️ الخصوصية</span>
+<span>›</span>
+</div>
+
+<div class="menu-item">
+<span>💾 المحفوظات</span>
+<span>›</span>
+</div>
+
+<div class="menu-item">
+<span>🎵 الموسيقى</span>
+<span>›</span>
+</div>
+
+<div class="menu-item">
+<span>❓ المساعدة</span>
+<span>›</span>
+</div>
+
+<div
+class="menu-item"
+onclick="logout()">
+
+<span style="color:red">
+🚪 تسجيل خروج
+</span>
+
+<span>›</span>
+
+</div>
+
+</div>
+
+<!-- TOPBAR -->
+
+<div class="topbar">
+
+<div
+class="top-icon"
+onclick="openMenu()">
+
+☰
+
+</div>
+
+<div class="topbar-title">
+الملف الشخصي
+</div>
+
+<div class="top-icon">
+🔖
+</div>
+
+</div>
+
+<!-- PROFILE -->
+
+<div class="profile">
+
+<div class="img-box">
+
+<img
+id="img"
 src="https://i.imgur.com/1X4n1ZL.png">
 
-<div  
-class="edit-btn"  
-onclick="toggleEdit()">  ✏️
+<div
+class="edit-btn"
+onclick="toggleEdit()">
 
-</div>  </div>  <div class="profile-name">  <span id="name">  
-Loading...  
-</span>  <div  
-id="verifiedBadge"  
-class="verified-badge">  ✓
+✏️
 
-</div>  </div>  <div  
-class="username"  
-id="usernameText">  @user
+</div>
 
-</div>  <div  
-class="bio"  
-id="bio">  مرحباً بكم في حسابي ✨
+</div>
 
-<div onclick="go('followers.html')">
-      <h3 id="followers">0</h3>
-      <p>متابعين</p>
-    </div>
+<div class="profile-name">
 
-    <div onclick="go('following.html')">
-      <h3 id="following">0</h3>
-      <p>متابَعين</p>
-    </div>
-<h3 id="videos">0</h3>  
-<p>فيديو</p>  
-</div>  </div>  <div class="profile-buttons">  <button  
-class="edit-profile-btn"  
+<span id="name">
+Loading...
+</span>
+
+<div
+id="verifiedBadge"
+class="verified-badge">
+
+✓
+
+</div>
+
+</div>
+
+<div
+class="username"
+id="usernameText">
+
+@user
+
+</div>
+
+<div
+class="bio"
+id="bio">
+
+مرحباً بكم في حسابي ✨
+
+</div>
+
+<div class="stats">
+
+<div class="stat">
+<h3 id="followers">0</h3>
+<p>متابعين</p>
+</div>
+
+<div class="stat">
+<h3 id="following">0</h3>
+<p>يتابع</p>
+</div>
+
+<div class="stat">
+<h3 id="videos">0</h3>
+<p>فيديو</p>
+</div>
+
+</div>
+
+<div class="profile-buttons">
+
+<button
+class="edit-profile-btn"
 onclick="toggleEdit()">
 
 تعديل الملف
 
-</button>  <button  
-class="share-btn"  
+</button>
+
+<button
+class="share-btn"
 onclick="shareProfile()">
 
 مشاركة
 
-</button>  </div>  <div class="tabs">  <div class="tab active">  
-🎬  
-</div>  <div class="tab">  
-❤️  
-</div>  <div class="tab">  
-🔒  
-</div>  </div>  <div  
-class="videos-grid"  
-id="videosGrid">  
-</div>  </div>  <!-- EDIT PANEL -->  <div id="editPanel">  <div class="panel-title">  
-تعديل الحساب  
-</div>  <input  
-id="newName"  
+</button>
+
+</div>
+
+<div class="tabs">
+
+<div class="tab active">
+🎬
+</div>
+
+<div class="tab">
+❤️
+</div>
+
+<div class="tab">
+🔒
+</div>
+
+</div>
+
+<div
+class="videos-grid"
+id="videosGrid">
+</div>
+
+</div>
+
+<!-- EDIT PANEL -->
+
+<div id="editPanel">
+
+<div class="panel-title">
+تعديل الحساب
+</div>
+
+<input
+id="newName"
 placeholder="اسم المستخدم">
 
-<textarea  
-id="newBio"  
-placeholder="اكتب نبذة...">  
-</textarea>  <input  
-id="file"  
+<textarea
+id="newBio"
+placeholder="اكتب نبذة...">
+</textarea>
+
+<input
+id="file"
 type="file">
 
-<button  
-class="save-btn"  
+<button
+class="save-btn"
 id="save">
 
 حفظ التعديلات
 
-</button>  </div>  <!-- BOTTOM BAR -->  <div class="bottom-bar">  <button onclick="go('feed.html')">  
-🏠  
-</button>  <button onclick="go('search.html')">  
-🔍  
-</button>  <button  
-class="add-btn"  
+</button>
+
+</div>
+
+<!-- BOTTOM BAR -->
+
+<div class="bottom-bar">
+
+<button onclick="go('feed.html')">
+🏠
+</button>
+
+<button onclick="go('search.html')">
+🔍
+</button>
+
+<button
+class="add-btn"
 onclick="go('upload.html')">
 
++
 
-</button>  <button onclick="go('notifications.html')">  
-🔔  
-</button>  <button>  
-👤  
-</button>  </div>  <script type="module">  
-  
-import {  
-auth,  
-db,  
-getUserData,  
-updateUser,  
-uploadProfileImage  
-} from "./firebase.js";  
-  
-import {  
-onAuthStateChanged,  
-signOut  
-}  
-from  
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";  
-  
-import {  
-collection,  
-getDocs  
-}  
-from  
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";  
-  
-let userNow = null;  
-  
-/* ===== USER ===== */  
-  
-onAuthStateChanged(  
-auth,  
-async(user)=>{  
-  
-if(!user){  
-  
-location.href =  
-"login.html";  
-  
-return;  
-}  
-  
-userNow = user;  
-  
-const data =  
-await getUserData(  
-user.uid  
-);  
-  
-document.getElementById(  
-"name"  
-).innerText =  
-data.username || "بدون اسم";  
-  
-document.getElementById(  
-"usernameText"  
-).innerText =  
-"@" + (  
-data.username || "user"  
-);  
-  
-document.getElementById(  
-"bio"  
-).innerText =  
-data.bio ||  
-"مرحباً بكم في حسابي ✨";  
-  
-document.getElementById(  
-"followers"  
-).innerText =  
-data.followers || 0;  
-  
-document.getElementById(  
-"following"  
-).innerText =  
-data.following || 0;  
-  
-if(data.image){  
-  
-document.getElementById(  
-"img"  
-).src =  
-data.image + "?t=" + Date.now();  
-  
-}  
-  
-if(data.verified){  
-  
-document.getElementById(  
-"verifiedBadge"  
-).style.display =  
-"flex";  
-  
-}  
-  
-document.getElementById(  
-"newName"  
-).value =  
-data.username || "";  
-  
-document.getElementById(  
-"newBio"  
-).value =  
-data.bio || "";  
-  
-loadVideos(  
-user.uid  
-);  
-  
-});  
-  
-/* ===== VIDEOS ===== */  
-  
-async function loadVideos(uid){  
-  
-const grid =  
-document.getElementById(  
-"videosGrid"  
-);  
-  
-grid.innerHTML = "";  
-  
-const snap =  
-await getDocs(  
-collection(  
-db,  
-"videos"  
-)  
-);  
-  
-let count = 0;  
-  
-snap.forEach(doc=>{  
-  
-const video =  
-doc.data();  
-  
-if(video.uid===uid){  
-  
-count++;  
-  
-grid.innerHTML += `  
-  
-<div class="video-box">  
-  
-${video.type==="image"  
-? `  
-<img  
-src="${video.videoUrl}">  
-`  
-: `  
-<video  
-src="${video.videoUrl}"  
-muted  
-autoplay  
-loop  
-playsinline>  
-</video>  
-`  
-}  
-  
-<div class="video-views">  
-👁 ${video.likes || 0}  
-</div>  
-  
-</div>  
-  
-`;  
-  
-}  
-  
-});  
-  
-document.getElementById(  
-"videos"  
-).innerText =  
-count;  
-  
-if(count===0){  
-  
-grid.innerHTML = `  
-<div class="no-videos">  
-لا توجد فيديوهات  
-</div>  
-`;  
-  
-}  
-  
-}  
-  
-/* ===== EDIT ===== */  
-  
-window.toggleEdit = ()=>{  
-  
-document  
-.getElementById(  
-"editPanel"  
-)  
-.classList.toggle(  
-"active"  
-);  
-  
-};  
-  
-/* ===== SAVE ===== */  
-  
-document.getElementById(  
-"save"  
-).onclick =  
-async()=>{  
-  
-const name =  
-document.getElementById(  
-"newName"  
-).value;  
-  
-const bio =  
-document.getElementById(  
-"newBio"  
-).value;  
-  
-const file =  
-document.getElementById(  
-"file"  
-).files[0];  
-  
-let img = null;  
-  
-if(file){  
-  
-img =  
-await uploadProfileImage(  
-file  
-);  
-  
-}  
-  
-const data = {};  
-  
-if(name)  
-data.username = name;  
-  
-if(bio)  
-data.bio = bio;  
-  
-if(img)  
-data.image = img;  
-  
-await updateUser(  
-userNow.uid,  
-data  
-);  
-  
-alert(  
-"تم حفظ التعديلات ✔"  
-);  
-  
-location.reload();  
-  
-};  
-  
-/* ===== MENU ===== */  
-  
-window.openMenu = ()=>{  
-  
-document  
-.getElementById(  
-"menu"  
-)  
-.classList.add(  
-"active"  
-);  
-  
-document  
-.getElementById(  
-"overlay"  
-)  
-.classList.add(  
-"active"  
-);  
-  
-};  
-  
-window.closeMenu = ()=>{  
-  
-document  
-.getElementById(  
-"menu"  
-)  
-.classList.remove(  
-"active"  
-);  
-  
-document  
-.getElementById(  
-"overlay"  
-)  
-.classList.remove(  
-"active"  
-);  
-  
-};  
-  
-/* ===== SHARE ===== */  
-  
-window.shareProfile = ()=>{  
-  
-navigator.share({  
-title:"Hos Hos",  
-text:"شاهد حسابي على Hos Hos ✨",  
-url:location.href  
-});  
-  
-};  
-  
-/* ===== LOGOUT ===== */  
-  
-window.logout =  
-async()=>{  
-  
-await signOut(auth);  
-  
-location.href =  
-"login.html";  
-  
-};  
-  
-/* ===== NAVIGATION ===== */  
-  
-window.go = (page)=>{  
-  
-location.href = page;  
-  
-};  
-  
-</script>  </body>  
-</html>  
+</button>
+
+<button onclick="go('notifications.html')">
+🔔
+</button>
+
+<button>
+👤
+</button>
+
+</div>
+
+<script type="module">
+
+import {
+auth,
+db,
+getUserData,
+updateUser,
+uploadProfileImage
+} from "./firebase.js";
+
+import {
+onAuthStateChanged,
+signOut
+}
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+collection,
+getDocs
+}
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+let userNow = null;
+
+/* ===== USER ===== */
+
+onAuthStateChanged(
+auth,
+async(user)=>{
+
+if(!user){
+
+location.href =
+"login.html";
+
+return;
+}
+
+userNow = user;
+
+const data =
+await getUserData(
+user.uid
+);
+
+document.getElementById(
+"name"
+).innerText =
+data.username || "بدون اسم";
+
+document.getElementById(
+"usernameText"
+).innerText =
+"@" + (
+data.username || "user"
+);
+
+document.getElementById(
+"bio"
+).innerText =
+data.bio ||
+"مرحباً بكم في حسابي ✨";
+
+document.getElementById(
+"followers"
+).innerText =
+data.followers || 0;
+
+document.getElementById(
+"following"
+).innerText =
+data.following || 0;
+
+if(data.image){
+
+document.getElementById(
+"img"
+).src =
+data.image + "?t=" + Date.now();
+
+}
+
+if(data.verified){
+
+document.getElementById(
+"verifiedBadge"
+).style.display =
+"flex";
+
+}
+
+document.getElementById(
+"newName"
+).value =
+data.username || "";
+
+document.getElementById(
+"newBio"
+).value =
+data.bio || "";
+
+loadVideos(
+user.uid
+);
+
+});
+
+/* ===== VIDEOS ===== */
+
+async function loadVideos(uid){
+
+const grid =
+document.getElementById(
+"videosGrid"
+);
+
+grid.innerHTML = "";
+
+const snap =
+await getDocs(
+collection(
+db,
+"videos"
+)
+);
+
+let count = 0;
+
+snap.forEach(doc=>{
+
+const video =
+doc.data();
+
+if(video.uid===uid){
+
+count++;
+
+grid.innerHTML += `
+
+<div class="video-box">
+
+${video.type==="image"
+? `
+<img
+src="${video.videoUrl}">
+`
+: `
+<video
+src="${video.videoUrl}"
+muted
+autoplay
+loop
+playsinline>
+</video>
+`
+}
+
+<div class="video-views">
+👁 ${video.likes || 0}
+</div>
+
+</div>
+
+`;
+
+}
+
+});
+
+document.getElementById(
+"videos"
+).innerText =
+count;
+
+if(count===0){
+
+grid.innerHTML = `
+<div class="no-videos">
+لا توجد فيديوهات
+</div>
+`;
+
+}
+
+}
+
+/* ===== EDIT ===== */
+
+window.toggleEdit = ()=>{
+
+document
+.getElementById(
+"editPanel"
+)
+.classList.toggle(
+"active"
+);
+
+};
+
+/* ===== SAVE ===== */
+
+document.getElementById(
+"save"
+).onclick =
+async()=>{
+
+const name =
+document.getElementById(
+"newName"
+).value;
+
+const bio =
+document.getElementById(
+"newBio"
+).value;
+
+const file =
+document.getElementById(
+"file"
+).files[0];
+
+let img = null;
+
+if(file){
+
+img =
+await uploadProfileImage(
+file
+);
+
+}
+
+const data = {};
+
+if(name)
+data.username = name;
+
+if(bio)
+data.bio = bio;
+
+if(img)
+data.image = img;
+
+await updateUser(
+userNow.uid,
+data
+);
+
+alert(
+"تم حفظ التعديلات ✔"
+);
+
+location.reload();
+
+};
+
+/* ===== MENU ===== */
+
+window.openMenu = ()=>{
+
+document
+.getElementById(
+"menu"
+)
+.classList.add(
+"active"
+);
+
+document
+.getElementById(
+"overlay"
+)
+.classList.add(
+"active"
+);
+
+};
+
+window.closeMenu = ()=>{
+
+document
+.getElementById(
+"menu"
+)
+.classList.remove(
+"active"
+);
+
+document
+.getElementById(
+"overlay"
+)
+.classList.remove(
+"active"
+);
+
+};
+
+/* ===== SHARE ===== */
+
+window.shareProfile = ()=>{
+
+navigator.share({
+title:"Hos Hos",
+text:"شاهد حسابي على Hos Hos ✨",
+url:location.href
+});
+
+};
+
+/* ===== LOGOUT ===== */
+
+window.logout =
+async()=>{
+
+await signOut(auth);
+
+location.href =
+"login.html";
+
+};
+
+/* ===== NAVIGATION ===== */
+
+window.go = (page)=>{
+
+location.href = page;
+
+};
+
+</script>
+
+</body>
+</html>
