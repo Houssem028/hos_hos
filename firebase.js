@@ -20,147 +20,425 @@ addDoc,
 query,
 orderBy,
 onSnapshot,
-increment
+increment,
+where
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* CONFIG */
+/* ================= CONFIG ================= */
+
 const firebaseConfig = {
+
 apiKey: "AIzaSyBfHLGUVuqrzxc42BkO4ZAzbIxJSt7jZFw",
+
 authDomain: "hos-hos.firebaseapp.com",
+
 projectId: "hos-hos",
+
 storageBucket: "hos-hos.appspot.com",
+
 messagingSenderId: "817137342563",
+
 appId: "1:817137342563:web:d714d48c46796cc4c34056"
+
 };
 
 const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
+
 export const db = getFirestore(app);
 
 /* ================= USERS ================= */
 
 export async function getUserData(uid){
-const snap = await getDoc(doc(db,"users",uid));
 
-if(snap.exists()) return snap.data();
+const snap =
+await getDoc(
+doc(db,"users",uid)
+);
 
-return {
-username:"مستخدم",
-image:"",
-verified:false
-};
+if(snap.exists()){
+
+return snap.data();
+
 }
 
-/* ================= FOLLOW (بدون تغيير) ================= */
+return {
+
+username:"مستخدم",
+
+image:"",
+
+verified:false,
+
+followers:0,
+
+following:0
+
+};
+
+}
+
+/* ================= UPDATE USER ================= */
+
+export async function updateUser(uid,data){
+
+await updateDoc(
+doc(db,"users",uid),
+data
+);
+
+}
+
+/* ================= UPLOAD PROFILE IMAGE ================= */
+
+export async function uploadProfileImage(file){
+
+const formData =
+new FormData();
+
+formData.append(
+"file",
+file
+);
+
+formData.append(
+"upload_preset",
+"hoshos_upload"
+);
+
+const res =
+await fetch(
+"https://api.cloudinary.com/v1_1/dgtazde5z/image/upload",
+{
+method:"POST",
+body:formData
+}
+);
+
+const data =
+await res.json();
+
+return data.secure_url;
+
+}
+
+/* ================= FOLLOW ================= */
 
 export async function toggleFollow(myUid,targetUid){
 
-const myRef = doc(db,"users",myUid);
-const targetRef = doc(db,"users",targetUid);
+const myRef =
+doc(db,"users",myUid);
 
-const mySnap = await getDoc(myRef);
-const targetSnap = await getDoc(targetRef);
+const targetRef =
+doc(db,"users",targetUid);
 
-if(!mySnap.exists() || !targetSnap.exists()) return;
+const mySnap =
+await getDoc(myRef);
 
-const myData = mySnap.data();
-const targetData = targetSnap.data();
+const targetSnap =
+await getDoc(targetRef);
 
-let myList = myData.followingList || [];
-let targetList = targetData.followersList || [];
+if(
+!mySnap.exists()
+||
+!targetSnap.exists()
+) return;
 
-const isFollowing = myList.includes(targetUid);
+const myData =
+mySnap.data();
+
+const targetData =
+targetSnap.data();
+
+let myList =
+myData.followingList || [];
+
+let targetList =
+targetData.followersList || [];
+
+const isFollowing =
+myList.includes(targetUid);
 
 if(isFollowing){
 
-myList = myList.filter(i=>i!==targetUid);
-targetList = targetList.filter(i=>i!==myUid);
+myList =
+myList.filter(
+i=>i!==targetUid
+);
 
-await updateDoc(myRef,{
+targetList =
+targetList.filter(
+i=>i!==myUid
+);
+
+await updateDoc(
+myRef,
+{
 followingList:myList,
 following:increment(-1)
-});
+}
+);
 
-await updateDoc(targetRef,{
+await updateDoc(
+targetRef,
+{
 followersList:targetList,
 followers:increment(-1)
-});
+}
+);
 
 }else{
 
 myList.push(targetUid);
+
 targetList.push(myUid);
 
-await updateDoc(myRef,{
+await updateDoc(
+myRef,
+{
 followingList:myList,
 following:increment(1)
-});
+}
+);
 
-await updateDoc(targetRef,{
+await updateDoc(
+targetRef,
+{
 followersList:targetList,
 followers:increment(1)
-});
 }
+);
 
 }
 
-/* ================= COMMENTS (كما هي عندك) ================= */
+}
+
+/* ================= COMMENTS ================= */
 
 export async function addComment(videoId,uid,text){
 
-const user = await getUserData(uid);
+const user =
+await getUserData(uid);
 
-await addDoc(collection(db,"comments"),{
+await addDoc(
+collection(db,"comments"),
+{
 videoId,
 uid,
 username:user.username,
 userImage:user.image || "",
 text,
 createdAt:Date.now()
-});
 }
+);
 
-/* ================= MESSAGES (مهم جداً) ================= */
-
-export async function sendMessage(fromUid,toUid,data){
-
-const roomId = [fromUid,toUid].sort().join("_");
-
-/* حفظ أو إنشاء الشات */
-await setDoc(doc(db,"chats",roomId),{
-users:[fromUid,toUid],
-updatedAt:Date.now(),
-lastMessage:
-data.type === "text"
-? data.text
-: data.type === "image"
-? "🖼️ صورة"
-: data.type === "voice"
-? "🎤 فويس"
-: "📩 رسالة"
-},{merge:true});
-
-/* الرسالة نفسها */
-await addDoc(
-collection(db,"chats",roomId,"messages"),
+await updateDoc(
+doc(db,"videos",videoId),
 {
-...data,
-from:fromUid,
-to:toUid,
-createdAt:Date.now()
+comments:
+increment(1)
 }
 );
 
 }
 
-/* 🔥 REALTIME MESSAGES (كما كان عندك) */
+/* ================= GET COMMENTS ================= */
+
+export async function getComments(videoId){
+
+const q =
+query(
+collection(db,"comments"),
+where("videoId","==",videoId),
+orderBy("createdAt","desc")
+);
+
+const snap =
+await getDocs(q);
+
+const comments = [];
+
+snap.forEach(doc=>{
+
+comments.push({
+id:doc.id,
+...doc.data()
+});
+
+});
+
+return comments;
+
+}
+
+/* ================= LIKE VIDEO ================= */
+
+export async function likeVideo(videoId){
+
+await updateDoc(
+doc(db,"videos",videoId),
+{
+likes:
+increment(1)
+}
+);
+
+}
+
+/* ================= SHARE VIDEO ================= */
+
+export async function shareVideoCount(videoId){
+
+await updateDoc(
+doc(db,"videos",videoId),
+{
+shares:
+increment(1)
+}
+);
+
+}
+
+/* ================= GET VIDEOS ================= */
+
+export async function getVideos(){
+
+const q =
+query(
+collection(db,"videos"),
+orderBy("createdAt","desc")
+);
+
+const snap =
+await getDocs(q);
+
+const videos = [];
+
+snap.forEach(doc=>{
+
+videos.push({
+id:doc.id,
+...doc.data()
+});
+
+});
+
+return videos;
+
+}
+
+/* ================= GET USER VIDEOS ================= */
+
+export async function getUserVideos(uid){
+
+const q =
+query(
+collection(db,"videos"),
+where("uid","==",uid),
+orderBy("createdAt","desc")
+);
+
+const snap =
+await getDocs(q);
+
+const videos = [];
+
+snap.forEach(doc=>{
+
+videos.push({
+id:doc.id,
+...doc.data()
+});
+
+});
+
+return videos;
+
+}
+
+/* ================= MESSAGES ================= */
+
+export async function sendMessage(fromUid,toUid,data){
+
+const roomId =
+[fromUid,toUid]
+.sort()
+.join("_");
+
+/* إنشاء الشات */
+
+await setDoc(
+doc(db,"chats",roomId),
+{
+users:[fromUid,toUid],
+
+updatedAt:Date.now(),
+
+lastMessage:
+
+data.type === "text"
+
+? data.text
+
+: data.type === "image"
+
+? "🖼️ صورة"
+
+: data.type === "voice"
+
+? "🎤 فويس"
+
+: "📩 رسالة"
+
+},
+{
+merge:true
+}
+);
+
+/* الرسالة */
+
+await addDoc(
+
+collection(
+db,
+"chats",
+roomId,
+"messages"
+),
+
+{
+...data,
+
+from:fromUid,
+
+to:toUid,
+
+createdAt:Date.now()
+}
+
+);
+
+}
+
+/* ================= LISTEN MESSAGES ================= */
+
 export function listenMessages(myUid,otherUid,cb){
 
-const roomId = [myUid,otherUid].sort().join("_");
+const roomId =
+[myUid,otherUid]
+.sort()
+.join("_");
 
-const q = query(
-collection(db,"chats",roomId,"messages"),
+const q =
+query(
+collection(
+db,
+"chats",
+roomId,
+"messages"
+),
 orderBy("createdAt","asc")
 );
 
@@ -169,41 +447,76 @@ return onSnapshot(q,snap=>{
 const msgs = [];
 
 snap.forEach(d=>{
-msgs.push({id:d.id,...d.data()});
+
+msgs.push({
+id:d.id,
+...d.data()
+});
+
 });
 
 cb(msgs);
 
 });
+
 }
 
-/* ================= 🔥 NEW FIX: CHAT LIST ================= */
+/* ================= CHATS LIST ================= */
 
 export async function getChatsList(uid){
 
-const snap = await getDocs(collection(db,"chats"));
+const snap =
+await getDocs(
+collection(db,"chats")
+);
 
 const chats = [];
 
-snap.forEach(d=>{
+for(const d of snap.docs){
 
-const data = d.data();
+const data =
+d.data();
 
-if(data.users?.includes(uid)){
+if(
+data.users?.includes(uid)
+){
 
-const otherUid = data.users.find(u=>u !== uid);
+const otherUid =
+data.users.find(
+u=>u !== uid
+);
+
+const otherUser =
+await getUserData(otherUid);
 
 chats.push({
-uid: otherUid,
-username: "مستخدم",
-image: "",
-lastMessage: data.lastMessage || "",
-updatedAt: data.updatedAt || 0
+
+uid:otherUid,
+
+username:
+otherUser.username || "مستخدم",
+
+image:
+otherUser.image || "",
+
+verified:
+otherUser.verified || false,
+
+lastMessage:
+data.lastMessage || "",
+
+updatedAt:
+data.updatedAt || 0
+
 });
 
 }
 
-});
+}
 
-return chats.sort((a,b)=>b.updatedAt - a.updatedAt);
+return chats.sort(
+(a,b)=>
+b.updatedAt - a.updatedAt
+);
+
 }
