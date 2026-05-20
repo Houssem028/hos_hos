@@ -714,13 +714,12 @@ async()=>{
 
 /* تعليقات */
 
-window.openComments = (id)=>{
+function openComments(id){
 
   // حذف أي نافذة قديمة
   let old = document.querySelector(".comments-box");
   if(old) old.remove();
 
-  // إنشاء نافذة التعليقات
   const box = document.createElement("div");
   box.className = "comments-box";
 
@@ -756,7 +755,7 @@ window.openComments = (id)=>{
     box.remove();
   };
 
-  // إرسال تعليق (محلي الآن)
+  // إرسال تعليق (محلي)
   document.getElementById("sendComment").onclick = ()=>{
     const input = document.getElementById("commentInput");
     const text = input.value.trim();
@@ -777,6 +776,10 @@ window.openComments = (id)=>{
 
     input.value = "";
   };
+
+}
+
+window.openComments = openComments;
 
 
 };
