@@ -214,9 +214,11 @@ followers:increment(1)
 
 }
 
-/* ================= COMMENTS ================= */
+/* ================= COMMENTS SYSTEM ================= */
 
-export async function addComment(videoId,uid,text){
+/* إضافة تعليق */
+
+export async function addComment(videoId,uid,text,parentId=null){
 
 const user =
 await getUserData(uid);
@@ -225,13 +227,34 @@ await addDoc(
 collection(db,"comments"),
 {
 videoId,
+
+parentId,
+
 uid,
-username:user.username,
-userImage:user.image || "",
+
+username:
+user.username || "مستخدم",
+
+userImage:
+user.image || "",
+
+verified:
+user.verified || false,
+
 text,
-createdAt:Date.now()
+
+likes:0,
+
+likedBy:[],
+
+createdAt:
+Date.now()
 }
 );
+
+/* زيادة عداد التعليقات */
+
+if(!parentId){
 
 await updateDoc(
 doc(db,"videos",videoId),
@@ -243,9 +266,11 @@ increment(1)
 
 }
 
-/* ================= GET COMMENTS ================= */
+}
 
-export async function getComments(videoId){
+/* جلب التعليقات مباشر */
+
+export function listenComments(videoId,callback){
 
 const q =
 query(
@@ -254,8 +279,7 @@ where("videoId","==",videoId),
 orderBy("createdAt","desc")
 );
 
-const snap =
-await getDocs(q);
+return onSnapshot(q,(snap)=>{
 
 const comments = [];
 
@@ -268,7 +292,43 @@ id:doc.id,
 
 });
 
-return comments;
+callback(comments);
+
+});
+
+}
+
+/* لايك تعليق */
+
+export async function likeComment(commentId,currentUid){
+
+const ref =
+doc(db,"comments",commentId);
+
+const snap =
+await getDoc(ref);
+
+if(!snap.exists())
+return;
+
+const data =
+snap.data();
+
+let likedBy =
+data.likedBy || [];
+
+if(
+likedBy.includes(currentUid)
+){
+return;
+}
+
+likedBy.push(currentUid);
+
+await updateDoc(ref,{
+likes:increment(1),
+likedBy
+});
 
 }
 
@@ -519,4 +579,4 @@ return chats.sort(
 b.updatedAt - a.updatedAt
 );
 
-}
+  }
