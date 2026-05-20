@@ -1,92 +1,554 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-<title>Login</title>
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="
+width=device-width,
+initial-scale=1.0,
+maximum-scale=1.0,
+user-scalable=no,
+viewport-fit=cover
+">
+
+<title>HOS HOS</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#000000">
 
 <style>
-body{
+
+*{
 margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+-webkit-tap-highlight-color:transparent;
+}
+
+html,
+body{
+width:100%;
+height:100%;
+overflow:hidden;
 background:#000;
-color:#fff;
-font-family:Arial;
+}
+
+/* خلفية */
+
+body{
+
 display:flex;
 justify-content:center;
 align-items:center;
-height:100vh;
+
+background:
+linear-gradient(
+135deg,
+#000,
+#090909,
+#141414
+);
+
+position:relative;
 }
+
+/* دوائر */
+
+.bg1,
+.bg2{
+
+position:absolute;
+
+border-radius:50%;
+
+filter:blur(80px);
+
+opacity:.5;
+}
+
+.bg1{
+
+width:320px;
+height:320px;
+
+background:#ff0050;
+
+top:-100px;
+right:-100px;
+
+animation:move1 6s infinite alternate;
+}
+
+.bg2{
+
+width:280px;
+height:280px;
+
+background:#0066ff;
+
+bottom:-100px;
+left:-100px;
+
+animation:move2 6s infinite alternate;
+}
+
+@keyframes move1{
+
+from{
+transform:translateY(0);
+}
+
+to{
+transform:translateY(40px);
+}
+
+}
+
+@keyframes move2{
+
+from{
+transform:translateY(0);
+}
+
+to{
+transform:translateY(-40px);
+}
+
+}
+
+/* Splash */
+
+#splash{
+
+position:fixed;
+inset:0;
+
+background:#000;
+
+display:flex;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+
+z-index:99999;
+
+animation:hideSplash .8s ease forwards;
+animation-delay:2.5s;
+}
+
+@keyframes hideSplash{
+
+to{
+opacity:0;
+visibility:hidden;
+}
+
+}
+
+.logo{
+
+width:120px;
+height:120px;
+
+border-radius:32px;
+
+object-fit:cover;
+
+box-shadow:
+0 0 40px rgba(255,0,80,.5);
+
+animation:
+logoAnim 2s infinite alternate;
+}
+
+@keyframes logoAnim{
+
+from{
+transform:scale(1);
+}
+
+to{
+transform:scale(1.08);
+}
+
+}
+
+.logo-text{
+
+margin-top:18px;
+
+font-size:40px;
+font-weight:bold;
+
+letter-spacing:3px;
+
+color:white;
+
+text-shadow:
+0 0 20px rgba(255,255,255,.25);
+}
+
+/* Card */
 
 .card{
+
+position:relative;
+z-index:5;
+
 width:90%;
-max-width:350px;
-background:#111;
-padding:20px;
-border-radius:15px;
+max-width:370px;
+
+padding:30px 22px;
+
+border-radius:28px;
+
+background:
+rgba(255,255,255,.08);
+
+backdrop-filter:blur(18px);
+
+border:
+1px solid rgba(255,255,255,.08);
+
+box-shadow:
+0 10px 40px rgba(0,0,0,.45);
+
+transform:translateY(30px);
+
+opacity:0;
+
+animation:
+showCard 1s ease forwards;
+
+animation-delay:2.6s;
 }
 
-input{
-width:100%;
-padding:12px;
-margin:8px 0;
-border:none;
-border-radius:10px;
-background:#222;
-color:#fff;
+@keyframes showCard{
+
+to{
+opacity:1;
+transform:translateY(0);
 }
+
+}
+
+.title{
+
+text-align:center;
+
+font-size:32px;
+font-weight:bold;
+
+color:white;
+
+margin-bottom:25px;
+}
+
+/* Inputs */
+
+.input-box{
+margin-bottom:16px;
+}
+
+.input-box input{
+
+width:100%;
+height:56px;
+
+border:none;
+outline:none;
+
+border-radius:18px;
+
+padding:0 18px;
+
+background:
+rgba(255,255,255,.08);
+
+color:white;
+
+font-size:15px;
+
+transition:.2s;
+}
+
+.input-box input::placeholder{
+color:#bbb;
+}
+
+.input-box input:focus{
+
+border:
+1px solid #ff2d55;
+
+transform:scale(1.02);
+}
+
+/* Button */
 
 button{
+
 width:100%;
-padding:12px;
+height:56px;
+
 border:none;
-border-radius:10px;
-background:#ff2d55;
-color:#fff;
-font-size:16px;
+border-radius:18px;
+
+background:
+linear-gradient(
+135deg,
+#ff0050,
+#ff2d55
+);
+
+color:white;
+
+font-size:18px;
+font-weight:bold;
+
+cursor:pointer;
+
+margin-top:10px;
+
+transition:.2s;
+
+box-shadow:
+0 8px 20px rgba(255,0,80,.35);
 }
+
+button:active{
+transform:scale(.97);
+}
+
+/* signup */
+
+.signup{
+
+margin-top:20px;
+
+text-align:center;
+
+color:#bbb;
+
+font-size:14px;
+}
+
+.signup span{
+
+color:#ff2d55;
+
+font-weight:bold;
+
+cursor:pointer;
+}
+
+/* loading */
+
+.loading{
+
+display:none;
+
+margin-top:15px;
+
+text-align:center;
+
+color:#aaa;
+}
+
 </style>
+
 </head>
 
 <body>
 
+<!-- الخلفية -->
+
+<div class="bg1"></div>
+<div class="bg2"></div>
+
+<!-- Splash -->
+
+<div id="splash">
+
+<img
+src="icon-192.png"
+class="logo">
+
+<div class="logo-text">
+HOS HOS
+</div>
+
+</div>
+
+<!-- Login -->
+
 <div class="card">
 
-<h2>تسجيل الدخول</h2>
+<div class="title">
+تسجيل الدخول
+</div>
 
-<input id="email" placeholder="البريد">
-<input id="password" type="password" placeholder="كلمة المرور">
+<div class="input-box">
 
-<button onclick="login()">دخول</button>
+<input
+id="email"
+type="email"
+placeholder="البريد الإلكتروني">
+
+</div>
+
+<div class="input-box">
+
+<input
+id="password"
+type="password"
+placeholder="كلمة المرور">
+
+</div>
+
+<button onclick="login()">
+دخول
+</button>
+
+<div class="signup">
+
+ليس لديك حساب؟
+
+<span onclick="goSignup()">
+إنشاء حساب
+</span>
+
+</div>
+
+<div
+class="loading"
+id="loading">
+
+جاري تسجيل الدخول...
+
+</div>
 
 </div>
 
 <script type="module">
 
 import { auth } from "./firebase.js";
-import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-window.login = async()=>{
+import {
+signInWithEmailAndPassword,
+onAuthStateChanged
+}
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-const email = document.getElementById("email").value;
-const password = document.getElementById("password").value;
+/* لو مسجل دخول بالفعل */
+
+onAuthStateChanged(auth,(user)=>{
+
+if(user){
+
+location.href =
+"feed.html";
+
+}
+
+});
+
+/* تسجيل الدخول */
+
+window.login =
+async()=>{
+
+const email =
+document.getElementById(
+"email"
+).value.trim();
+
+const password =
+document.getElementById(
+"password"
+).value.trim();
+
+if(!email || !password){
+
+alert(
+"املأ جميع الحقول"
+);
+
+return;
+}
+
+document.getElementById(
+"loading"
+).style.display =
+"block";
 
 try{
 
-await signInWithEmailAndPassword(auth,email,password);
+await signInWithEmailAndPassword(
+auth,
+email,
+password
+);
 
-alert("تم الدخول");
-
-location.href="feed.html";
+location.href =
+"feed.html";
 
 }catch(err){
 
-alert("خطأ: " + err.message);
+document.getElementById(
+"loading"
+).style.display =
+"none";
+
+alert(
+"خطأ: " + err.message
+);
 
 }
 
 };
+
+/* إنشاء حساب */
+
+window.goSignup =
+()=>{
+
+location.href =
+"signup.html";
+
+};
+
+/* منع الزوم */
+
+document.addEventListener(
+"gesturestart",
+e=>e.preventDefault()
+);
+
+/* Service Worker */
+
+if(
+"serviceWorker"
+in navigator
+){
+
+window.addEventListener(
+"load",
+()=>{
+
+navigator
+.serviceWorker
+.register("./sw.js");
+
+});
+
+}
 
 </script>
 
