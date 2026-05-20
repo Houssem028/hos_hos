@@ -1,23 +1,36 @@
-<!DOCTYPE html>  <html lang="ar" dir="rtl">  <head>  <meta charset="UTF-8">  <meta    
-name="viewport"    
-content="    
-width=device-width,    
-initial-scale=1.0,    
-maximum-scale=1.0,    
-user-scalable=no,    
-viewport-fit=cover    
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="
+width=device-width,
+initial-scale=1.0,
+maximum-scale=1.0,
+user-scalable=no,
+viewport-fit=cover
 ">
 
-<title>Hos Hos</title>  <link rel="manifest" href="manifest.json">    
-<meta name="theme-color" content="#000000">  <style>    *{
+<title>Hos Hos</title>
+
+<link rel="manifest" href="manifest.json">
+
+<meta
+name="theme-color"
+content="#000000">
+
+<style>
+
+*{
 margin:0;
 padding:0;
 box-sizing:border-box;
 font-family:Arial,sans-serif;
-
--webkit-tap-highlight-color:
-transparent;
-
+-webkit-tap-highlight-color:transparent;
 user-select:none;
 }
 
@@ -52,7 +65,8 @@ scroll-snap-align:start;
 overflow:hidden;
 }
 
-.feed video{
+.feed video,
+.post-image{
 width:100%;
 height:100%;
 object-fit:cover;
@@ -384,31 +398,85 @@ font-size:22px;
 color:#ff2d55 !important;
 }
 
-</style>  </head>  <body>  <!-- الشريط العلوي -->  <div class="top-bar">    <div class="top-left">  <button    
-class="search-btn"    
+</style>
+
+</head>
+
+<body>
+
+<!-- الشريط العلوي -->
+
+<div class="top-bar">
+
+<div class="top-left">
+
+<button
+class="search-btn"
 onclick="goSearch()">
 
 🔍
 
-</button>    </div>    <div class="logo-box">  <img    
-src="icon-192.png"    
-class="top-logo">    <span>    
-  HOS HOS    
-</span>    </div>  </div>  <!-- الفيديوهات -->  <div id="feedContainer">    <div class="loading">    
-    جاري تحميل الفيديوهات...    
-  </div>  </div>  <!-- الشريط السفلي -->  <div class="bottom-nav">    <button onclick="goHome()">    
-    🏠    
-  </button>    <button onclick="goMessages()">    
-    💬    
-  </button>  <button    
-class="add-btn"    
-onclick="uploadVideo()">  
-+  
-</button>    <button onclick="goNotifications()">    
-    🔔    
-  </button>    <button onclick="goProfile()">    
-    👤    
-  </button>  </div>  <script type="module">    import {
+</button>
+
+</div>
+
+<div class="logo-box">
+
+<img
+src="icon-192.png"
+class="top-logo">
+
+<span>
+HOS HOS
+</span>
+
+</div>
+
+</div>
+
+<!-- الفيديوهات -->
+
+<div id="feedContainer">
+
+<div class="loading">
+
+جاري تحميل الفيديوهات...
+
+</div>
+
+</div>
+
+<!-- الشريط السفلي -->
+
+<div class="bottom-nav">
+
+<button onclick="goHome()">
+🏠
+</button>
+
+<button onclick="goMessages()">
+💬
+</button>
+
+<button
+class="add-btn"
+onclick="uploadVideo()">
++
+</button>
+
+<button onclick="goNotifications()">
+🔔
+</button>
+
+<button onclick="goProfile()">
+👤
+</button>
+
+</div>
+
+<script type="module">
+
+import {
 db
 } from "./firebase.js";
 
@@ -420,7 +488,8 @@ orderBy,
 doc,
 updateDoc,
 increment
-} from
+}
+from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const container =
@@ -445,11 +514,11 @@ await getDocs(q);
 
 if(snap.empty){
 
-container.innerHTML = `    
-  <div class="loading">    
-    لا توجد فيديوهات    
-  </div>    
-`;    
+container.innerHTML = `
+<div class="loading">
+لا توجد فيديوهات
+</div>
+`;
 
 return;
 
@@ -457,131 +526,126 @@ return;
 
 snap.forEach(videoDoc=>{
 
-const video =    
-videoDoc.data();    
+const video =
+videoDoc.data();
 
-const videoId =    
-videoDoc.id;    
+const videoId =
+videoDoc.id;
 
-container.innerHTML += `    
+container.innerHTML += `
 
-<section class="feed">    
 <section class="feed">
 
-  ${video.type === "image"
+${video.type === "image"
 
-  ? `
+? `
 
-  <img
-  class="post-image"
-  src="${video.videoUrl}"
-  style="
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  ">
+<img
+class="post-image"
+src="${video.videoUrl}">
 
-  `
+`
 
-  : `
+: `
 
-  <video
-  class="videoPlayer"
-  src="${video.videoUrl}"
-  loop
-  playsinline>
-  </video>
+<video
+class="videoPlayer"
+src="${video.videoUrl}"
+loop
+playsinline>
+</video>
 
-  `}
-  <div class="overlay"></div>    
+`}
 
-  <div class="video-info">    
+<div class="overlay"></div>
 
-    <h3 onclick="    
-    location.href=    
-    'user.html?uid=${video.uid}'    
-    ">    
+<div class="video-info">
 
-      @${video.username}    
+<h3 onclick="
+location.href=
+'user.html?uid=${video.uid}'
+">
 
-      ${video.verified ? `    
-      <span class="verified-badge">    
-        ✓    
-      </span>    
-      ` : ""}    
+@${video.username}
 
-    </h3>    
+${video.verified ? `
+<span class="verified-badge">
+✓
+</span>
+` : ""}
 
-    <p>    
-      ${video.caption || ""}    
-    </p>    
+</h3>
 
-  </div>    
+<p>
+${video.caption || ""}
+</p>
 
-  <div class="video-actions">    
+</div>
 
-    <div class="action">    
+<div class="video-actions">
 
-      <img    
-      class="profile-pic"    
+<div class="action">
 
-      onclick="    
-      location.href=    
-      'user.html?uid=${video.uid}'    
-      "    
+<img
+class="profile-pic"
 
-      src="${    
-        video.userImage ||    
-        'https://i.imgur.com/1X4n1ZL.png'    
-      }">    
+onclick="
+location.href=
+'user.html?uid=${video.uid}'
+"
 
-    </div>    
+src="${
+video.userImage ||
+'https://i.imgur.com/1X4n1ZL.png'
+}">
 
-    <div class="action">    
+</div>
 
-      <button    
-      class="likeBtn"    
-      data-id="${videoId}">    
-        ❤️    
-      </button>    
+<div class="action">
 
-      <span id="likes-${videoId}">    
-        ${video.likes || 0}    
-      </span>    
+<button
+class="likeBtn"
+data-id="${videoId}">
+❤️
+</button>
 
-    </div>    
+<span id="likes-${videoId}">
+${video.likes || 0}
+</span>
 
-    <div class="action">    
+</div>
 
-      <button onclick="    
-      openComments('${videoId}')    
-      ">    
-        💬    
-      </button>    
+<div class="action">
 
-      <span>    
-        تعليق    
-      </span>    
+<button onclick="
+openComments('${videoId}')
+">
+💬
+</button>
 
-    </div>    
+<span>
+تعليق
+</span>
 
-    <div class="action">    
+</div>
 
-      <button onclick="    
-      shareVideo('${video.videoUrl}')    
-      ">    
-        ↗️    
-      </button>    
+<div class="action">
 
-      <span>    
-        مشاركة    
-      </span>    
+<button onclick="
+shareVideo('${video.videoUrl}')
+">
+↗️
+</button>
 
-    </div>    
+<span>
+مشاركة
+</span>
 
-  </div>    
+</div>
 
-</section>    
+</div>
+
+</section>
 
 `;
 
@@ -590,6 +654,7 @@ container.innerHTML += `
 setupLikes();
 
 initTikTokVideos();
+
 }
 
 /* نظام فيديوهات مثل TikTok */
@@ -606,30 +671,30 @@ new IntersectionObserver(
 
 (entries)=>{
 
-entries.forEach(entry=>{    
+entries.forEach(entry=>{
 
-  const video =    
-  entry.target;    
+const video =
+entry.target;
 
-  if(entry.isIntersecting){    
+if(entry.isIntersecting){
 
-    videos.forEach(v=>{    
+videos.forEach(v=>{
 
-      if(v !== video){    
+if(v !== video){
 
-        v.pause();    
+v.pause();
 
-      }    
+}
 
-    });    
+});
 
-    video.play();    
+video.play();
 
-  }else{    
+}else{
 
-    video.pause();    
+video.pause();
 
-  }    
+}
 
 });
 
@@ -641,23 +706,21 @@ threshold:0.75
 
 videos.forEach(video=>{
 
-observer.observe(video);    
+observer.observe(video);
 
-/* تشغيل وإيقاف */    
+video.addEventListener(
+"click",
+()=>{
 
-video.addEventListener(    
-"click",    
-()=>{    
+if(video.paused){
 
-  if(video.paused){    
+video.play();
 
-    video.play();    
+}else{
 
-  }else{    
+video.pause();
 
-    video.pause();    
-
-  }    
+}
 
 });
 
@@ -676,49 +739,55 @@ document.querySelectorAll(
 
 buttons.forEach(btn=>{
 
-btn.onclick =    
-async()=>{    
+btn.onclick =
+async()=>{
 
-  const id =    
-  btn.dataset.id;    
+const id =
+btn.dataset.id;
 
-  const likesText =    
-  document.getElementById(    
-    "likes-"+id    
-  );    
+const likesText =
+document.getElementById(
+"likes-"+id
+);
 
-  let current =    
-  parseInt(    
-    likesText.innerText    
-  );    
+let current =
+parseInt(
+likesText.innerText
+);
 
-  await updateDoc(    
-    doc(db,"videos",id),    
-    {    
-      likes:    
-      increment(1)    
-    }    
-  );    
+await updateDoc(
+doc(db,"videos",id),
+{
+likes:
+increment(1)
+}
+);
 
-  likesText.innerText =    
-  current + 1;    
+likesText.innerText =
+current + 1;
 
-  btn.classList.add(    
-    "liked"    
-  );    
+btn.classList.add(
+"liked"
+);
+
 };
 
 });
 
 }
 
-/* تعليقات */
+/* التعليقات */
 
-window.openComments =
-(id)=>{
+window.openComments = (id)=>{
+
+const text = prompt(
+"اكتب تعليق 💬"
+);
+
+if(!text) return;
 
 alert(
-"التعليقات قريباً 💬"
+"تم إرسال تعليقك ✅"
 );
 
 };
@@ -793,14 +862,16 @@ window.addEventListener(
 "load",
 ()=>{
 
-navigator    
-.serviceWorker    
+navigator
+.serviceWorker
 .register("/sw.js");
 
 });
 
 }
 
-</script>  </body>
+</script>
 
-</html>  
+</body>
+
+</html>
